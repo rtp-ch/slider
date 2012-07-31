@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<title>RTP Slider Configurator</title>
+
+	<script type="text/javascript" src="js/URI.js"></script>
+	<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+
+	<script type="text/javascript" src="configurator.js"></script>
+	<link rel="stylesheet" href="configurator.css">
+
+</head>
+
+<body>
+
+	<div id="configurator">
+
+		<form action="/slider/demo/demo.html" method="get" target="rtp-slider">
+
+			<p>
+
+				<label class="text">
+					<span class="label">Align</span>
+					<input type="text" value="0.5" name="align" size="2" >
+				</label>
+<!--
+				<label class="text">
+					<span class="label">Align Panel</span>
+					<input type="text" value="0.5" name="alignPanel" size="2" >
+				</label>
+
+				<label class="text">
+					<span class="label">Align Viewport</span>
+					<input type="text" value="0.5" name="alignViewport" size="2" >
+				</label>
+-->
+				<label class="text">
+					<span class="label">Slides Visible</span>
+					<input type="text" value="1" name="panelsVisible" size="2" >
+				</label>
+
+				<label class="text">
+					<span class="label">First Slide</span>
+					<input type="text" value="1" name="slideFirst" size="2" >
+				</label>
+
+			</p>
+			<p>
+
+				<label class="select">
+					<span class="label">Layout</span>
+					<select name="sizer">
+						<option value="viewportByPanels">viewportByPanels</option>
+						<option value="panelsByViewport">panelsByViewport</option>
+						<option value="none">none</option>
+					</select>
+				</label>
+
+			</p>
+			<p>
+
+				<label class="checkbox">
+					<input type="checkbox" name="vertical" value="1" />
+					<span class="label">Vertical</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="carousel" value="1" />
+					<span class="label">Carousel</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="carousel3d" value="1" />
+					<span class="label">Carousel 3D</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="swipe" value="1" />
+					<span class="label">Swipe</span>
+				</label>
+
+				<span id="swipe">
+
+					<label class="checkbox">
+						<input type="checkbox" name="touchSwipe" value="1" />
+						<span class="label">Touch Swipe</span>
+					</label>
+
+					<label class="checkbox">
+						<input type="checkbox" name="mouseSwipe" value="1" />
+						<span class="label">Mouse Swipe</span>
+					</label>
+
+				</span>
+
+				<label class="checkbox">
+					<input type="checkbox" name="autoslide" value="1" />
+					<span class="label">Autoslide</span>
+				</label>
+
+				<span id="autoslide">
+
+					<label class="text">
+						<span class="label">autoslideAction</span>
+						<input type="text" value="1" name="autoslideAction" size="2" >
+					</label>
+
+					<label class="text">
+						<span class="label">autoslideDelay</span>
+						<input type="text" value="1" name="autoslideDelay" size="2" >
+					</label>
+
+					<label class="text">
+						<span class="label">autoslideFirstDelay</span>
+						<input type="text" value="1" name="autoslideFirstDelay" size="2" >
+					</label>
+
+					<label class="text">
+						<span class="label">autoslideResumeDelay</span>
+						<input type="text" value="1" name="autoslideResumeDelay" size="2" >
+					</label>
+
+					<label class="checkbox">
+						<input type="checkbox" name="autoslidePauseOnHover" value="1" />
+						<span class="label">autoslidePauseOnHover</span>
+					</label>
+
+					<label class="checkbox">
+						<input type="checkbox" name="autoslideStopOnHover" value="1" />
+						<span class="label">autoslideStopOnHover</span>
+					</label>
+
+					<label class="checkbox">
+						<input type="checkbox" name="autoslideStopOnAction" value="1" />
+						<span class="label">autoslideStopOnAction</span>
+					</label>
+
+				</span>
+
+				<label class="checkbox">
+					<input type="checkbox" name="navDots" value="1" />
+					<span class="label">Nav Dots</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="navArrows" value="1" />
+					<span class="label">Nav Arrows</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="navToolbar" value="1" />
+					<span class="label">Nav Toolbar</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="navKeyboard" value="1" />
+					<span class="label">Nav Keyboard</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="shrinkViewport" value="1" />
+					<span class="label">Shrink Viewport</span>
+				</label>
+
+				<label class="checkbox">
+					<input type="checkbox" name="fillViewport" value="1" />
+					<span class="label">Fill Viewport</span>
+				</label>
+
+			</p>
+
+			<input type="submit" value="Update Slider">
+
+		</form>
+	</div>
+
+</body>
+
+
+</html>
