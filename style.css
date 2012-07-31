@@ -233,8 +233,14 @@ DIV.page-head DIV.teaser P.emphasis
 	margin-top: -2px;
 }
 
-DIV.teaser P.title,
+DIV.teaser P.title
+{
+	font-weight: bold;
+	font-family: "Linotype Univers W01 Black","Helvetica Neue W01 95 Black","Helvetica Neue","Helvetica","Arial",sans-serif;
+}
+
 DIV.teaser P.emphasis
 {
-	font-family: "Linotype Univers W01 Black","Helvetica Neue W01 95 Black","Helvetica Neue","Helvetica","Arial",sans-serif;
+	font-weight: normal;
+	font-family: "Linotype Univers W01 Regular","Helvetica Neue W01 55 Roman","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
