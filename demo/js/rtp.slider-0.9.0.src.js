@@ -4219,8 +4219,6 @@ data.vp_off = vp_off.x;
 		data.swipeStartDragPos = this.getPositionByOffset(offset);
 		data.swipeStartPositionOff = this.getOffsetByPosition(this.position) - offset;
 
-//console.log('start ', data.swipeStartDragPos);
-
 		// we are now going to swipe
 		this.locked = true;
 
@@ -4617,13 +4615,12 @@ data.vp_off = vp_off.x;
 		    touch = changed[0] || touches[0],
 		    swipe = vertical ? touch.clientY : touch.clientX,
 		    scroll = vertical ? touch.clientX : touch.clientY;
-console.log(touches.length+"-" + changed.length);
+
 		if (touches.length == 1)
 		{
 
 			// lock variable assertion
 			if (data.toucher) return false;
- console.log('start');
 
 			// unbind my move event handler when done
 			if (data.move) jQuery(document).unbind(evt_move, data.move);
@@ -4645,13 +4642,7 @@ console.log(touches.length+"-" + changed.length);
 			// bind other event handlers
 			if (data.move) jQuery(document).bind(evt_move, data.move);
 
-/*
-
-
-console.log('start')
-//			if (data.false) jQuery(document).unbind(evt_move, data.false);
-
-*/
+			// if (data.false) jQuery(document).unbind(evt_move, data.false);
 
 			// let the event do its work
 			return false;
@@ -4662,7 +4653,6 @@ console.log('start')
 
 			// lock variable assertion
 //			if (!data.toucher) return false;
- console.log('stop');
 
 			// unbind my move event handler when done
 			if (data.move) jQuery(document).unbind(evt_move, data.move);
@@ -4681,7 +4671,6 @@ console.log('start')
 			}
 			else
 			{
-				console.log('release');
 				// call swipe stop handler with coordinates
 				this.trigger('swipeStop', swipe, scroll, data);
 			}
@@ -5202,4 +5191,4 @@ return true;
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 
-/* crc: 12749482C7E0A6CE824CB97577D5F240 */
+/* crc: 798CC8B64D0BC0DA2F75166D25DD417C */
