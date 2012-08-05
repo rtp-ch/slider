@@ -61,13 +61,12 @@
 		    touch = changed[0] || touches[0],
 		    swipe = vertical ? touch.clientY : touch.clientX,
 		    scroll = vertical ? touch.clientX : touch.clientY;
-console.log(touches.length+"-" + changed.length);
+
 		if (touches.length == 1)
 		{
 
 			// lock variable assertion
 			if (data.toucher) return false;
- console.log('start');
 
 			// unbind my move event handler when done
 			if (data.move) jQuery(document).unbind(evt_move, data.move);
@@ -89,13 +88,7 @@ console.log(touches.length+"-" + changed.length);
 			// bind other event handlers
 			if (data.move) jQuery(document).bind(evt_move, data.move);
 
-/*
-
-
-console.log('start')
-//			if (data.false) jQuery(document).unbind(evt_move, data.false);
-
-*/
+			// if (data.false) jQuery(document).unbind(evt_move, data.false);
 
 			// let the event do its work
 			return false;
@@ -106,7 +99,6 @@ console.log('start')
 
 			// lock variable assertion
 //			if (!data.toucher) return false;
- console.log('stop');
 
 			// unbind my move event handler when done
 			if (data.move) jQuery(document).unbind(evt_move, data.move);
@@ -125,7 +117,6 @@ console.log('start')
 			}
 			else
 			{
-				console.log('release');
 				// call swipe stop handler with coordinates
 				this.trigger('swipeStop', swipe, scroll, data);
 			}

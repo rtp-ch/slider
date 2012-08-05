@@ -111,8 +111,6 @@ data.vp_off = vp_off.x;
 		data.swipeStartDragPos = this.getPositionByOffset(offset);
 		data.swipeStartPositionOff = this.getOffsetByPosition(this.position) - offset;
 
-//console.log('start ', data.swipeStartDragPos);
-
 		// we are now going to swipe
 		this.locked = true;
 
