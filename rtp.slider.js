@@ -324,7 +324,6 @@
 // EO private scope
 
 
-
 /*
 
   Copyright (c) Marcel Greter 2010 - rtp.ch - RTP Multi Event Dispatcher v0.8.2
@@ -431,7 +430,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 }).call(RTP.Multievent.prototype);
-
 
 /*
 
@@ -803,7 +801,6 @@ if (this.conf.vertical)
 // END anonymous scope
 })(jQuery);
 
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Hook Functions
@@ -1067,7 +1064,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Slides Functions
@@ -1172,7 +1168,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Panels Functions
@@ -1548,7 +1543,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Viewport Functions
@@ -1793,7 +1787,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Container Functions
@@ -1950,7 +1943,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Visibility Core Functions
@@ -2161,7 +2153,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Position Functions
@@ -2389,7 +2380,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Animation Functions
@@ -2544,11 +2534,6 @@ if (this.conf.vertical)
 	// @@@ private fn: dequeue @@@
 	var dequeue = function (animation)
 	{
-
-		// debug assertion
-		if (this.locked) debugger;
-		if (this.animating) debugger;
-
 		// get animation lock
 		this.animating = true;
 
@@ -2748,7 +2733,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Sizer Functions
@@ -2907,7 +2891,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Center Opposition in Viewport Sizer
@@ -2947,7 +2930,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panels By Viewport Sizer
@@ -3038,7 +3020,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport By Panels Sizer
@@ -3089,7 +3070,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport Height by Visibility Sizer
@@ -3200,7 +3180,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Navigation Dots Plugin
@@ -3423,7 +3402,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Navigation Arrows Plugin
@@ -3566,7 +3544,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Keyboard Navigation Plugin
@@ -3633,7 +3610,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panel Status Class Plugin
@@ -3726,7 +3702,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Auto Slide Plugin
@@ -3976,7 +3951,6 @@ if (this.conf.vertical)
 	// @@@ EO _init @@@
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panel Info Box Plugin
@@ -4105,7 +4079,6 @@ if (this.conf.vertical)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Core Swipe Plugin
@@ -4400,7 +4373,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Mouse Swipe Plugin
@@ -4551,7 +4523,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Touch Swipe Plugin
@@ -4732,7 +4703,6 @@ return true;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 
 
 /*
@@ -4935,7 +4905,6 @@ return true;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 // taken from http://api.jquery.com/jQuery.cssHooks/
 
 (function($) {
@@ -5018,6 +4987,7 @@ return true;
 	}
 
 })(jQuery);
+
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Carousel 3D Plugin
@@ -5190,5 +5160,3 @@ return true;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
-/* crc: 798CC8B64D0BC0DA2F75166D25DD417C */
