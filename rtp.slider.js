@@ -3314,7 +3314,7 @@ if (this.conf.vertical)
 				navDotWrapper: ['<span><a href="javascript:void(0);">', '</a></span>'],
 				navDotElement: '<img src="img/rtp-nav-dot-clear.gif" width="12" height="12" alt=""/>'
 			},
-			this.tmpl
+			this.tmpl, this.conf.tmpl
 		);
 
 	});
