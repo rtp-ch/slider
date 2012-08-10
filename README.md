@@ -149,10 +149,6 @@ Enable the mouse for swiping.
 
 Enable touch devices for swiping.
 
-<pre>swipeFps: float (default: 25)</pre>
-
-Try to achieve that many frames per second when swiping and swipeVsync is not set.
-
 <pre>swipeVsync: bool (default: false)</pre>
 
 Update the user interface as soon as the swipe event is triggered. If disabled we will
