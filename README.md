@@ -4,6 +4,17 @@ RTP Slider
 Extremly versatile and flexible slider. Strong support for fluid / responsive Designs, mobile browsers
 and touch devices. Has nearly every feature that you can find in other sliders on the web.
 
+### Dependencies
+
+RTP Slider is dependent on following libraries:
+
+- jQuery
+- jquery.easing plugin
+
+The libraries can be found in the dependencies folder.
+
+
+
 ### Configuration
 
 <pre>sizer: option (default: false)</pre>
