@@ -4145,7 +4145,7 @@ if (this.conf.vertical)
 			{
 				// frames per second
 				// draw rate while swiping
-				swipeFps: 25,
+				fps: 25,
 				// synchronise draw with the
 				// actual live swipe movement
 				swipeVsync: false,
