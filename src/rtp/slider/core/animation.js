@@ -152,11 +152,6 @@
 	// @@@ private fn: dequeue @@@
 	var dequeue = function (animation)
 	{
-
-		// debug assertion
-		if (this.locked) debugger;
-		if (this.animating) debugger;
-
 		// get animation lock
 		this.animating = true;
 
