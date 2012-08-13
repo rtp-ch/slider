@@ -124,10 +124,6 @@
 			for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
 return true;
 		}
-
-		// abort event if swiping
-		return ! data.dragSwipe;
-
 	}
 
 	// @@@ private fn: handleMove @@@
