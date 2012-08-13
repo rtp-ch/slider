@@ -92,38 +92,16 @@
 
 			return true;
 		}
-		else
-		{
 
-			// lock variable assertion
-//			if (!data.toucher) return false;
+        if (touches.length == 0)
+        {
+            // unbind my move event handler when done
+            if (data.move) jQuery(document).unbind(evt_move, data.move);
 
-			// unbind my move event handler when done
-			if (data.move) jQuery(document).unbind(evt_move, data.move);
-
-			if (touches.length > 1)
-			{
-
-					data.swipeMoves = [];
-
-		//		data.false = jQuery.proxy(function () {return false}, this, data);
-
-				// bind other event handlers
-			//	jQuery(document).bind(evt_move, data.false);
-
-
-			}
-			else
-			{
-				// call swipe stop handler with coordinates
-				this.trigger('swipeStop', swipe, scroll, data);
-			}
-
-
-
-			for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-return true;
-		}
+            // call swipe stop handler with coordinates
+            this.trigger('swipeStop', swipe, scroll, data);
+            for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
+        }
 	}
 
 	// @@@ private fn: handleMove @@@
