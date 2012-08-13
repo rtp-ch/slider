@@ -90,9 +90,7 @@
 
 			// if (data.false) jQuery(document).unbind(evt_move, data.false);
 
-			// let the event do its work
-			return false;
-
+			return true;
 		}
 		else
 		{
