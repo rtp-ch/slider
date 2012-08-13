@@ -4615,9 +4615,7 @@ data.vp_off = vp_off.x;
 
 			// if (data.false) jQuery(document).unbind(evt_move, data.false);
 
-			// let the event do its work
-			return false;
-
+			return true;
 		}
 		else
 		{
@@ -4651,10 +4649,6 @@ data.vp_off = vp_off.x;
 			for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
 return true;
 		}
-
-		// abort event if swiping
-		return ! data.dragSwipe;
-
 	}
 
 	// @@@ private fn: handleMove @@@
