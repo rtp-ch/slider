@@ -212,9 +212,9 @@ H1, H2, H3, H4
 DIV.page-head DIV.teaser P.title
 {
 	margin: 0px;
-	font-size: 94px;
+	font-size: 60px;
 	font-weight: bold;
-	line-height: 97px;
+	line-height: 1.5em;
 }
 
 DIV.page-head DIV.teaser
@@ -228,8 +228,8 @@ DIV.page-head DIV.teaser
 DIV.page-head DIV.teaser P.emphasis
 {
 	margin: 0px;
-	font-size: 40px;
-	line-height: 40px;
+	font-size: 35px;
+	line-height: 1.2em;
 	margin-top: -2px;
 }
 
