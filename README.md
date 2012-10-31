@@ -10,6 +10,7 @@ RTP Slider is dependent on following libraries:
 
 - jQuery
 - jquery.easing plugin
+- jquery.imagesloaded plugin
 
 The libraries can be found in the dependencies folder.
 

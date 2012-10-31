@@ -697,34 +697,8 @@ if (this.conf.vertical)
 		// defer until all images are loaded
 		// otherwise we will not get valid info
 		// about resource dimensions like images
-		var mevent = new RTP.Multievent(loaded);
-
-		// cache sources
-		var images = {};
-
-		// wait till all images are loaded
-		jQuery('IMG', viewport).each(function ()
-		{
-
-			// create closure
-			var img = this;
-
-			// only process each src once
-			if (images[img.src]) return;
-			else images[img.src] = true;
-
-			// only bind to the image load event if not already loaded, check needed for ie
-			if (!((this.complete || this.readyState === 4 || this.readyState === 'complete') && (this.width != 0 || this.height != 0)))
-			{ var satisfy = mevent.prerequisite(); jQuery(this).bind('load', function() { images[img.src] = false; satisfy(); }); }
-
-		});
-		// EO process all images
-
-
-		// finish up image loading event
-		// triggers for zero prerequisites
-		mevent.finish();
-
+        var loadingImages = $('IMG', viewport).imagesLoaded();
+        loadingImages.done(loaded);
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
