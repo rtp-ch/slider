@@ -3052,107 +3052,65 @@ if (this.conf.vertical)
   either version 3 of the License, or (at your option) any later version.
 
 */
+(function (prototype, jQuery) {
+    'use strict';
 
-// extend class prototype
-(function (prototype, jQuery)
-{
+    prototype.plugin('config', function() {
 
+        // default configuration
+        this.conf = jQuery.extend(
+            {
+                autoVpOpp: true,
+                autoVpOppDeadZone: 0.5
+            },
+            this.conf
+        );
+    });
 
-	// @@@ plugin: config @@@
-	prototype.plugin('config', function()
-	{
+    function viewportOppByVisibility () {
 
-		// extend default configuration
-		this.conf = jQuery.extend
-		(
-			{
+        // dead zone for out of view panel
+        var dead_zone = this.conf.autoVpOppDeadZone || 1,
+            opps = [],
+            visibility = this.s_e;
 
-				// enable feature
-				autoVpOpp: true,
+        // check if feature is enabled
+        if (this.conf.vertical || !this.conf.autoVpOpp){
+            return;
+        }
 
-				// panel dead zone
-				autoVpOppDeadZone: 0.5
+        // process all panel visibilites
+        for (var i = 0; i < visibility.length; i++) {
 
-			},
-			this.conf
-		);
+            // skip if panel is not visible
+            if (visibility[i] === 0) continue;
 
-	});
-	// @@@ EO plugin: config @@@
+            // check if panel is fully visible
+            if (visibility[i] > dead_zone) {
+                // use full panel height
+                opps.push(this.pd[1][i]);
+            } else {
+                // use a partial panel height (distribute from 0 to dead_zone)
+                opps.push(this.pd[1][i] * visibility[i] / dead_zone);
+            }
+        }
 
-	function viewportOppByVisibility ()
-	{
+        // set viewport opposite size
+        this.vp_y = Math.max.apply(Math, opps);
+        this.setViewportOpp(this.vp_y);
+    }
 
-		var visibility = this.s_e;
+    prototype.plugin('layout', viewportOppByVisibility);
 
-		// check if feature is enabled
-		if (this.conf.vertical) return;
-		if (!this.conf.autoVpOpp) return;
-
-		// local variable and dead zone for out of view panel
-		var max = 0, dead_zone = this.conf.autoVpOppDeadZone || 1;
-
-		// process all panel visibilites
-		for(var i = 0; i < visibility.length; i++)
-		{
-
-			// skip if panel is not visible
-			if (visibility[i] == 0) continue;
-
-			// check if panel is fully visible
-			if (visibility[i] > dead_zone)
-			{
-				// use full panel height
-				max = Math.max(max, this.pd[1][i]);
-			}
-			else
-			{
-				// use a partial panel height (distribute from 0 to dead_zone)
-				max = Math.max(max, this.pd[1][i] * (visibility[i] / dead_zone));
-			}
-			// EO if fully visible
-
-		}
-		// EO foreach panel visiblity
-
-		// set viewport opposite size
-		this.setViewportOpp(max);
-
-		// vp_y never read
-		this.vp_y = max;
-
-	}
-
-	// @@@ plugin: changedPanelVisibility @@@
-
-	prototype.plugin('layout', viewportOppByVisibility);
-
-	prototype.plugin('layout', function()
-	{
-
-		if (this.conf.vertical)
-		{
-
-			this.readPanelsDim();
-
-/*
-			this.readPanelsOpp();
-			// this.updatePanels()
-
-*/
-			this.updatePanelsOffset()
-			this.setOffsetByPosition(this.position);
-		}
-
-	}, - 99999);
+    prototype.plugin('layout', function() {
+        if (this.conf.vertical) {
+            this.readPanelsDim();
+            this.updatePanelsOffset();
+            this.setOffsetByPosition(this.position);
+        }
+    }, - 99999);
 
 
- 	// prototype.plugin('updatedSlideExposure', viewportOppByVisibility);
-
-	// @@@ EO plugin: changedPanelVisibility @@@
-
-
-// EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 /*
 
