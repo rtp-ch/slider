@@ -14,23 +14,19 @@
 {
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// extend default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// class for current panel
-				curClass: 'current',
+			// class for current panel
+			curClass: 'current',
 
-				// panel dead zone
-				curClassDeadZone: 0.25
+			// panel dead zone
+			curClassDeadZone: 0.25
 
-			},
-			this.conf
-		);
+		});
 
 	});
 	// @@@ EO plugin: config @@@

@@ -15,25 +15,21 @@
 	var prefix = 'rtp-toolbar';
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function ()
+	prototype.plugin('config', function (extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				navToolbar: false,
+			navToolbar: false,
 
-				// enable feature
-				// toolbar: 'first, rewind, pause, stop, play, toggle-stop, toggle-pause, forward, last'
-				navToolbarButtons: this.conf.carousel ?
-					'rewind, toggle-stop, toggle-pause, forward' :
-					'first, rewind, toggle-stop, toggle-pause, forward, last'
+			// enable feature
+			// toolbar: 'first, rewind, pause, stop, play, toggle-stop, toggle-pause, forward, last'
+			navToolbarButtons: this.conf.carousel ?
+				'rewind, toggle-stop, toggle-pause, forward' :
+				'first, rewind, toggle-stop, toggle-pause, forward, last'
 
-			},
-			this.conf
-		);
+		});
 
 		// default configuration
 		this.klass = jQuery.extend

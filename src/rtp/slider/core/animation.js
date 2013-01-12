@@ -12,7 +12,7 @@
 {
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function ()
+	prototype.plugin('config', function (extend)
 	{
 
 		// store jquery animation
@@ -21,17 +21,15 @@
 		// animation queue
 		this.queue = [];
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
-				// easing duration per slide
-				easeDuration: 1200,
-				// easing function per step
-				easeFunction: 'easeInOutExpo'
-			},
-			this.conf
-		);
+		// add defaults
+		extend({
+
+			// easing duration per slide
+			easeDuration: 1200,
+			// easing function per step
+			easeFunction: 'easeInOutExpo'
+
+		});
 
 	});
 	// @@@ EO plugin: config @@@

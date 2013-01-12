@@ -12,22 +12,18 @@
 {
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// extend default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// link wrapper dimension to viewport
-				linkWrapperToViewportDim: true,
-				// link wrapper opposition to viewport
-				linkWrapperToViewportOpp: false
+			// link wrapper dimension to viewport
+			linkWrapperToViewportDim: true,
+			// link wrapper opposition to viewport
+			linkWrapperToViewportOpp: false
 
-			},
-			this.conf
-		);
+		});
 
 	});
 	// @@@ EO plugin: config @@@
@@ -54,8 +50,6 @@
 	// the implementer has to make sure this does not happen
 	function setViewportSize (value, invert)
 	{
-
-		// value -= 1;
 
 		// get local variable
 		var conf = this.conf,

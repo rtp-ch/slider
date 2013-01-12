@@ -90,28 +90,26 @@
 
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
+		// add defaults
+		extend({
+
+			// enable plugin
+			navDots: false,
+			// format for alt and title tag
+			navDotAltFormat: formatTitle,
+			navDotTitleFormat: formatTitle,
+			// this function is responsible to change styles
+			// progress will be in the range of 0 to 1 (100%)
+			navDotStepFunction: function(slide, progress)
 			{
-				// enable plugin
-				navDots: false,
-				// format for alt and title tag
-				navDotAltFormat: formatTitle,
-				navDotTitleFormat: formatTitle,
-				// this function is responsible to change styles
-				// progress will be in the range of 0 to 1 (100%)
-				navDotStepFunction: function(slide, progress)
-				{
-					// the default method is to change the opacity
-					this.navDotImg.eq(slide).css('opacity', progress);
-				}
-			},
-			this.conf
-		);
+				// the default method is to change the opacity
+				this.navDotImg.eq(slide).css('opacity', progress);
+			}
+
+		});
 
 		// default configuration
 		this.klass = jQuery.extend

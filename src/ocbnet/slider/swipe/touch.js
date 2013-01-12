@@ -18,20 +18,16 @@
 	var android = navigator.userAgent.match(/Android/i);
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function ()
+	prototype.plugin('config', function (extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// enable touch swipes
-				touchSwipe : false
+			// enable touch swipes
+			touchSwipe : false
 
-			},
-			this.conf
-		);
+		});
 
 	});
 	// @@@ EO plugin: config @@@

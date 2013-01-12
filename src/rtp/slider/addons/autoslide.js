@@ -13,7 +13,7 @@
 
 
 	// @@@ plugin: init @@@
-	prototype.plugin('config', function()
+	prototype.plugin('config', function (extend)
 	{
 
 		// store autoslide timer
@@ -22,33 +22,29 @@
 		// should be running, when running the timeout is stored
 		this.autosliding = null;
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// start auto slide on load
-				autoslide: false,
-				// direction for autoslide
-				autoslideAction: '+1',
-				// delay for next slide
-				autoslideDelay: 3500,
-				// overwrite first slide delay
-				autoslideFirstDelay : 1000,
-				// overwrite resume slide delay
-				autoslideResumeDelay : false,
-				// stop autoslide on mouse over
-				autoslideStopOnHover: false,
-				// pause autoslide on mouse over
-				// will resume on mouse out event
-				autoslidePauseOnHover: true,
-				// stop autoslide on manual interaction
-				autoslideStopOnAction: false
+			// start auto slide on load
+			autoslide: false,
+			// direction for autoslide
+			autoslideAction: '+1',
+			// delay for next slide
+			autoslideDelay: 3500,
+			// overwrite first slide delay
+			autoslideFirstDelay : 1000,
+			// overwrite resume slide delay
+			autoslideResumeDelay : false,
+			// stop autoslide on mouse over
+			autoslideStopOnHover: false,
+			// pause autoslide on mouse over
+			// will resume on mouse out event
+			autoslidePauseOnHover: true,
+			// stop autoslide on manual interaction
+			autoslideStopOnAction: false
 
-			},
-			this.conf
-		);
-
+		});
+	
 	});
 	// @@@ EO plugin: init @@@
 

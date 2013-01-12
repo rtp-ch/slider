@@ -52,28 +52,26 @@
 
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function ()
+	prototype.plugin('config', function (extend)
 	{
 
 		// status variable
 		this.swipe = false;
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
-				// frames per second
-				// draw rate while swiping
-				fps: 25,
-				// synchronise draw with the
-				// actual live swipe movement
-				swipeVsync: false,
-				// pixel offset before fixing direction
-				// from then on we either scroll or swipe
-				swipeThreshold : 5
-			},
-			this.conf
-		);
+		// add defaults
+		extend({
+
+			// frames per second
+			// draw rate while swiping
+			fps: 25,
+			// synchronise draw with the
+			// actual live swipe movement
+			swipeVsync: false,
+			// pixel offset before fixing direction
+			// from then on we either scroll or swipe
+			swipeThreshold : 5
+
+		});
 
 	});
 	// @@@ EO plugin: config @@@
