@@ -21,7 +21,7 @@
 		// check if the position really changed
 		if (this.position == position) return;
 
-		// get prvious position to pass
+		// get previous position to pass
 		var previous = this.position;
 
 		// store normalized position

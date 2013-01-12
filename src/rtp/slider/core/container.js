@@ -127,10 +127,16 @@
 	prototype.plugin('changedPanelsOffset', function ()
 	{
 
+		// in vertical mode the container always
+		// has the panels correctly layed out
 		if (this.conf.vertical) return;
 
-		var dim = 0, i = this.panels.length; while (i--)
-		{ dim += this.pd[0][i] }
+		// sum up the dimensions for the container
+		// calculate it so we can later get the accurate
+		// pixel offset for the positioning from the ua
+		// the panels hook for changedPanelsDim runs later
+		var dim = 0, i = this.panels.length;
+		while (i--) { dim += this.pd[0][i]; }
 
 		// set the container width/height to the calculated value to contain all panels
 		// there is no getter or setter method for this particular container attribute
@@ -146,7 +152,6 @@
 	{
 
 		// check container offset
-		// trigger changedPanelsOffset
 		this.checkContainerOffset();
 
 	}, - 99);
