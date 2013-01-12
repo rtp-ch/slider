@@ -299,7 +299,7 @@
 	// Set this on initialization as the decision is always
 	// based on information that must not change during runtime.
 	// Will be bound to resize event when first widget is added.
-	var resizer = resize_defer ? deferer : Manager;
+	var resizer = resize_defer ? deferer : function () { Manager() };
 
 
 	// make sure our global namespace exists
