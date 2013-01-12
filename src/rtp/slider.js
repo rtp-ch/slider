@@ -58,36 +58,60 @@
 			// initialize some structures
 			// they can be used by plugins
 			text: {}, // localized texts
-			tmpl: {} // templates fragments
+			tmpl: {}, // templates fragments
+			klass: {}, // classes to assign
+			selector: {} // dom css selectors
 
 		}, conf);
 
 		// classes to mark panels
-		slider.klass =
+		slider.klass = jQuery.extend
+		(
 		{
 			next: 'next',
 			current: 'current',
-			previous: 'previous'
-		};
+				previous: 'previous',
+				vertical: 'rtp-slider-vertical',
+				horizontal: 'rtp-slider-horizontal'
+			},
+			slider.conf.klass
+		);
 
 		// templating bits might be overridden
-		slider.tmpl =
+		slider.tmpl = jQuery.extend
+		(
 		{
-			'wrapper' : '<div class="rtp-slider-wrapper"></div>',
-			'container' : '<div class="rtp-slider-container"></div>'
-		};
+				wrapper : '<div class="rtp-slider-wrapper"></div>',
+				container : '<div class="rtp-slider-container"></div>'
+			},
+			slider.conf.tmpl
+		);
 
 		// selectors for dom elements
-		slider.selector =
+		slider.selector = jQuery.extend
+		(
 		{
 			panel : 'DIV.rtp-slider-panel',
 			container : 'DIV.rtp-slider-container'
-		};
+			},
+			slider.conf.selector
+		);
 
 
-		// execute all init hooks
-		slider.trigger('config');
+		// @@@ private fn: extend @@@
+		function extend (config)
+		{
 
+			// add more default configuration options
+			slider.conf = jQuery.extend(config, slider.conf);
+
+		}
+		// @@@ EO private fn: extend @@@
+
+		// execute all config hooks
+		slider.trigger('config', extend);
+
+		// assertion for some options
 		if (isNaN(slider.conf.align))
 		{ slider.conf.align = 0.5; }
 		if (isNaN(slider.conf.panelsVisible))
@@ -111,10 +135,11 @@
 		// min index for slides and panels
 		slider.rmin = slider.smin = slider.pmin = 0;
 
-		if (this.conf.vertical)
-		{
-			this.wrapper.addClass('rtp-slider-vertical');
-		}
+		// markup the wrapper if we are vertical/horizontal
+		if (this.conf.vertical && slider.klass.vertical)
+		{ this.wrapper.addClass(slider.klass.vertical); }
+		if (!this.conf.vertical && slider.klass.horizontal)
+		{ this.wrapper.addClass(slider.klass.horizontal); }
 
 		// first slide to load may be a function
 		this.position = jQuery.isFunction(slider.conf.slideFirst)
@@ -196,10 +221,8 @@
 		resolve_align.call(this, 'alignViewport', preset);
 		resolve_align.call(this, 'alignPanel', preset);
 
-
 		// execute all init hooks
 		slider.trigger('init');
-
 
 		// lookup panels - equals slides if carousel == false
 		slider.panels = viewport.find(slider.selector.panel);
@@ -264,8 +287,7 @@ if (this.conf.vertical)
 		// defer until all images are loaded
 		// otherwise we will not get valid info
 		// about resource dimensions like images
-        var loadingImages = $('IMG', viewport).imagesLoaded();
-        loadingImages.done(loaded);
+		jQuery('IMG', viewport).imagesLoaded().done(loaded);
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
