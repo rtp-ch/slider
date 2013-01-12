@@ -155,7 +155,7 @@
 		    align = this.conf.alignPanel + this.smin;
 
 
-		if (this.conf.carousel)
+		if (this.conf.carousel && right > left)
 		{
 			// shift into prefered and best visible area
 			while (px < left) { px += right - left; }
@@ -219,7 +219,7 @@
 		// just reset the current position
 		this.setOffsetByPosition(this.position);
 
-	});
+	}, + 999);
 	// @@@ EO plugin: layout @@@
 
 
