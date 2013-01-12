@@ -124,28 +124,6 @@
 	}
 	// @@@ EO private fn: getViewportSize @@@
 
-
-	// @@@ method: getViewportDim @@@
-	prototype.getViewportDim = function ()
-	{
-
-		// return current viewport dimension
-		return getViewportSize.call(this, 0);
-
-	}
-	// @@@ EO method: getViewportDim @@@
-
-	// @@@ method: getViewportOpp @@@
-	prototype.getViewportOpp = function ()
-	{
-
-		// return current viewport opposition
-		return getViewportSize.call(this, 1);
-
-	}
-	// @@@ EO method: getViewportOpp @@@
-
-
 	// @@@ method: readViewportDim @@@
 	prototype.readViewportDim = function()
 	{
@@ -166,73 +144,6 @@
 	}
 	// @@@ EO method: readViewportOpp @@@
 
-
-	// @@@ method: checkViewportDim @@@
-	// get viewport dimension from UA
-	// if viewport dimension has changed
-	// trigger the changedViewportDim hook
-	prototype.checkViewportDim = function()
-	{
-
-		// get the current viewport dimension
-		var current = getViewportSize.call(this, 0);
-
-		// check if dimension change
-		if (this.vp_x !== current)
-		{
-
-			// store previous value and assign new value
-			var previous = this.vp_x; this.vp_x = current;
-
-			// now trigger the changedViewportDim hook
-			this.trigger('changedViewportDim', current, previous);
-
-		}
-		// EO if value changed
-
-	}
-	// @@@ EO method: checkViewportDim @@@
-
-
-
-	// @@@ method: checkViewportOpp @@@
-	// get viewport opposition from UA
-	// if viewport opposition has changed
-	// trigger the changedViewportOpp hook
-	prototype.checkViewportOpp = function()
-	{
-
-		// get the current viewport opposition
-		var current = getViewportSize.call(this, 1);
-
-		// check if opposition change
-		if (this.vp_y !== current)
-		{
-
-			// store previous value and assign new value
-			var previous = this.vp_y; this.vp_y = current;
-
-			// now trigger the changedViewportOpp hook
-			this.trigger('changedViewportOpp', current, previous);
-
-		}
-		// EO if value changed
-
-	}
-	// @@@ EO method: checkViewportOpp @@@
-
-/*
-	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
-	{
-
-		// check viewport sizes
-		this.checkViewportDim();
-		this.checkViewportOpp();
-
-	});
-	// @@@ EO plugin: ready @@@
-*/
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

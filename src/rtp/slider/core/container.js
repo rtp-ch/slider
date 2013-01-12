@@ -123,8 +123,8 @@
 	// @@@ EO method: checkContainerOffset @@@
 
 
-	// @@@ plugin: changedPanelsOffset @@@
-	prototype.plugin('changedPanelsOffset', function ()
+	// @@@ plugin: changedPanelsDim @@@
+	prototype.plugin('changedPanelsDim', function ()
 	{
 
 		// in vertical mode the container always
@@ -144,7 +144,7 @@
 		this.container.css(getSizeCssStr.call(this), dim + 'px')
 
 	}, - 9999);
-	// @@@ EO plugin: changedPanelsOffset @@@
+	// @@@ EO plugin: changedPanelsDim @@@
 
 
 	// @@@ plugin: ready @@@

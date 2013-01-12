@@ -305,7 +305,7 @@
 			// EO foreach panel
 
 			// trigger hook to adjust container
-			this.trigger('changedPanelsOffset');
+			this.trigger('changedPanelsDim');
 
 		}
 		// hardcore calculation by getting the real offsets
@@ -314,7 +314,7 @@
 		{
 
 			// trigger hook to adjust container
-			this.trigger('changedPanelsOffset');
+			this.trigger('changedPanelsDim');
 
 			// get local variable
 			var dimensions = this.pd[0];
