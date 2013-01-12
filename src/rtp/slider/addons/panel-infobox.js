@@ -15,7 +15,7 @@
 
 
 	// @@@ private fn: toggleInfoBox @@@
-	function toggleInfoBox (opacity, duration)
+	function toggleInfoBox (opacity, duration, position)
 	{
 
 		// create closure
@@ -26,7 +26,7 @@
 		// {
 
 			// get all panels for the current slide
-			var panels = slider.getPanelsBySlide(slider.position);
+			var panels = slider.getPanelsBySlide(position);
 
 			// animate infoboxes of all panels by position
 			jQuery('DIV.info', panels).each(function ()
@@ -79,7 +79,7 @@
 
 		// hide the box very fast
 		// we will be swiping around
-		toggleInfoBox.call(this, 0, 300);
+		toggleInfoBox.call(this, 0, 300, data.swipeStartPosition);
 
 	});
 	// @@@ EO plugin: swipeMove @@@
@@ -97,10 +97,10 @@
 
 
 	// show info boxes after the main animation ended (aquire locks)
-	prototype.plugin('postAnimation', function() { toggleInfoBox.call(this, 1, 700) })
+	prototype.plugin('postAnimation', function() { toggleInfoBox.call(this, 1, 700, this.position) })
 
 	// hide info boxes before the main animation started (aquire locks)
-	prototype.plugin('preAnimation', function() { toggleInfoBox.call(this, 0, 700) })
+	prototype.plugin('preAnimation', function() { toggleInfoBox.call(this, 0, 700, this.position) })
 
 
 	// @@@ plugin: ready @@@
