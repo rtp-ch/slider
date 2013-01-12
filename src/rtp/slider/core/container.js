@@ -59,8 +59,9 @@
 		    right = this.offset[this.smax + 1],
 		    size = right - left;
 
-		// adjust for carousel
-		if (this.conf.carousel)
+		// shift into range when in carousel
+		// protect from endless loop condition
+		if (this.conf.carousel && size > 0)
 		{
 			// shift into prefered and best visible area
 			// this may go wrong if floated to the right?
