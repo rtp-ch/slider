@@ -14,6 +14,9 @@
 (function (prototype, jQuery)
 {
 
+	// detect if we are an android device
+	var android = navigator.userAgent.match(/Android/i);
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function ()
 	{
@@ -117,7 +120,7 @@
 		    changed = org.changedTouches;
 
 		// normalize drag/scroll variable
-		var touch = data.toucher,
+		var touch = android ? touches[0] : data.toucher,
 		    vertical = this.conf.vertical,
 		    swipe = vertical ? touch.clientY : touch.clientX,
 		    scroll = vertical ? touch.clientX : touch.clientY;
