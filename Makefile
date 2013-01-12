@@ -17,10 +17,10 @@ merge:
 		${SRC_DIR}rtp/slider/core/position.js \
 		${SRC_DIR}rtp/slider/core/animation.js \
 		${SRC_DIR}rtp/slider/sizer.js \
-		${SRC_DIR}rtp/slider/sizer/panelsOppCentered.js \
+		${SRC_DIR}rtp/slider/sizer/alignOppInViewport.js \
 		${SRC_DIR}rtp/slider/sizer/panelsDimByViewport.js \
 		${SRC_DIR}rtp/slider/sizer/viewportDimByPanels.js \
-		${SRC_DIR}rtp/slider/sizer/viewportOppByVisibility.js \
+		${SRC_DIR}rtp/slider/sizer/viewportOppByPanels.js \
 		${SRC_DIR}rtp/slider/addons/nav-dots.js \
 		${SRC_DIR}rtp/slider/addons/nav-arrows.js \
 		${SRC_DIR}rtp/slider/addons/nav-keyboard.js \
@@ -35,5 +35,5 @@ merge:
 		${SRC_DIR}ocbnet/slider/addons/carousel3d.js \
 		> rtp.slider.js
 
-minify: 
+minify:
 	uglifyjs rtp.slider.js > rtp.slider.min.js
