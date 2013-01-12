@@ -56,8 +56,8 @@
 		// check if viewport has changed
 		// otherwise do nothing to safe cpu
 		if (
-			this.vp_x_lck !== this.vp_x ||
-			this.vp_y_lck !== this.vp_y ||
+			Math.abs(this.vp_x_lck - this.vp_x) > 0.0001 ||
+			Math.abs(this.vp_y_lck - this.vp_y) > 0.0001 ||
 			data.force
 		)
 		{
@@ -81,8 +81,8 @@
 		// check if viewport has changed
 		// otherwise do nothing to safe cpu
 		if (
-			this.vp_x_lck !== this.vp_x ||
-			this.vp_y_lck !== this.vp_y ||
+			this.vp_x_lck != this.vp_x ||
+			this.vp_y_lck != this.vp_y ||
 			data.force
 		)
 		{
