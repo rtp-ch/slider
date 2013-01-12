@@ -17,16 +17,32 @@
 	// we have to make sure that cloned panels have
 	// exactly the same size as the original panel
 	// set the outer dimension of the slide panel
+
+	// @@@ method: setSlideDim @@@
 	prototype.setSlideDim = function (slide, outerdim)
+	{
+		this.setSlideSize(slide, outerdim, 0);
+	}
+	// @@@ EO method: setSlideDim @@@
+
+	// @@@ method: setSlideOpp @@@
+	prototype.setSlideOpp = function (slide, outerdim)
+	{
+		this.setSlideSize(slide, outerdim, 1);
+	}
+	// @@@ EO method: setSlideOpp @@@
+
+	// @@@ method: setSlideSize @@@
+	prototype.setSlideSize = function (slide, outerdim, invert)
 	{
 
 		// declare loop variables
-		var outer = this.pd[0],
-		    inner = this.ps[0],
-		    layout = this.pl[0],
-		    border = this.pb[0],
-		    margin = this.pm[0],
-		    padding = this.pp[0];
+		var outer = this.pd[invert],
+		    inner = this.ps[invert],
+		    layout = this.pl[invert],
+		    border = this.pb[invert],
+		    margin = this.pm[invert],
+		    padding = this.pp[invert];
 
 		// normalize the input variable
 		slide = this.slide2slide(slide);
@@ -48,11 +64,11 @@
 			if (outerdim < boxdiff) outerdim = boxdiff;
 
 			// update dimension and inner size of this panel
-			this.pd[0][p] = outerdim;
+			this.pd[invert][p] = outerdim;
 
-			this.ps[0][p] = outerdim - boxdiff;
+			this.ps[invert][p] = outerdim - boxdiff;
 
-			var dim = this.ps[0][p];
+			var dim = this.ps[invert][p];
 
 			// if (layout[i] == 'content-box')
 			// { dim += padding[i][2]; }
@@ -60,7 +76,7 @@
 			// { dim += padding[i][2] + border[i][2]; }
 
 			// update panel size
-			if (this.conf.vertical)
+			if (this.conf.vertical ^ invert)
 			{ jQuery(panel).height(dim); }
 			else { jQuery(panel).width(dim); }
 
@@ -71,7 +87,7 @@
 		// EO each panel
 
 	}
-	// @@@ EO method: setSlideDim @@@
+	// @@@ EO method: setSlideSize @@@
 
 
 	// @@@ method: getPanelsBySlide @@@
