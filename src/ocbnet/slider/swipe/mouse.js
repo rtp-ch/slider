@@ -95,7 +95,7 @@
 		    scroll = vertical ? evt.pageX : evt.pageY;
 
 		// call swipe move handler with coordinates
-		this.trigger('swipeMove', swipe, scroll, data);
+		this.trigger('swipeMove', swipe, scroll, data, evt);
 
 		// abort if swipe dragging
 		return ! data.dragSwipe;
