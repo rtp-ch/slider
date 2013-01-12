@@ -27,8 +27,11 @@
 		// store normalized position
 		this.position = position;
 
-		// update the layout
-		this.trigger('layout', {});
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
+		// trigger the changedPosition event
+		this.trigger('changedPosition', position, previous);
 
 	}
 	// @@@ EO method: setPosition @@@

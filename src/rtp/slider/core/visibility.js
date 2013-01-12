@@ -11,8 +11,8 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ method: updatePanelExposure @@@
-	prototype.updatePanelExposure = function ()
+	// @@@ fn: updatePanelExposure @@@
+	function updatePanelExposure(current, previous)
 	{
 
 		// get values from the current internal status
@@ -103,15 +103,15 @@
 		var s_e = this.s_e; this.s_e = exposure;
 
 		// execute the updatedSlideExposure hook for slides
-		this.trigger('updatedSlideExposure', exposure, s_e);
+		this.trigger('changedExposure', exposure, s_e);
 
 
 	}
-	// @@@ EO method: updatePanelExposure @@@
+	// @@@ EO fn: updatePanelExposure @@@
 
 
-	// @@@ method: checkSlideVisibility @@@
-	prototype.checkSlideVisibility = function ()
+	// @@@ fn: updateSlideVisibility @@@
+	function updateSlideVisibility ()
 	{
 
 		// get values from the current internal status
@@ -183,11 +183,12 @@
 		// reset the status first, but pass before status
 		var s_v = this.s_v; this.s_v = visibility;
 
-		// execute the changedSlideVisibility hook for slides
-		this.trigger('changedSlideVisibility', visibility, s_v);
+		// execute the changedVisibility hook for slides
+		this.trigger('changedVisibility', visibility, s_v);
 
 	}
-	// @@@ EO method: checkSlideVisibility @@@
+	// @@@ EO fn: updateSlideVisibility @@@
+
 
 	/*
 	   The priorities here are important. First we need to call
@@ -197,13 +198,15 @@
 	   checkSlideVisibility with the updated viewport.
 	*/
 
-	// executed when the position is set programmatically (changed internal)
-	prototype.plugin('layout', prototype.updatePanelExposure, -99);
-	prototype.plugin('layout', prototype.checkSlideVisibility, 99);
+	// calculate the exposure array very early
+	prototype.plugin('ready', updatePanelExposure, -9999);
+	prototype.plugin('changedPosition', updatePanelExposure, -9999);
+	prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
 
-	// executed when we have a changed viewport dimension (changed external)
-	// prototype.plugin('changedViewportDim', prototype.updatePanelExposure, -99);
-	// prototype.plugin('changedViewportDim', prototype.checkSlideVisibility, 99);
+	// calculate the visibility array very late
+	prototype.plugin('ready', updateSlideVisibility, 9999);
+	prototype.plugin('changedPosition', updateSlideVisibility, 9999);
+	prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
 
 
 // EO extend class prototype

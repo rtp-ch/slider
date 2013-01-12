@@ -213,7 +213,7 @@
 
 
 	// execute when slide visibility is changed (actual visibility)
-	prototype.plugin('changedSlideVisibility', updateVisibility);
+	prototype.plugin('changedVisibility', updateVisibility);
 
 
 // EO extend class prototype

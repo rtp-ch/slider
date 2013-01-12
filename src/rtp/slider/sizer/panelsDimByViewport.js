@@ -16,7 +16,7 @@
 {
 
 	// @@@ plugin: changedViewportDim @@@
-	prototype.plugin('changedViewportDim', function ()
+	prototype.plugin('changedViewport', function ()
 	{
 
 		// check if this sizer is enabled

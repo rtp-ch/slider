@@ -63,8 +63,7 @@
 		{
 
 			// update and adjust all ui elements
-			// only use the values previously read
-			this.trigger('changedViewportDim', data);
+			this.trigger('changedViewport', data);
 
 		}
 		// EO if dimension changed
@@ -110,49 +109,23 @@
 		OCBNET.Layout.add(this);
 
 		// layout user interface
-		OCBNET.Layout();
+		OCBNET.Layout(true);
 
 	}, 999);
 	// @@@ EO plugin: ready @@@
 
-	prototype.plugin('layout', function (data)
-	{
 
-		if (
-			this.vp_x_lck !== this.vp_x ||
-			this.vp_y_lck !== this.vp_y ||
-			data.force
-		)
+	// @@@ plugin: changedPosition @@@
+	prototype.plugin('changedPosition', function()
 		{
 
-			// layout user interface
+		// re-layout the widgets
+		// only when viewport changes
 			OCBNET.Layout();
 
-		}
-
-	}, - 99999);
-
-/*
-	// @@@ plugin: updatedPosition @@@
-	prototype.plugin('updatedPosition', function()
-	{
-
-		// store old dimension
-		var vp_x = this.vp_x
-
-		// read viewport dimensions first
-		// this will read this.vp_x again
-		this.trigger('readViewportDim');
-
-		// redo layout if viewport dimension changed
-		if (vp_x != this.vp_x) return OCBNET.Layout();
-
-		// enqueue a defered call to layout
-		else OCBNET.Layout.schedule(200, true);
-
 	});
-	// @@@ EO plugin: updatedPosition @@@
-*/
+	// @@@ EO plugin: changedPosition @@@
+
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

@@ -12,7 +12,7 @@
 {
 
 	// @@@ plugin: updatedSlideExposure @@@
-	prototype.plugin('updatedSlideExposure', function(visibility)
+	prototype.plugin('updatedExposure', function(visibility)
 	{
 
 		// local variable

@@ -81,7 +81,7 @@
 			else { jQuery(panel).width(dim); }
 
 			// update the panel opposition
-			this.pd[1][p] = this.getPanelSize(p, 1);
+			// this.pd[1][p] = this.getPanelSize(p, 1);
 
 		}
 		// EO each panel
