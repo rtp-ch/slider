@@ -237,6 +237,11 @@
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
+		this.viewport
+			.css({
+				'overflow' : overflow
+			});
+
 		this.panels
 			.css({
 				'float' : floating
@@ -245,9 +250,11 @@
 			.add(this.container)
 			.css({
 				'zoom' : 1,
-				'overflow' : overflow,
+				// 'overflow' : overflow,
 				'position' : 'relative'
 			});
+
+/*
 if (this.conf.vertical)
 {
 		this.viewport.css({
@@ -260,9 +267,8 @@ if (this.conf.vertical)
 			'bottom': '0px',
 			'position': 'absolute'
 		});
-
 }
-
+*/
 
 		// setup floats for the container
 		if (!this.conf.vertical)

@@ -13,22 +13,23 @@
 
 
 	// @@@ plugin: config @@@
-	prototype.plugin('config', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// extend default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// sizer is used to adjust ui elements
-				// this is mainly used to switch between
-				// panelsByViewport or viewportByPanels mode
-				sizer: false
+			// which viewport dimension should be fluid
+			// those values are read from the user agent
+			// and the code must not try to set that itself
+			// valid: panelsByViewport or viewportByPanels
+			sizerDim: 'panelsByViewport',
+			sizerOpp: 'viewportByPanels',
 
-			},
-			this.conf
-		);
+			fluidPanelsDim: true, // this.conf.vertical ? false : true,
+			fluidPanelsOpp: true, // this.conf.vertical ? true : false,
+
+		});
 
 	});
 	// @@@ EO plugin: config @@@
@@ -41,8 +42,8 @@
 
 		// read viewport dimensions first
 		// use only these values to adjust ui
-		this.trigger('readViewportDim', data);
-		this.trigger('readViewportOpp', data);
+		if (this.conf.sizerDim != 'viewportByPanels') this.trigger('readViewportDim', data);
+		if (this.conf.sizerOpp != 'viewportByPanels') this.trigger('readViewportOpp', data);
 
 	}
 	// @@@ EO method: preLayout @@@

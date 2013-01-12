@@ -15,36 +15,34 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ plugin: changedViewportDim @@@
-	prototype.plugin('changedViewport', function ()
+
+	// @@@ fn: panelsDimByViewport @@@
+	function panelsDimByViewport ()
 	{
 
-		// check if this sizer is enabled
-		if (
-			(!this.conf.vertical) &&
-			this.conf.sizer == 'panelsByViewport'
-		)
+		// abort if this feature is not enabled
+		if (this.conf.sizerDim != 'panelsByViewport') return;
+
+		// process all slides to reset opp
+		var i = this.slides.length; while (i--)
 		{
 
-			// set the panel dimensions from vp_x
-			// this will update the panel dom nodes
-			// will also recalculate all panel offsets
-			this.setSlidesDimFromVp();
-
-			// read the new panel height from UA
-			// updates the ps[1] and pd[1] arrays
-			this.trigger('readPanelsOpp');
-
-
-			// this.trigger('layout');
-
-			// update the panel visibility
-			this.trigger('readPanelVisibility');
+			// set size to the calculated value
+			this.setSlideDim(i, this.getSlideDimFromVp(i));
 
 		}
 
-	});
-	// @@@ EO plugin: changedViewportDim @@@
+		// trigger the changed panels dim hook
+		this.trigger('changedPanelsDim');
+
+		// read the new panel opps from UA
+		// updates the ps[1] and pd[1] arrays
+		// this is only needed if the opp is fluid
+		// which means it can change when dim changes
+		if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
+
+	}
+	// @@@ EO fn: panelsDimByViewport @@@
 
 
 
@@ -59,31 +57,17 @@
 
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
-		return parseInt(this.vp_x / this.conf.panelsVisible + 0.5, 10)
+		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
+		// return parseInt(this.vp_x / this.conf.panelsVisible + 0.5, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
 
 
-	// @@@ method: setSlidesDimFromVp @@@
-	// get the dimension for all slides
-	prototype.setSlidesDimFromVp = function()
-	{
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', panelsDimByViewport);
+	// @@@ EO plugin: changedViewport @@@
 
-		// process all slides
-		var i = this.slides.length; while (i--)
-		{
-			// set the slide size to calculated value
-			this.setSlideDim(i, this.getSlideDimFromVp(i));
-		}
-
-		// calculate the new panel offsets
-		// this will update the offset array
-		// panel dimensions are taken from pd[0]
-		this.updatePanelsOffset();
-
-	}
-	// @@@ EO method: setSlidesDimFromVp @@@
 
 
 // EO extend class prototype

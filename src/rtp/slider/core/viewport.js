@@ -78,6 +78,9 @@
 	prototype.updateViewportDim = function (value)
 	{
 
+		// check if we are allowed to read from ua
+		if (this.conf.sizerDim != 'viewportByPanels') debugger;
+
 		// does the value really change
 		if (this.vp_x == value) return;
 
@@ -96,6 +99,9 @@
 	// @@@ method: updateViewportOpp @@@
 	prototype.updateViewportOpp = function (value)
 	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerOpp != 'viewportByPanels') debugger;
 
 		// does the value really change
 		if (this.vp_y == value) return;
@@ -131,6 +137,9 @@
 	prototype.readViewportDim = function()
 	{
 
+		// check if we are allowed to read from ua
+		if (this.conf.sizerDim == 'viewportByPanels') debugger;
+
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
 
@@ -140,6 +149,9 @@
 	// @@@ method: readViewportOpp @@@
 	prototype.readViewportOpp = function()
 	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerOpp == 'viewportByPanels') debugger;
 
 		// store the current viewport opposition
 		this.vp_y = getViewportSize.call(this, 1);

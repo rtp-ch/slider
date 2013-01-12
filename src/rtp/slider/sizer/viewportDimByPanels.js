@@ -11,39 +11,39 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ plugin: updatedSlideExposure @@@
-	prototype.plugin('updatedExposure', function(visibility)
+	// @@@ fn: viewportDimByPanels @@@
+	function viewportDimByPanels (visibility)
 	{
 
-		// local variable
-		var dimension = 0;
+		// calculate dimension from exposure
+		var dim = 0, exposure = this.s_e;
 
-		// abort if feature is disabled
-		if (
-			this.conf.vertical ||
-			this.conf.sizer == 'viewportByPanels'
-		)
+		// abort if feature is not enabled
+		if (this.conf.sizerDim != 'viewportByPanels') return;
+
+		// process all panel visibilites
+		for(var i = 0; i < exposure.length; i++)
 		{
 
-			// process all panel visibilites
-			for(var i = 0; i < visibility.length; i++)
-			{
+			// skip if panel is not visible
+			if (exposure[i] == 0) continue;
 
-				// skip if panel is not visible
-				if (visibility[i] == 0) continue;
-
-				// sum up dimensions of all panels
-				dimension += this.pd[0][i] * visibility[i];
-
-			}
-
-			// set viewport dimension
-			this.updateViewportDim(dimension);
+			// sum up dimensions of all panels
+			dim += this.pd[0][i] * exposure[i];
 
 		}
 
-	});
-	// @@@ EO plugin: updatedSlideExposure @@@
+		// set viewport dimension
+		this.updateViewportDim(dim);
+
+	};
+	// @@@ EO fn: viewportDimByPanels @@@
+
+
+	// hook into various change events to adjust size
+	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
+	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
+	prototype.plugin('changedPanelsDim', viewportDimByPanels, 99999);
 
 
 // EO extend class prototype

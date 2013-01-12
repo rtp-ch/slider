@@ -6,63 +6,94 @@
   either version 3 of the License, or (at your option) any later version.
 
 */
-(function (prototype, jQuery) {
-    'use strict';
+(function (prototype, jQuery)
+{
 
-    prototype.plugin('config', function() {
+	'use strict';
 
-        // default configuration
-        this.conf = jQuery.extend(
-            {
-                autoVpOpp: true,
-                autoVpOppDeadZone: 0.5
-            },
-            this.conf
-        );
-    });
 
-    function viewportOppByVisibility () {
+	// @@@ plugin: config @@@
+	prototype.plugin('config', function (extend)
+	{
 
-        // dead zone for out of view panel
-        var dead_zone = this.conf.autoVpOppDeadZone || 1,
-            opps = [],
-            visibility = this.s_e;
+		// add defaults
+		extend({
 
-        // check if feature is enabled
-        if (this.conf.vertical || !this.conf.autoVpOpp){
-            return;
-        }
+			// when is a panel fully visible
+			autoVpOppDeadZone: 0.5
 
-        // process all panel visibilites
-        for (var i = 0; i < visibility.length; i++) {
+		});
 
-            // skip if panel is not visible
-            if (visibility[i] === 0) continue;
+	});
+	// @@@ EO plugin: config @@@
 
-            // check if panel is fully visible
-            if (visibility[i] > dead_zone) {
-                // use full panel height
-                opps.push(this.pd[1][i]);
-            } else {
-                // use a partial panel height (distribute from 0 to dead_zone)
-                opps.push(this.pd[1][i] * visibility[i] / dead_zone);
-            }
-        }
 
-        // set viewport opposite size
-        this.vp_y = Math.max.apply(Math, opps);
-        this.updateViewportOpp(this.vp_y);
-    }
+	// @@@ fn: viewportOppByPanels @@@
+	function viewportOppByPanels ()
+	{
 
-    prototype.plugin('layout', viewportOppByVisibility);
+		// declare local variables for loop
+		var opps = [], exposure = this.s_e,
+		    // dead zone for out of view panel
+		    dead_zone = this.conf.autoVpOppDeadZone || 1;
 
-    prototype.plugin('layout', function() {
-        if (this.conf.vertical) {
-            this.readPanelsDim();
-            this.updatePanelsOffset();
-            this.setOffsetByPosition(this.position);
-        }
-    }, - 99999);
+		// abort if feature is not enabled
+		if (this.conf.sizerOpp != 'viewportByPanels') return;
 
+		// process all panel visibilites
+		var i = exposure.length; while (i --)
+		{
+
+			// skip if panel is not visible
+			if (exposure[i] === 0) continue;
+
+			// check if panel is fully visible
+			if (exposure[i] > dead_zone)
+			{
+				// use full panel height
+				opps.push(this.pd[1][i]);
+			}
+
+			// panel only partial visible
+			else
+			{
+
+				// use a partial panel size (dead_zone == full size)
+				opps.push(this.pd[1][i] * exposure[i] / dead_zone);
+
+			}
+
+		}
+		// EO foreach panel visiblity
+
+		// get the biggest value from array
+		var max = Math.max.apply(Math, opps);
+
+		// update opposite viewport size
+		this.updateViewportOpp(max);
+
+	}
+	// @@@ EO fn: viewportOppByPanels @@@
+
+
+	// hook into various change events to adjust size
+	prototype.plugin('changedExposure', viewportOppByPanels, 99);
+	prototype.plugin('changedViewport', viewportOppByPanels, 99);
+
+
+
+
+	prototype.plugin('changedViewport', function()
+	{
+
+		// fluid dimension
+		if (this.conf.vertical) {
+debugger;
+		this.readPanelsDim();
+		// this.trigger('changedPanelsDim');
+		// this.updatePanelsOffset();
+		}
+
+	}, 9);
 
 })(RTP.Slider.prototype, jQuery);
