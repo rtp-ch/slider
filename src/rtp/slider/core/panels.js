@@ -35,7 +35,6 @@
 	// @@@ EO plugin: config @@@
 
 
-
 	// @@@ private fn: getBoxSizeCssStr @@@
 	function getBoxSizeCssStr (invert)
 	{
@@ -268,6 +267,7 @@
 	};
 	// @@@ EO method: readPanelsDim @@@
 
+
 	// @@@ method: readPanelsDim @@@
 	prototype.readPanelsOpp = function()
 	{
@@ -284,6 +284,7 @@
 	prototype.updatePanelsOffset = function()
 	{
 
+		// experimental feature
 		if (this.conf.carousel3d)
 		{
 
@@ -318,25 +319,33 @@
 			// get local variable
 			var dimensions = this.pd[0];
 
+			// get the vertical indicator for arrays
+			var vertical = this.conf.vertical ? 1 : 0;
+
 			// calculate offset for each panel
 			var offset = 0; this.offset = [];
 
-	// this.panels.css('float', 'left');
+			// start with the first panel's offset
+			var offset = this.panels.eq(0).offset();
 
-				var offset = this.panels.eq(0).offset();
+			// get the start offset for the correct direction
+			var start = vertical ? offset.top : offset.left;
 
-				var start = this.conf.vertical ? offset.top : offset.left;
-	start -= this.pm[0][0][0];
+			// adjust start offset for the margin
+			start -= this.pm[vertical][0][0];
 
 			// collect size and margin for all panels
 			for(var i = 0; i < dimensions.length; i++)
 			{
 
+				// get the offset value for this panel
 				offset = this.panels.eq(i).offset();
 
-				offset = this.conf.vertical ? offset.top : offset.left;
+				// get the offset for the correct direction
+				offset = vertical ? offset.top : offset.left;
 
-				offset = parseFloat(offset) - start - this.pm[0][i][0];
+				// calculate the precise offset for this panel
+				offset = parseFloat(offset) - start - this.pm[vertical][i][0];
 
 				// sum up and store current offset
 				this.offset.push(offset);
@@ -344,9 +353,13 @@
 			}
 			// EO foreach panel
 
+			// have at least one panel
 			if (this.panels.length)
 			{
+
+				// add last dimension to indicate the whole length
 				this.offset.push(parseFloat(offset) + this.pd[0][i-1])
+
 			}
 
 		}
