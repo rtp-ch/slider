@@ -81,7 +81,7 @@
 	{
 
 		// parse into integer
-		slide = parseInt(slide, 10);
+		slide = parseInt(slide + 0.5, 10);
 
 		// normalize the input variable
 		slide = this.slide2slide(slide);
