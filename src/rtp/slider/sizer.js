@@ -41,8 +41,8 @@
 
 		// read viewport dimensions first
 		// use only these values to adjust ui
-		this.trigger('readviewportDim', data);
-		this.trigger('readviewportOpp', data);
+		this.trigger('readViewportDim', data);
+		this.trigger('readViewportOpp', data);
 
 	}
 	// @@@ EO method: preLayout @@@
@@ -142,7 +142,7 @@
 
 		// read viewport dimensions first
 		// this will read this.vp_x again
-		this.trigger('readviewportDim');
+		this.trigger('readViewportDim');
 
 		// redo layout if viewport dimension changed
 		if (vp_x != this.vp_x) return OCBNET.Layout();

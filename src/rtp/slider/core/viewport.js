@@ -152,25 +152,25 @@
 	// @@@ EO method: getViewportOpp @@@
 
 
-	// @@@ method: readviewportDim @@@
-	prototype.readviewportDim = function()
+	// @@@ method: readViewportDim @@@
+	prototype.readViewportDim = function()
 	{
 
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
 
 	}
-	// @@@ EO method: readviewportDim @@@
+	// @@@ EO method: readViewportDim @@@
 
-	// @@@ method: readviewportOpp @@@
-	prototype.readviewportOpp = function()
+	// @@@ method: readViewportOpp @@@
+	prototype.readViewportOpp = function()
 	{
 
 		// store the current viewport opposition
 		this.vp_y = getViewportSize.call(this, 1);
 
 	}
-	// @@@ EO method: readviewportOpp @@@
+	// @@@ EO method: readViewportOpp @@@
 
 
 	// @@@ method: checkViewportDim @@@
