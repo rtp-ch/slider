@@ -74,40 +74,43 @@
 	}
 	// @@@ EO private fn: setViewportSize @@@
 
-
-	// @@@ method: setViewportDim @@@
-	prototype.setViewportDim = function (value)
+	// @@@ method: updateViewportDim @@@
+	prototype.updateViewportDim = function (value)
 	{
 
 		// does the value really change
-		// if (this.vp_x == value) return;
+		if (this.vp_x == value) return;
 
 		// assign given viewport dimension
 		setViewportSize.call(this, value, 0);
 
-		this.vp_x = value;
+		// remember old value to pass to hook
+		var before = this.vp_x; this.vp_x = value;
 
-		// now trigger the changedViewportOpp hook
-		this.trigger('updatedViewportDim', value);
+		// now trigger the updatedViewportDim hook
+		this.trigger('updatedViewportDim', value, before);
 
 	}
-	// @@@ EO method: setViewportDim @@@
+	// @@@ EO method: updateViewportDim @@@
 
-	// @@@ method: setViewportOpp @@@
-	prototype.setViewportOpp = function (value)
+	// @@@ method: updateViewportOpp @@@
+	prototype.updateViewportOpp = function (value)
 	{
 
 		// does the value really change
-		// if (this.vp_y == value) return;
+		if (this.vp_y == value) return;
 
-		// assign given viewport opposition
+		// assign given viewport dimension
 		setViewportSize.call(this, value, 1);
 
-		// now trigger the changedViewportOpp hook
-		this.trigger('updatedViewportOpp', value);
+		// remember old value to pass to hook
+		var before = this.vp_y; this.vp_y = value;
+
+		// now trigger the updatedViewportOpp hook
+		this.trigger('updatedViewportOpp', value, before);
 
 	}
-	// @@@ EO method: setViewportOpp @@@
+	// @@@ EO method: updateViewportOpp @@@
 
 
 	// @@@ private fn: getViewportSize @@@

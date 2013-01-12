@@ -51,7 +51,7 @@
 
         // set viewport opposite size
         this.vp_y = Math.max.apply(Math, opps);
-        this.setViewportOpp(this.vp_y);
+        this.updateViewportOpp(this.vp_y);
     }
 
     prototype.plugin('layout', viewportOppByVisibility);

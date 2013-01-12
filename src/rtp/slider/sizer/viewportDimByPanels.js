@@ -38,7 +38,7 @@
 			}
 
 			// set viewport dimension
-			this.setViewportDim(dimension);
+			this.updateViewportDim(dimension);
 
 		}
 
