@@ -100,6 +100,9 @@
 		data.swipeStartDrag = data.swipeX = x;
 		data.swipeStartScroll = data.swipeY = y;
 
+		// remember start position
+		data.swipeStartPosition = this.position;
+
 		// get viewport offset
 		var vp_off = this.getViewportOffset();
 
