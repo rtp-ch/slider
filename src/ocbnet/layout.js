@@ -29,6 +29,10 @@
 	// widget is added to the collection
 	var win = jQuery(window), body = null;
 
+	// frames per second to layout
+	// only needed when not in vsync mode
+	var fps = 60;
+
 	// store scheduled timeout
 	var scheduled;
 
@@ -41,8 +45,8 @@
 	// defer the resize event and filter multiple calls
 	// this is a bugfix for ie 8 where the resize event may is
 	// triggered multiple times when scrollbars appear/disappear
-	var resize_defer = jQuery.browser.msie &&
-		parseInt(jQuery.browser.version, 10) == 8;
+	var vsync = ! jQuery.browser.msie ||
+	    parseInt(jQuery.browser.version, 10) != 8;
 
 	// get firefox mode on startup / initialization
 	// firefox will show both scrollbars when the layout
@@ -179,6 +183,23 @@
 
 
 	// static global function
+	Manager.config = function (key, value)
+	{
+
+		// assign config option
+		switch (key)
+		{
+			case 'fps': fps = value; break;
+			case 'vsync': vsync = value; break;
+		}
+
+		// reassign the resizer function
+		resizer = vsync ? function () { Manager(); } : deferer;
+
+	};
+	// EO config
+
+	// static global function
 	// schedule a layout call in delay ms
 	// normally we keep the current waiting timeout
 	// set reset if you want to reschedule the repaint
@@ -247,7 +268,7 @@
 		widgets = widgets.not(widget)
 
 		// remove the resize handler when there are no widgets left
-		if (widgets.length == 0) jQuery(window).bind('resize', resizer);
+		if (widgets.length == 0) jQuery(window).unbind('resize', resizer);
 
 		// make static array a global
 		// Manager.widgets = widgets;
@@ -289,7 +310,7 @@
 			// reset the lock
 			resizing = false;
 
-		}, 0)
+		}, 1000 / fps)
 
 	}
 	// @@@ EO function: deferer @@@
@@ -299,7 +320,7 @@
 	// Set this on initialization as the decision is always
 	// based on information that must not change during runtime.
 	// Will be bound to resize event when first widget is added.
-	var resizer = resize_defer ? deferer : function () { Manager() };
+	var resizer = vsync ? function () { Manager(); } : deferer;
 
 
 	// make sure our global namespace exists
