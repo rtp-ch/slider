@@ -120,6 +120,21 @@
 	// @@@ EO method: getPanelSize @@@
 
 
+	// @@@ method: setPanelSize @@@
+	prototype.setPanelSize = function (panel, value, invert)
+	{
+
+		// access panel only once (get id into range)
+		panel = this.panels.eq(this.panel2panel(panel));
+
+		// return the panel axis size
+		return this.conf.vertical ^ invert
+			? panel.height(value) : panel.width(value);
+
+	}
+	// @@@ EO method: setPanelSize @@@
+
+
 	// @@@ private fn: readPanelsSize @@@
 	function readPanelsSize (invert)
 	{
@@ -204,6 +219,9 @@
 		// get sizes for drag axis
 		readPanelsSize.call(this, 0);
 
+		// trigger hook for updated panels
+		this.trigger('changedPanelsDim');
+
 	};
 	// @@@ EO method: readPanelsDim @@@
 
@@ -215,13 +233,17 @@
 		// get sizes for scroll axis
 		readPanelsSize.call(this, 1);
 
+		// trigger hook for updated panels
+		this.trigger('changedPanelsOpp');
+
 	};
 	// @@@ EO method: readPanelsOpp @@@
 
 
-	// @@@ method: checkPanelStyles @@@
-	// update offset array from stored dimensions
-	prototype.updatePanelsOffset = function()
+	// @@@ plugin: changedPanelsDim @@@
+	// the pd (panel dimension) has been updated
+	// recalculate the complete panel offset array
+	prototype.plugin('changedPanelsDim', function()
 	{
 
 		// experimental feature
@@ -244,17 +266,11 @@
 			}
 			// EO foreach panel
 
-			// trigger hook to adjust container
-			this.trigger('changedPanelsDim');
-
 		}
 		// hardcore calculation by getting the real offsets
 		// this will lead to perfect offset positions
 		else
 		{
-
-			// trigger hook to adjust container
-			this.trigger('changedPanelsDim');
 
 			// get local variable
 			var dimensions = this.pd[0];
@@ -304,9 +320,8 @@
 
 		}
 
-	};
-	// @@@ EO checkPanelStyles @@@
-
+	}, + 99);
+	// @@@ plugin: changedPanelsDim @@@
 
 
 	// @@@ plugin: ready @@@
@@ -341,12 +356,9 @@
 		readPanelsStyles.call(this, 0);
 		readPanelsStyles.call(this, 1);
 
-		// read some more styles
-		readPanelsSize.call(this, 0);
-		readPanelsSize.call(this, 1);
-
-		// calculate offsets
-		this.updatePanelsOffset();
+		// read the dimensions
+		this.readPanelsDim();
+		this.readPanelsOpp();
 
 	}, - 99);
 	// @@@ EO plugin: ready @@@
