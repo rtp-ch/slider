@@ -27,7 +27,7 @@
 			sizerOpp: 'viewportByPanels',
 
 			fluidPanelsDim: true, // this.conf.vertical ? false : true,
-			fluidPanelsOpp: true, // this.conf.vertical ? true : false,
+			fluidPanelsOpp: true // this.conf.vertical ? true : false,
 
 		});
 
