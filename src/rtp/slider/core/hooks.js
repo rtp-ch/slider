@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// create the hooks hash on prototype
 	// this is shared across all instances
 	prototype.hooks = {};

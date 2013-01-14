@@ -15,8 +15,10 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
 
-	// @@@ fn: panelsDimByViewport @@@
+
+	// @@@ private fn: panelsDimByViewport @@@
 	function panelsDimByViewport ()
 	{
 
@@ -42,8 +44,7 @@
 		if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
 
 	}
-	// @@@ EO fn: panelsDimByViewport @@@
-
+	// @@@ EO private fn: panelsDimByViewport @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -58,16 +59,13 @@
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
 		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
-		// return parseInt(this.vp_x / this.conf.panelsVisible + 0.5, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
 
 
-	// @@@ plugin: changedViewport @@@
+	// hook into various change events to adjust panels
 	prototype.plugin('changedViewport', panelsDimByViewport);
-	// @@@ EO plugin: changedViewport @@@
-
 
 
 // EO extend class prototype

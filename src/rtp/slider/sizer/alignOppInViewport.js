@@ -15,6 +15,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
 	{
@@ -30,8 +33,9 @@
 	});
 	// @@@ EO plugin: config @@@
 
+
 	// @@@ private fn: centerOppInViewport @@@
-	function centerOppInViewport (vp_y)
+	function centerOppInViewport ()
 	{
 
 		// declare local variables
@@ -43,11 +47,11 @@
 		if (isNaN(align)) return;
 
 		// loop all slides to setup their 3d transformation
-		var l = this.panels.length, i = l; while (i--)
+		var i = this.panels.length; while (i--)
 		{
 
 			// calculate the possible margin and multiply
-			var margin = (vp_y - this.pd[1][i]) * align;
+			var margin = (this.vp_y - this.pd[1][i]) * align;
 
 			// set this panel margin for direction
 			jQuery(this.panels[i]).css(css, margin + 'px');

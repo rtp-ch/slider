@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ private fn: getSizeCssStr @@@
 	function getSizeCssStr (invert)
 	{
@@ -83,7 +86,6 @@
 		// if (right < offset) { offset = right; }
 
 		*/
-
 
 		// set the offset position of the container to the viewport
 		this.container.css(getOffsetCssStr.call(this, invert), - offset);

@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ method: setPosition @@@
 	prototype.setPosition = function (position)
 	{

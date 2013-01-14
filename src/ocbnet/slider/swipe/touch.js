@@ -14,6 +14,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// detect if we are an android device
 	var android = navigator.userAgent.match(/Android/i);
 

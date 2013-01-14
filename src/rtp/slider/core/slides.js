@@ -11,9 +11,10 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ method: setSlideDim @@@
-	// set the given slide index to given size
-	// this method is not available to panels as
+	'use strict';
+
+
+	// these method are not available to panels as
 	// we have to make sure that cloned panels have
 	// exactly the same size as the original panel
 	// set the outer dimension of the slide panel
@@ -79,9 +80,6 @@
 			if (this.conf.vertical ^ invert)
 			{ jQuery(panel).height(dim); }
 			else { jQuery(panel).width(dim); }
-
-			// update the panel opposition
-			// this.pd[1][p] = this.getPanelSize(p, 1);
 
 		}
 		// EO each panel

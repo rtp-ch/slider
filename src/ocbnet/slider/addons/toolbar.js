@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// declare here for compiler
 	var prefix = 'rtp-toolbar';
 

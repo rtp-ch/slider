@@ -5,18 +5,16 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the width of the viewport evenly to all visibile panels.
-  Maybe add distribution factors or fixed widths for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
-
 */
 
 // extend class prototype
 (function (prototype, jQuery)
 {
 
+	'use strict';
 
-	// @@@ fn: panelsOppByViewport @@@
+
+	// @@@ private fn: panelsOppByViewport @@@
 	function panelsOppByViewport ()
 	{
 
@@ -42,10 +40,10 @@
 		if (this.conf.fluidPanelsDim) this.readPanelsDim();
 
 	}
-	// @@@ EO fn: panelsOppByViewport @@@
+	// @@@ EO private fn: panelsOppByViewport @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust panels
 	prototype.plugin('changedViewport', panelsOppByViewport, 999999999);
 
 

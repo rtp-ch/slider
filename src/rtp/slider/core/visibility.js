@@ -11,7 +11,10 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ fn: updatePanelExposure @@@
+	'use strict';
+
+
+	// @@@ private fn: updatePanelExposure @@@
 	function updatePanelExposure(current, previous)
 	{
 
@@ -107,7 +110,7 @@
 
 
 	}
-	// @@@ EO fn: updatePanelExposure @@@
+	// @@@ EO private fn: updatePanelExposure @@@
 
 
 	// @@@ fn: updateSlideVisibility @@@

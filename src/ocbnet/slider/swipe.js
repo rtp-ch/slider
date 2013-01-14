@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	/*
 	   This function is used to calculate the speed when
 	   the user releases the mouse or swipe gesture.

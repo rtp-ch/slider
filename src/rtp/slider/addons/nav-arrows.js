@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ updateUI @@@
 	var updateUI = function(duration)
 	{

@@ -6,6 +6,8 @@
   either version 3 of the License, or (at your option) any later version.
 
 */
+
+// extend class prototype
 (function (prototype, jQuery)
 {
 
@@ -28,7 +30,7 @@
 	// @@@ EO plugin: config @@@
 
 
-	// @@@ fn: viewportOppByPanels @@@
+	// @@@ private fn: viewportOppByPanels @@@
 	function viewportOppByPanels ()
 	{
 
@@ -50,8 +52,10 @@
 			// check if panel is fully visible
 			if (exposure[i] > dead_zone)
 			{
+
 				// use full panel height
 				opps.push(this.pd[1][i]);
+
 			}
 
 			// panel only partial visible
@@ -73,27 +77,14 @@
 		this.updateViewportOpp(max);
 
 	}
-	// @@@ EO fn: viewportOppByPanels @@@
+	// @@@ EO private fn: viewportOppByPanels @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportOppByPanels, 99);
 	prototype.plugin('changedViewport', viewportOppByPanels, 99);
+	prototype.plugin('changedPanelsOpp', viewportOppByPanels, 99);
 
 
-
-
-	prototype.plugin('changedViewport', function()
-	{
-
-		// fluid dimension
-		if (this.conf.vertical) {
-debugger;
-		this.readPanelsDim();
-		// this.trigger('changedPanelsDim');
-		// this.updatePanelsOffset();
-		}
-
-	}, 9);
-
+// EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

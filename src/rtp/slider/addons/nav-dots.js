@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// get function checker
 	var isFn = jQuery.isFunction;
 

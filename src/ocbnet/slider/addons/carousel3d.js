@@ -11,6 +11,8 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -41,7 +43,7 @@
 		var angle, paneldim, distance;
 
 		// save and store to old method (to be restored later)
-		oldSetOffsetByPosition = this.setOffsetByPosition;
+		var oldSetOffsetByPosition = this.setOffsetByPosition;
 
 		// @@@ private fn: setOffsetByPosition @@@
 		function setOffsetByPosition (position)
@@ -95,7 +97,7 @@
 			var paneldim = Math.max.apply( Math, this.pd[0] ) / 2;
 
 			// calculate the panel distances (3d) from the center
-			distance = parseInt(paneldim / Math.tan(angle), 10);
+			distance = parseFloat(paneldim / Math.tan(angle), 10);
 
 			// calculate the alignment / offset position (use panelsVisible to assume viewport)
 			var align = panelsVisible * (alignViewport - 0.5) - alignPanel + 0.5

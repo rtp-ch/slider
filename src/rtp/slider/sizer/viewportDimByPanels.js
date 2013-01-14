@@ -11,7 +11,10 @@
 (function (prototype, jQuery)
 {
 
-	// @@@ fn: viewportDimByPanels @@@
+	'use strict';
+
+
+	// @@@ private fn: viewportDimByPanels @@@
 	function viewportDimByPanels (visibility)
 	{
 
@@ -36,11 +39,11 @@
 		// set viewport dimension
 		this.updateViewportDim(dim);
 
-	};
-	// @@@ EO fn: viewportDimByPanels @@@
+	}
+	// @@@ EO private fn: viewportDimByPanels @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
 	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
 	prototype.plugin('changedPanelsDim', viewportDimByPanels, 99999);

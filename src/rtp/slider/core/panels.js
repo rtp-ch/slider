@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ plugin: config @@@
 	// attach and create status arrays
 	// store all panels style definitions

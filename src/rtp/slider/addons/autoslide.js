@@ -11,6 +11,8 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ plugin: init @@@
 	prototype.plugin('config', function (extend)

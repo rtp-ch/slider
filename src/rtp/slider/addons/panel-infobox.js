@@ -13,6 +13,8 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ private fn: toggleInfoBox @@@
 	function toggleInfoBox (opacity, duration, position)

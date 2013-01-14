@@ -11,6 +11,9 @@
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
 	{
@@ -104,6 +107,7 @@
 
 		// enqueue action
 		slider.queue.push({
+
 			keep: keep,
 			action: action,
 			easing: easing || this.conf.easeFunction,
@@ -114,6 +118,7 @@
 				if(cb) cb.call(slider, this);
 				complete.call(slider, this);
 			}
+
 		});
 
 	}
@@ -324,6 +329,7 @@
 	};
 	// @@@ EO method: animate @@@
 
+
 	// @@@ method: animate @@@
 	prototype.goTo = function (action, duration, easing, cb, keep)
 	{
@@ -339,6 +345,7 @@
 
 	};
 	// @@@ EO method: animate @@@
+
 
 	// shortcut methods for common animations
 	prototype.goNext = function (delay, easing) { this.animate('+1', delay, easing); }

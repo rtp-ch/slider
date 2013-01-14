@@ -11,6 +11,9 @@
 (function(jQuery)
 {
 
+	'use strict';
+
+
 	// declare our namespace
 	if (!window.RTP) window.RTP = {};
 
