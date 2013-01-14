@@ -732,11 +732,6 @@ RTP.Multievent = function (cb)
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		slider.viewport
-			.css({
-				'overflow' : overflow
-			});
-
 		slider.panels
 			.css({
 				'float' : floating
@@ -745,33 +740,19 @@ RTP.Multievent = function (cb)
 			.add(slider.container)
 			.css({
 				'zoom' : 1,
-				// 'overflow' : overflow,
+				'overflow' : overflow,
 				'position' : 'relative'
-			});
-
-/*
-if (slider.conf.vertical)
-{
-		slider.viewport.css({
-			'min-height': '50px'
-		});
-		slider.container.css({
-			'top': '0px',
-			'left': '0px',
-			'right': '0px',
-			'bottom': '0px',
-			'position': 'absolute'
-		});
-}
-*/
+			})
 
 		// setup floats for the container
 		if (!slider.conf.vertical)
 		{
+			// define html code for float clearer
+			var clearer = '<DIV style="clear:both;"/>';
 			// we either float the container right or left
 			slider.container.css('float', floating)
 				// insert a float clearing div after the container
-				.after('<DIV style="clear:both;"/>');
+				.append(clearer).after(clearer);
 		}
 
 		// defer until all images are loaded
@@ -1374,8 +1355,8 @@ if (slider.conf.vertical)
 		panel = this.panels.eq(this.slide2panel(this.panel2slide(panel)));
 
 		// return the panel axis size
-		// return this.conf.vertical ^ invert
-		// 	? panel.height() : panel.width();
+		return this.conf.vertical ^ invert
+			? panel.height() : panel.width();
 
 		// return the panel axis size
 		return this.conf.vertical ^ invert
@@ -1495,6 +1476,12 @@ if (slider.conf.vertical)
 		// trigger hook for updated panels
 		this.trigger('changedPanelsDim');
 
+		// read the new panel opps from UA
+		// updates the ps[1] and pd[1] arrays
+		// this is only needed if the opp is fluid
+		// which means it can change when dim changes
+		// if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
+
 	};
 	// @@@ EO method: readPanelsDim @@@
 
@@ -1508,6 +1495,12 @@ if (slider.conf.vertical)
 
 		// trigger hook for updated panels
 		this.trigger('changedPanelsOpp');
+
+		// read the new panel dims from UA
+		// updates the ps[0] and pd[0] arrays
+		// this is only needed if the dim is fluid
+		// which means it can change when opp changes
+		// if (this.conf.fluidPanelsDim) this.readPanelsDim();
 
 	};
 	// @@@ EO method: readPanelsOpp @@@
@@ -2110,6 +2103,7 @@ if (slider.conf.vertical)
 		var visible,
 		    panel_left = 0,
 		    visibility = [],
+		    smin = this.smin,
 		    widths = this.pd[0],
 		    i = this.slides.length,
 		    view_left = this.ct_off,
@@ -2126,7 +2120,7 @@ if (slider.conf.vertical)
 			var slide = this.panel2slide(i);
 
 			// calculate the right panel edge
-			var panel_right = panel_left + widths[slide];
+			var panel_right = panel_left + widths[slide + smin];
 
 			// the panel is out on the left or out on the right
 			if (panel_right < view_left || panel_left > view_right)
@@ -4113,10 +4107,8 @@ if (slider.conf.vertical)
 	prototype.plugin('swipeMove', function(x, y, data)
 	{
 
-		// only start animation once
-		// but wait for actual first move
-		// maybe really check for offset
-		if (data.swipeMoves.length != 1) return;
+		// check if the position actually has changed
+		if (this.position == data.swipeStartPosition) return;
 
 		// hide the box very fast
 		// we will be swiping around
@@ -4192,7 +4184,7 @@ if (slider.conf.vertical)
 	   http://en.wikipedia.org/wiki/Least_squares
 	   http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
 	*/
-	var LeastSquaresFitting = function (points)
+	var LeastSquaresFitting = function (points, scale)
 	{
 
 		// no result if less than 2 points given
@@ -4207,7 +4199,8 @@ if (slider.conf.vertical)
 		for (var i = 0, l = points.length; i < l; i++)
 		{
 
-			var y = points[i][0], x = points[i][2] - timestamp;
+			var y = points[i][0] / scale,
+			    x = points[i][2] - timestamp;
 
 			sum_x += x; sum_xx += x * x;
 			sum_y += y; sum_xy += x * y;
@@ -4306,7 +4299,7 @@ data.vp_off = vp_off.x;
 
 		data.swipeStartDrag = x;
 
-		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) +	 offset))
+		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) + offset))
 
 	})
 	// @@@ EO plugin: swipeDraw @@@
@@ -4409,13 +4402,15 @@ data.vp_off = vp_off.x;
 		while (moves.length && moves[0][2] < limit) moves.shift();
 
 		// get fitted linear function parameters
-		var least = LeastSquaresFitting(moves);
+		var least = LeastSquaresFitting(moves, this.vp_x / 2);
 
 		// linear fn -> y = m*x + n
-		var m = least[0], n = least[1];
+		var m = least[0] * this.vp_x / 2, n = least[1];
+
+		var sign = m < 0 ? -1 : 1;
 
 		// check to which position we will swipe
-		var to = parseInt(this.position + 0.5 + m * -0.4)
+		var to = parseInt(this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5))
 
 		// get absolute speed
 		var speed = Math.abs(m);
@@ -4664,6 +4659,7 @@ data.vp_off = vp_off.x;
 	var evt_stop = 'touchend';
 	var evt_move = 'touchmove';
 	var evt_start = 'touchstart';
+	var evt_cancel = 'touchcancel';
 	// var evt_abort = 'dragstart';
 
 	function handleTouchChange (data, evt)
@@ -4746,6 +4742,9 @@ data.vp_off = vp_off.x;
 		// call swipe move handler with coordinates
 		this.trigger('swipeMove', swipe, scroll, data, evt);
 
+		// prevent default action if swiping
+		if (data.swipeDrag) evt.preventDefault()
+
 		// abort if swipe dragging
 		return ! data.swipeDrag;
 
@@ -4764,6 +4763,7 @@ data.vp_off = vp_off.x;
 		// handlers when the touch is dragged afterwards
 		this.viewport.bind(evt_stop, jQuery.proxy(handleTouchChange, this, data));
 		this.viewport.bind(evt_start, jQuery.proxy(handleTouchChange, this, data));
+		this.viewport.bind(evt_cancel, jQuery.proxy(handleTouchChange, this, data));
 
 	});
 	// @@@ EO plugin: ready @@@
@@ -5354,4 +5354,4 @@ $.fn.imagesLoaded = function( callback ) {
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 
-/* crc: 4087ACA3CB6957DA741D916808D748AE */
+/* crc: 8B64844D5476EA06B09AB1E04C665640 */
