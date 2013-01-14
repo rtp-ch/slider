@@ -74,10 +74,8 @@
 	prototype.plugin('swipeMove', function(x, y, data)
 	{
 
-		// only start animation once
-		// but wait for actual first move
-		// maybe really check for offset
-		if (data.swipeMoves.length != 1) return;
+		// check if the position actually has changed
+		if (this.position == data.swipeStartPosition) return;
 
 		// hide the box very fast
 		// we will be swiping around
