@@ -458,6 +458,9 @@ RTP.Multievent = function (cb)
 (function(jQuery)
 {
 
+	'use strict';
+
+
 	// declare our namespace
 	if (!window.RTP) window.RTP = {};
 
@@ -473,9 +476,21 @@ RTP.Multievent = function (cb)
 		if (slider.inited) { return; }
 		else { slider.inited = true; }
 
-		// mix defaults with given settings
-		slider.conf = jQuery.extend(
+		// @@@ private fn: extend @@@
+		function extend (config)
 		{
+
+			// add more default configuration options (deep extend)
+			return slider.conf = jQuery.extend(true, config, slider.conf);
+
+		}
+		// @@@ EO private fn: extend @@@
+
+		// first store given config
+		slider.conf = conf;
+
+		// add defaults
+		extend({
 
 			// the panel alignment to the position
 			align: 'center',
@@ -502,18 +517,31 @@ RTP.Multievent = function (cb)
 			// also defines how many panels are cloned
 			panelsVisible: 1,
 
+			// how many panels should be cloned
+			// if this is set to 0, we will use
+			// the panelsVisible option for this
+			clonePanels: 0,
+
+			// in which direction should we clone
+			// adds cloned panels before or after
+			cloneAfter: true,
+			cloneBefore: true,
+
 			// initialize some structures
 			// they can be used by plugins
-			text: {}, // localized texts
-			tmpl: {}, // templates fragments
-			klass: {}, // classes to assign
-			selector: {} // dom css selectors
 
-		}, conf);
+			// localized texts
+			text: {},
 
-		// classes to mark panels
-		slider.klass = jQuery.extend
-		(
+			// templates fragments
+			tmpl:
+			{
+				wrapper : '<div class="rtp-slider-wrapper"></div>',
+				container : '<div class="rtp-slider-container"></div>'
+			},
+
+			// classes to assign
+			klass:
 			{
 				next: 'next',
 				current: 'current',
@@ -521,42 +549,23 @@ RTP.Multievent = function (cb)
 				vertical: 'rtp-slider-vertical',
 				horizontal: 'rtp-slider-horizontal'
 			},
-			slider.conf.klass
-		);
 
-		// templating bits might be overridden
-		slider.tmpl = jQuery.extend
-		(
-			{
-				wrapper : '<div class="rtp-slider-wrapper"></div>',
-				container : '<div class="rtp-slider-container"></div>'
-			},
-			slider.conf.tmpl
-		);
-
-		// selectors for dom elements
-		slider.selector = jQuery.extend
-		(
+			// dom css selectors
+			selector:
 			{
 				panel : 'DIV.rtp-slider-panel',
 				container : 'DIV.rtp-slider-container'
-			},
-			slider.conf.selector
-		);
+			}
 
-
-		// @@@ private fn: extend @@@
-		function extend (config)
-		{
-
-			// add more default configuration options
-			slider.conf = jQuery.extend(config, slider.conf);
-
-		}
-		// @@@ EO private fn: extend @@@
+		});
 
 		// execute all config hooks
+		// this will add more defaults
 		slider.trigger('config', extend);
+
+		// assign shortcuts to access nested config
+		jQuery(['text', 'tmpl', 'klass', 'selector'])
+		.each(function() { slider[this] = slider.conf[this]; })
 
 		// assertion for some options
 		if (isNaN(slider.conf.align))
@@ -579,63 +588,19 @@ RTP.Multievent = function (cb)
 			.wrapInner(slider.tmpl.container)
 				.find(slider.selector.container);
 
-		// min index for slides and panels
-		slider.rmin = slider.smin = slider.pmin = 0;
+		// min and max index for slides
+		slider.smin = slider.smax = 0;
 
 		// markup the wrapper if we are vertical/horizontal
-		if (this.conf.vertical && slider.klass.vertical)
-		{ this.wrapper.addClass(slider.klass.vertical); }
-		if (!this.conf.vertical && slider.klass.horizontal)
-		{ this.wrapper.addClass(slider.klass.horizontal); }
+		if (slider.conf.vertical && slider.klass.vertical)
+		{ slider.wrapper.addClass(slider.klass.vertical); }
+		if (!slider.conf.vertical && slider.klass.horizontal)
+		{ slider.wrapper.addClass(slider.klass.horizontal); }
 
 		// first slide to load may be a function
-		this.position = jQuery.isFunction(slider.conf.slideFirst)
+		slider.position = jQuery.isFunction(slider.conf.slideFirst)
 			? slider.conf.slideFirst.call(slider)
 			: slider.conf.slideFirst || 0;
-
-		// init array always
-		// avoid checks in code
-		slider.cloned = jQuery();
-
-		// create cloned panels
-		if (slider.conf.carousel)
-		{
-
-			// Clone as many panels needed to fill the viewport.
-			// If sizer is false you can use this config option
-			// to adjust how many panels you want to have cloned
-			// In this mode the viewport might be much wider than
-			// all panels inside. Todo: Maybe support this better.
-			var panelsToClone = this.conf.clonePanels ||
-			                    Math.ceil(this.conf.panelsVisible);
-
-			// accumulate all cloned panels
-			// we may clone each slide more than once
-			var cloned = jQuery();
-
-			// I will clone as many as you wish
-			while (panelsToClone > slides.length)
-			{
-				// remove a full set of slides
-				panelsToClone -= slides.length;
-				// clone and add another full set
-				cloned = cloned.add(slides.clone());
-			}
-
-			// clone panels from begining to extend the container
-			cloned = cloned.add(slides.slice(0, panelsToClone).clone());
-
-			// append the cloned panels to the container and set class
-			cloned.appendTo(slider.container).addClass('cloned');
-
-			// increase maximum slide index
-			slider.smax += cloned.length;
-
-			// store the cloned panels
-			slider.cloned = cloned;
-
-		}
-		// EO if conf.carousel
 
 		// @@@ private fn: resolve_align @@@
 		// this can be a number between -INF and +INF
@@ -644,7 +609,7 @@ RTP.Multievent = function (cb)
 		{
 
 			// get configured option
-			var align = this.conf[key];
+			var align = slider.conf[key];
 
 			// check if align matches any of our strings
 			if (new RegExp(/^l/i).test(align)) align = 0.0;
@@ -657,16 +622,99 @@ RTP.Multievent = function (cb)
 			if (isNaN(parseInt(align, 10))) align = 0.5;
 
 			// assign and return the number
-			return this.conf[key] = align;
+			return slider.conf[key] = align;
 
 		}
 		// EO @@@ private fn: resolve_align @@@
 
 		// first resolve the shared value to inherit from
-		var preset = resolve_align.call(this, 'align', 0.5);
+		var preset = resolve_align('align', 0.5);
 		// then resolve the specific align options
-		resolve_align.call(this, 'alignViewport', preset);
-		resolve_align.call(this, 'alignPanel', preset);
+		resolve_align('alignViewport', preset);
+		resolve_align('alignPanel', preset);
+
+		// init array always
+		// avoid checks in code
+		slider.cloned = jQuery();
+
+		// create cloned panels
+		if (slider.conf.carousel && slides.length)
+		{
+
+			// Clone as many panels needed to fill the viewport.
+			// If sizer is false you can use this config option
+			// to adjust how many panels you want to have cloned
+			// In this mode the viewport might be much wider than
+			// all panels inside. Todo: Maybe support this better.
+			var panelsToClone = slider.conf.clonePanels ||
+			                    Math.ceil(slider.conf.panelsVisible);
+
+			// distribute cloned panels before (left/top)
+			var cloneBefore = slider.conf.cloneBefore === false ? 0 :
+				isNaN(slider.conf.cloneBefore) ? slider.conf.cloneBefore :
+				Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5);
+
+			// distribute cloned panels after (right/bottom)
+			var cloneAfter = slider.conf.cloneAfter === false ? 0 :
+				isNaN(slider.conf.cloneAfter) ? slider.conf.cloneAfter :
+				Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5);
+
+
+			// accumulate all cloned panels
+			// we may clone each slide more than once
+			var after = jQuery([]), before = jQuery([]);
+
+			// I will clone as many as you wish
+			while (cloneBefore > slides.length)
+			{
+				// remove a full set of slides
+				cloneBefore -= slides.length;
+				// clone and add another full set
+				jQuery.merge(before, slides.clone());
+			}
+
+			// clone panels before
+			if (cloneBefore > 0)
+			{
+				// clone panels from end to extend the container
+				before = jQuery.merge(slides.slice(- cloneBefore).clone(), before);
+			}
+
+			// I will clone as many as you wish
+			while (cloneAfter > slides.length)
+			{
+				// remove a full set of slides
+				cloneAfter -= slides.length;
+				// clone and add another full set
+				jQuery.merge(after, slides.clone());
+			}
+
+			// clone panels after
+			if (cloneAfter > 0)
+			{
+				// clone panels from begining to extend the container
+				jQuery.merge(after, slides.slice(0, cloneAfter).clone());
+			}
+
+			// append the cloned panels to the container and set class
+			after.appendTo(slider.container).addClass('cloned');
+			before.prependTo(slider.container).addClass('cloned');
+
+			// increase min and max slide index
+			slider.smax += after.length;
+			slider.smax += before.length;
+			slider.smin += before.length;
+
+			// merge all cloned panels
+			jQuery.merge(slider.cloned, before);
+			jQuery.merge(slider.cloned, after)
+
+			// store the cloned panels
+			slider.before = before;
+			slider.after = after;
+
+		}
+		// EO if conf.carousel
 
 		// execute all init hooks
 		slider.trigger('init');
@@ -675,26 +723,26 @@ RTP.Multievent = function (cb)
 		slider.panels = viewport.find(slider.selector.panel);
 
 		// to which side should we float the panels / container
-		var floating = this.conf.offsetReverse ? 'right' : 'left';
+		var floating = slider.conf.offsetReverse ? 'right' : 'left';
 
-		if (this.conf.vertical) floating = 'none';
+		if (slider.conf.vertical) floating = 'none';
 
-		var overflow = this.conf.carousel3d ? 'visible' : 'hidden';
+		var overflow = slider.conf.carousel3d ? 'visible' : 'hidden';
 
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		this.viewport
+		slider.viewport
 			.css({
 				'overflow' : overflow
 			});
 
-		this.panels
+		slider.panels
 			.css({
 				'float' : floating
 			})
-			.add(this.viewport)
-			.add(this.container)
+			.add(slider.viewport)
+			.add(slider.container)
 			.css({
 				'zoom' : 1,
 				// 'overflow' : overflow,
@@ -702,12 +750,12 @@ RTP.Multievent = function (cb)
 			});
 
 /*
-if (this.conf.vertical)
+if (slider.conf.vertical)
 {
-		this.viewport.css({
+		slider.viewport.css({
 			'min-height': '50px'
 		});
-		this.container.css({
+		slider.container.css({
 			'top': '0px',
 			'left': '0px',
 			'right': '0px',
@@ -718,29 +766,28 @@ if (this.conf.vertical)
 */
 
 		// setup floats for the container
-		if (!this.conf.vertical)
+		if (!slider.conf.vertical)
 		{
 			// we either float the container right or left
-			this.container.css('float', floating)
+			slider.container.css('float', floating)
 				// insert a float clearing div after the container
 				.after('<DIV style="clear:both;"/>');
 		}
 
-		// private named function
-		// execute when images loaded
-		function loaded ()
-		{
-
-			// trigger ready hook
-			slider.trigger('ready');
-
-		};
-		// EO fn loaded
-
 		// defer until all images are loaded
 		// otherwise we will not get valid info
 		// about resource dimensions like images
-		jQuery('IMG', viewport).imagesLoaded().done(loaded);
+		jQuery('IMG', viewport)
+			// wait loading images
+			.imagesLoaded()
+			// execute when ready
+			.done(function()
+			{
+
+				// trigger ready hook
+				slider.trigger('ready');
+
+			});
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
@@ -750,15 +797,20 @@ if (this.conf.vertical)
 	(function (prototype, jQuery)
 	{
 
+
 		// @@@ method: panel2panel @@@
 		prototype.panel2panel = function(panel)
 		{
 			// adjust for carousel
 			if (this.conf.carousel)
 			{
+				// get number of slides
+				var count = this.slides.length;
+				// protect from endless loop
+				if (count == 0) return 0;
 				// adjust panels into the valid range
-				while (panel > this.smax) panel -= this.slides.length;
-				while (panel < this.smin) panel += this.slides.length;
+				while (panel > this.smax) panel -= count;
+				while (panel < this.smin) panel += count;
 			}
 			else
 			{
@@ -830,6 +882,9 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// create the hooks hash on prototype
 	// this is shared across all instances
@@ -1095,9 +1150,10 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
-	// @@@ method: setSlideDim @@@
-	// set the given slide index to given size
-	// this method is not available to panels as
+	'use strict';
+
+
+	// these method are not available to panels as
 	// we have to make sure that cloned panels have
 	// exactly the same size as the original panel
 	// set the outer dimension of the slide panel
@@ -1164,9 +1220,6 @@ if (this.conf.vertical)
 			{ jQuery(panel).height(dim); }
 			else { jQuery(panel).width(dim); }
 
-			// update the panel opposition
-			// this.pd[1][p] = this.getPanelSize(p, 1);
-
 		}
 		// EO each panel
 
@@ -1215,6 +1268,9 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	// attach and create status arrays
@@ -1315,11 +1371,16 @@ if (this.conf.vertical)
 	{
 
 		// access panel only once (get id into range)
-		panel = this.panels.eq(this.panel2panel(panel));
+		panel = this.panels.eq(this.slide2panel(this.panel2slide(panel)));
+
+		// return the panel axis size
+		// return this.conf.vertical ^ invert
+		// 	? panel.height() : panel.width();
 
 		// return the panel axis size
 		return this.conf.vertical ^ invert
-			? panel.height() : panel.width();
+			? panel.get(0).clientHeight ? panel.get(0).clientHeight : panel.height()
+			: panel.get(0).clientWidth ? panel.get(0).clientWidth : panel.width();
 
 	}
 	// @@@ EO method: getPanelSize @@@
@@ -1423,6 +1484,13 @@ if (this.conf.vertical)
 
 		// get sizes for drag axis
 		readPanelsSize.call(this, 0);
+
+		var i = this.slides.length; while (i--)
+		{
+
+			this.setSlideDim(i, this.pd[0][i + this.smin])
+
+		}
 
 		// trigger hook for updated panels
 		this.trigger('changedPanelsDim');
@@ -1583,6 +1651,9 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -1749,6 +1820,9 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ private fn: getSizeCssStr @@@
 	function getSizeCssStr (invert)
 	{
@@ -1791,15 +1865,23 @@ if (this.conf.vertical)
 	prototype.setContainerOffset = function(offset, invert)
 	{
 
+		/*
+
+		Tests have shown that the clamping is not needed here!
+		So this has been disabled on purpose for performance!
+		Keep the code anyway, as it might become needed again!
+
 		// get the left and right position
 		// also calculate size of all slides
-		var left = this.offset[this.smin],
-		    right = this.offset[this.smax + 1],
+		var conf = this.conf
+		    align = conf.align * conf.vp_x,
+		    left = this.offset[this.smin] + align,
+		    right = this.offset[this.smax + 1] + align,
 		    size = right - left;
 
 		// shift into range when in carousel
 		// protect from endless loop condition
-		if (this.conf.carousel && size > 0)
+		if (conf.carousel && size > 0)
 		{
 			// shift into prefered and best visible area
 			// this may go wrong if floated to the right?
@@ -1811,6 +1893,8 @@ if (this.conf.vertical)
 		// allow offsets outside the valid range
 		// if (offset < left) { offset = left; }
 		// if (right < offset) { offset = right; }
+
+		*/
 
 		// set the offset position of the container to the viewport
 		this.container.css(getOffsetCssStr.call(this, invert), - offset);
@@ -1868,6 +1952,7 @@ if (this.conf.vertical)
 		// in vertical mode the container always
 		// has the panels correctly layed out
 		if (this.conf.vertical) return;
+		if (this.conf.carousel3d) return;
 
 		// sum up the dimensions for the container
 		// calculate it so we can later get the accurate
@@ -1879,7 +1964,7 @@ if (this.conf.vertical)
 		// set the container width/height to the calculated value to contain all panels
 		// there is no getter or setter method for this particular container attribute
 		// we really only need to adjust this dimension if the panel dimensions have changed
-		this.container.css(getSizeCssStr.call(this), dim + 'px')
+		this.container.css(getSizeCssStr.call(this), Math.ceil(dim) + 'px')
 
 	}, - 9999);
 	// @@@ EO plugin: changedPanelsDim @@@
@@ -1912,7 +1997,10 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
-	// @@@ fn: updatePanelExposure @@@
+	'use strict';
+
+
+	// @@@ private fn: updatePanelExposure @@@
 	function updatePanelExposure(current, previous)
 	{
 
@@ -2008,7 +2096,7 @@ if (this.conf.vertical)
 
 
 	}
-	// @@@ EO fn: updatePanelExposure @@@
+	// @@@ EO private fn: updatePanelExposure @@@
 
 
 	// @@@ fn: updateSlideVisibility @@@
@@ -2125,6 +2213,9 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// @@@ method: setPosition @@@
 	prototype.setPosition = function (position)
@@ -2304,7 +2395,7 @@ if (this.conf.vertical)
 			{
 
 				// return the calculated position (intoPanel / panelSize + i - offset)
-				return (px - panel_left) / (panel_right - panel_left) + i - this.smin - align;
+				return (px - panel_left) / (panel_right - panel_left) + i - align;
 
 			}
 			// EO if position in panel
@@ -2356,6 +2447,9 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -2450,6 +2544,7 @@ if (this.conf.vertical)
 
 		// enqueue action
 		slider.queue.push({
+
 			keep: keep,
 			action: action,
 			easing: easing || this.conf.easeFunction,
@@ -2460,6 +2555,7 @@ if (this.conf.vertical)
 				if(cb) cb.call(slider, this);
 				complete.call(slider, this);
 			}
+
 		});
 
 	}
@@ -2583,8 +2679,8 @@ if (this.conf.vertical)
 		}
 		// EO fn resume
 
-			// get the absolute position for this action
-			var pos = actionToPosition.call(this, animation.action);
+		// get the absolute position for this action
+		var pos = actionToPosition.call(this, animation.action);
 
 		// now trigger the preAnimation hook
 		// this might lock the animation which
@@ -2670,6 +2766,7 @@ if (this.conf.vertical)
 	};
 	// @@@ EO method: animate @@@
 
+
 	// @@@ method: animate @@@
 	prototype.goTo = function (action, duration, easing, cb, keep)
 	{
@@ -2685,6 +2782,7 @@ if (this.conf.vertical)
 
 	};
 	// @@@ EO method: animate @@@
+
 
 	// shortcut methods for common animations
 	prototype.goNext = function (delay, easing) { this.animate('+1', delay, easing); }
@@ -2708,6 +2806,8 @@ if (this.conf.vertical)
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
 
 
 	// @@@ plugin: config @@@
@@ -2846,6 +2946,9 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
 	{
@@ -2861,8 +2964,9 @@ if (this.conf.vertical)
 	});
 	// @@@ EO plugin: config @@@
 
+
 	// @@@ private fn: centerOppInViewport @@@
-	function centerOppInViewport (vp_y)
+	function centerOppInViewport ()
 	{
 
 		// declare local variables
@@ -2874,11 +2978,11 @@ if (this.conf.vertical)
 		if (isNaN(align)) return;
 
 		// loop all slides to setup their 3d transformation
-		var l = this.panels.length, i = l; while (i--)
+		var i = this.panels.length; while (i--)
 		{
 
 			// calculate the possible margin and multiply
-			var margin = (vp_y - this.pd[1][i]) * align;
+			var margin = (this.vp_y - this.pd[1][i]) * align;
 
 			// set this panel margin for direction
 			jQuery(this.panels[i]).css(css, margin + 'px');
@@ -2914,8 +3018,10 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
+	'use strict';
 
-	// @@@ fn: panelsDimByViewport @@@
+
+	// @@@ private fn: panelsDimByViewport @@@
 	function panelsDimByViewport ()
 	{
 
@@ -2941,8 +3047,7 @@ if (this.conf.vertical)
 		if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
 
 	}
-	// @@@ EO fn: panelsDimByViewport @@@
-
+	// @@@ EO private fn: panelsDimByViewport @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -2957,16 +3062,13 @@ if (this.conf.vertical)
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
 		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
-		// return parseInt(this.vp_x / this.conf.panelsVisible + 0.5, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
 
 
-	// @@@ plugin: changedViewport @@@
+	// hook into various change events to adjust panels
 	prototype.plugin('changedViewport', panelsDimByViewport);
-	// @@@ EO plugin: changedViewport @@@
-
 
 
 // EO extend class prototype
@@ -2979,18 +3081,16 @@ if (this.conf.vertical)
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the width of the viewport evenly to all visibile panels.
-  Maybe add distribution factors or fixed widths for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
-
 */
 
 // extend class prototype
 (function (prototype, jQuery)
 {
 
+	'use strict';
 
-	// @@@ fn: panelsOppByViewport @@@
+
+	// @@@ private fn: panelsOppByViewport @@@
 	function panelsOppByViewport ()
 	{
 
@@ -3016,10 +3116,10 @@ if (this.conf.vertical)
 		if (this.conf.fluidPanelsDim) this.readPanelsDim();
 
 	}
-	// @@@ EO fn: panelsOppByViewport @@@
+	// @@@ EO private fn: panelsOppByViewport @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust panels
 	prototype.plugin('changedViewport', panelsOppByViewport, 999999999);
 
 
@@ -3039,7 +3139,10 @@ if (this.conf.vertical)
 (function (prototype, jQuery)
 {
 
-	// @@@ fn: viewportDimByPanels @@@
+	'use strict';
+
+
+	// @@@ private fn: viewportDimByPanels @@@
 	function viewportDimByPanels (visibility)
 	{
 
@@ -3064,11 +3167,11 @@ if (this.conf.vertical)
 		// set viewport dimension
 		this.updateViewportDim(dim);
 
-	};
-	// @@@ EO fn: viewportDimByPanels @@@
+	}
+	// @@@ EO private fn: viewportDimByPanels @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
 	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
 	prototype.plugin('changedPanelsDim', viewportDimByPanels, 99999);
@@ -3085,6 +3188,8 @@ if (this.conf.vertical)
   either version 3 of the License, or (at your option) any later version.
 
 */
+
+// extend class prototype
 (function (prototype, jQuery)
 {
 
@@ -3107,7 +3212,7 @@ if (this.conf.vertical)
 	// @@@ EO plugin: config @@@
 
 
-	// @@@ fn: viewportOppByPanels @@@
+	// @@@ private fn: viewportOppByPanels @@@
 	function viewportOppByPanels ()
 	{
 
@@ -3129,8 +3234,10 @@ if (this.conf.vertical)
 			// check if panel is fully visible
 			if (exposure[i] > dead_zone)
 			{
+
 				// use full panel height
 				opps.push(this.pd[1][i]);
+
 			}
 
 			// panel only partial visible
@@ -3152,29 +3259,16 @@ if (this.conf.vertical)
 		this.updateViewportOpp(max);
 
 	}
-	// @@@ EO fn: viewportOppByPanels @@@
+	// @@@ EO private fn: viewportOppByPanels @@@
 
 
-	// hook into various change events to adjust size
+	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportOppByPanels, 99);
 	prototype.plugin('changedViewport', viewportOppByPanels, 99);
+	prototype.plugin('changedPanelsOpp', viewportOppByPanels, 99);
 
 
-
-
-	prototype.plugin('changedViewport', function()
-	{
-
-		// fluid dimension
-		if (this.conf.vertical) {
-debugger;
-		this.readPanelsDim();
-		// this.trigger('changedPanelsDim');
-		// this.updatePanelsOffset();
-		}
-
-	}, 9);
-
+// EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 
 /*
@@ -3189,6 +3283,9 @@ debugger;
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// get function checker
 	var isFn = jQuery.isFunction;
@@ -3286,31 +3383,24 @@ debugger;
 			{
 				// the default method is to change the opacity
 				this.navDotImg.eq(slide).css('opacity', progress);
-			}
+			},
 
-		});
+			klass : {
 
-		// default configuration
-		this.klass = jQuery.extend
-		(
-			{
 				navDot: prefix,
 				panelHidden: prefix + '-hidden',
 				panelPartial: prefix + '-partial',
 				panelVisible: prefix + '-visible'
-			},
-			this.klass
-		);
 
-		// default configuration
-		this.tmpl = jQuery.extend
-		(
-			{
+			},
+
+			tmpl : {
 				navDotWrapper: ['<span><a href="javascript:void(0);">', '</a></span>'],
 				navDotElement: '<img src="img/rtp-nav-dot-clear.gif" width="12" height="12" alt=""/>'
-			},
-			this.tmpl
-		);
+			}
+
+
+		});
 
 	});
 	// @@@ EO plugin: config @@@
@@ -3411,6 +3501,9 @@ debugger;
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ updateUI @@@
 	var updateUI = function(duration)
 	{
@@ -3451,41 +3544,39 @@ debugger;
 	prototype.plugin('layout', updateUI);
 
 	// hook into rtp slider class
-	prototype.plugin('init', function()
+	prototype.plugin('config', function(extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
-				navArrows: false, // should we generate navigation arrows
-				navArrowAttach: 'wrapper', // wrapper or panels
-				navArrowPosition: 'default', // prepend, reverse, append
-				navArrowPrevText: '&#171; left', // text/html for the previous link
-				navArrowNextText: 'right &#187;' // text/html for the next link
-			},
-			this.conf
-		);
+		// add defaults
+		extend({
 
-		// default templates
-		this.tmpl = jQuery.extend
-		(
-			{
+			navArrows: false, // should we generate navigation arrows
+			navArrowAttach: 'wrapper', // wrapper or panels
+			navArrowPosition: 'default', // prepend, reverse, append
+			navArrowPrevText: '&#171; left', // text/html for the previous link
+			navArrowNextText: 'right &#187;', // text/html for the next link
+
+			tmpl : {
+
 				'arrow-prev' : ['<div class="rtp-nav-prev"><a href="javascript:void(0)">', '</a></div>'],
 				'arrow-next' : ['<div class="rtp-nav-next"><a href="javascript:void(0)">', '</a></div>']
-			},
-			this.tmpl, this.conf.tmpl
-		);
 
-		// default templates
-		this.selector = jQuery.extend
-		(
-			{
+			},
+
+			selector : {
+
 				'nav-prev' : '.rtp-nav-prev A',
 				'nav-next' : '.rtp-nav-next A'
-			},
-			this.selector, this.conf.selector
-		);
+
+			}
+
+		});
+
+	});
+
+	// hook into rtp slider class
+	prototype.plugin('init', function(extend)
+	{
 
 		// declare and init navigation arrows
 		this.arrows = { prev : jQuery(), next : jQuery() };
@@ -3554,26 +3645,24 @@ debugger;
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ plugin: init @@@
-	prototype.plugin('init', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// should we enable keyboard navigation
-				navKeyboard : false,
-				// jquery keycode for prev action
-				navKeyboardPrev : this.conf.vertical ? 38 : 37,
-				// jquery keycode for next action
-				navKeyboardNext : this.conf.vertical ? 40 : 39
+			// should we enable keyboard navigation
+			navKeyboard : false,
+			// jquery keycode for prev action
+			navKeyboardPrev : this.conf.vertical ? 38 : 37,
+			// jquery keycode for next action
+			navKeyboardNext : this.conf.vertical ? 40 : 39
 
-			},
-			this.conf
-		);
+		});
 
 	});
 	// @@@ EO plugin: init @@@
@@ -3622,6 +3711,9 @@ debugger;
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -3709,6 +3801,8 @@ debugger;
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
 
 
 	// @@@ plugin: init @@@
@@ -3958,6 +4052,8 @@ debugger;
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ private fn: toggleInfoBox @@@
 	function toggleInfoBox (opacity, duration, position)
@@ -4084,6 +4180,9 @@ debugger;
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	/*
 	   This function is used to calculate the speed when
@@ -4388,6 +4487,9 @@ data.vp_off = vp_off.x;
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
 	{
@@ -4530,6 +4632,9 @@ data.vp_off = vp_off.x;
 // extend class prototype
 (function (prototype, jQuery)
 {
+
+	'use strict';
+
 
 	// detect if we are an android device
 	var android = navigator.userAgent.match(/Android/i);
@@ -4682,8 +4787,20 @@ data.vp_off = vp_off.x;
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
+
 	// declare here for compiler
 	var prefix = 'rtp-toolbar';
+
+	// define all toggle buttons
+	var toggler = {
+
+		// define function to define if state is on
+		stop : function () { return this.autosliding === null; },
+		pause : function () { return this.autosliding !== true; }
+
+	};
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -4692,37 +4809,23 @@ data.vp_off = vp_off.x;
 		// add defaults
 		extend({
 
+			// enable feature
 			navToolbar: false,
 
-			// enable feature
 			// toolbar: 'first, rewind, pause, stop, play, toggle-stop, toggle-pause, forward, last'
 			navToolbarButtons: this.conf.carousel ?
 				'rewind, toggle-stop, toggle-pause, forward' :
-				'first, rewind, toggle-stop, toggle-pause, forward, last'
+				'first, rewind, toggle-stop, toggle-pause, forward, last',
 
-		});
-
-		// default configuration
-		this.klass = jQuery.extend
-		(
-			{
-				// navDot: prefix,
-				// panelHidden: prefix + '-hidden',
-				// panelPartial: prefix + '-partial',
-				// panelVisible: prefix + '-visible'
-			},
-			this.klass
-		);
-
-		// default configuration
-		this.tmpl = jQuery.extend
-		(
+			// add templates
+			tmpl :
 			{
 				navButtonWrapper: ['<a href="javascript:void(0);">', '</a>'],
 				navButton: '<img src="img/rtp-toolbar-{type}.gif" width="12" height="12" alt="{title}"/>'
-			},
-			this.tmpl
-		);
+			}
+
+		});
+
 	});
 	// @@@ EO plugin: config @@@
 
@@ -4733,73 +4836,83 @@ data.vp_off = vp_off.x;
 		// create closure
 		var self = this;
 
+		// store the buttons
 		self.buttons = {};
 
-		function action (type)
+		// function for the button actions
+		function action (command)
 		{
 
-			switch (type)
+			switch (command)
 			{
 
-				case 'first':
-					this.goFirst()
-				break;
-				case 'rewind':
-					this.goPrev()
-				break;
-				case 'play':
-					this.startAutoSlide();
-				break;
-				case 'pause':
-					this.stopAutoSlide(true);
-				break;
-				case 'stop':
-					this.stopAutoSlide(false);
-				break;
+				// navigation commands
+				case 'last': this.goLast(); break;
+				case 'first': this.goFirst(); break;
+				case 'rewind': this.goPrev(); break;
+				case 'forward': this.goNext(); break;
+
+				// auto slide show commands
+				case 'play': this.startAutoSlide(); break;
+				case 'stop': this.stopAutoSlide(false); break;
+				case 'pause': this.stopAutoSlide(true); break;
+
+				// toggle pause/play
 				case 'toggle-pause':
-					if (this.autosliding)
+					if (!toggler.pause.call(this))
 					{ this.stopAutoSlide(true); }
 					else { this.startAutoSlide(); }
 				break;
+
+				// toggle stop/play
 				case 'toggle-stop':
-					if (this.autosliding !== null)
+					if (!toggler.stop.call(this))
 					{ this.stopAutoSlide(false); }
 					else { this.startAutoSlide(); }
-				break;
-				case 'forward':
-					this.goNext()
-				break;
-				case 'last':
-					this.goLast()
 				break;
 
 			}
 
 		}
+		// EO fn action
 
-		// activate autoslide
-		if (self.conf.navToolbar)
+		// check if the feature is activated and configured
+		if (self.conf.navToolbar && self.conf.navToolbarButtons)
 		{
 
+			// get all buttons for the toolbar
 			var buttons = self.conf.navToolbarButtons.split(/\s*,\s*/), nodes = [];
 
-			// create the wrapper around all nav dots
+			// create the wrapper around all toolbar buttons
 			var wrapper = jQuery('<div class="' + prefix + '">');
 
+			// now create all configured buttons
 			for (var i = 0, l = buttons.length; i < l; i++)
 			{
+
+				// create the button node
 				var button = jQuery(
-					'<span class="rtp-toolbar-' + buttons[i] + '">'
+					'<span class="' + prefix + '-' + buttons[i] + '">'
 					+ self.tmpl.navButtonWrapper[0]
 					+ self.tmpl.navButton
-					   .replace(/{type}/g, buttons[i].replace('toggle-', ''))
 				     .replace(/{title}/g, buttons[i])
+					   .replace(/{type}/g, buttons[i].replace('toggle-', ''))
 					+ self.tmpl.navButtonWrapper[1]
 					+ '</span>'
-				).click(jQuery.proxy(action, self, buttons[i]));
+				)
+
+				// attach click handler to the button
+				.click(jQuery.proxy(action, self, buttons[i]));
+
+				// add button to the outer wrapper node
 				wrapper.append(self.buttons[buttons[i]] = button);
+
+				// find and store all button images
+				button.imgs = button.find('IMG');
+
 			}
 
+			// store the toolbar wrapper
 			self.toolbarWrapper = wrapper;
 
 			// append wrapper to the main slider wrapper
@@ -4812,51 +4925,46 @@ data.vp_off = vp_off.x;
 	});
 	// @@@ EO plugin: init @@@
 
-	var togglers = [ 'stop', 'pause' ];
 
+	// @@@ private fn: updateToggleButtons @@@
 	function updateToggleButtons ()
 	{
 
-		var n = 0;
-
-		var imgs = this.buttons['toggle-' + togglers[n]];
-
-		imgs = imgs ? imgs.find('IMG') : [];
-
-		var i = imgs.length; while (i--)
+		// process all toggle buttons
+		for(var type in toggler)
 		{
-			if (this.autosliding !== null)
+
+			// get value if feature is enabled
+			var enabled = toggler[type].call(this);
+
+			// get the images previousely stored
+			var imgs = this.buttons['toggle-' + type].imgs;
+
+			// process all button images
+			var i = imgs.length; while (i--)
 			{
-				imgs[i].src = imgs[i].src.replace('play', togglers[n]);
+
+				// get the current image src
+				var src = imgs[i].src.replace(
+					enabled ? type : 'play',
+					enabled ? 'play' : type
+				);
+
+				// check if src has changed
+				if (src != imgs[i].src)
+				{ imgs[i].src = src; }
+
 			}
-			else
-			{
-				imgs[i].src = imgs[i].src.replace(togglers[n], 'play');
-			}
+			// EO each image
+
 		}
-
-		n = 1;
-
-		var imgs = this.buttons['toggle-' + togglers[n]];
-
-		imgs = imgs ? imgs.find('IMG') : [];
-
-		var i = imgs.length; while (i--)
-		{
-			if (this.autosliding)
-			{
-				imgs[i].src = imgs[i].src.replace('play', togglers[n]);
-			}
-			else
-			{
-				imgs[i].src = imgs[i].src.replace(togglers[n], 'play');
-			}
-		}
-
+		// EO each toggler
 
 	}
+	// @@@ EO private fn: updateToggleButtons @@@
 
-	// @@@ plugin: autoslidePause @@@
+
+	// plug into various events to update buttons
 	prototype.plugin('ready', updateToggleButtons);
 	prototype.plugin('autoslideStop', updateToggleButtons);
 	prototype.plugin('autoslideStart', updateToggleButtons);
@@ -5086,6 +5194,8 @@ $.fn.imagesLoaded = function( callback ) {
 (function (prototype, jQuery)
 {
 
+	'use strict';
+
 
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
@@ -5116,14 +5226,14 @@ $.fn.imagesLoaded = function( callback ) {
 		var angle, paneldim, distance;
 
 		// save and store to old method (to be restored later)
-		oldSetOffsetByPosition = this.setOffsetByPosition;
+		var oldSetOffsetByPosition = this.setOffsetByPosition;
 
 		// @@@ private fn: setOffsetByPosition @@@
 		function setOffsetByPosition (position)
 		{
 
 			// check if feature is enabled
-			if (!this.conf.carousel3d)
+			if (!this.conf.carousel3d || this.conf.carousel3d != 999)
 			{
 
 				// call original method if feature is disabled
@@ -5157,6 +5267,8 @@ $.fn.imagesLoaded = function( callback ) {
 			// check if feature is enabled
 			if (!this.conf.carousel3d) return;
 
+			this.conf.carousel3d = 999;
+
 			// declare local variables
 			var conf = this.conf,
 			    alignPanel = conf.alignPanel,
@@ -5170,7 +5282,7 @@ $.fn.imagesLoaded = function( callback ) {
 			var paneldim = Math.max.apply( Math, this.pd[0] ) / 2;
 
 			// calculate the panel distances (3d) from the center
-			distance = parseInt(paneldim / Math.tan(angle), 10);
+			distance = parseFloat(paneldim / Math.tan(angle), 10);
 
 			// calculate the alignment / offset position (use panelsVisible to assume viewport)
 			var align = panelsVisible * (alignViewport - 0.5) - alignPanel + 0.5
@@ -5242,4 +5354,4 @@ $.fn.imagesLoaded = function( callback ) {
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 
-/* crc: C97B1E29DAE57241B30A6F21E7EEB2B0 */
+/* crc: 4087ACA3CB6957DA741D916808D748AE */
