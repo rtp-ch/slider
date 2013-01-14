@@ -14,6 +14,15 @@
 	// declare here for compiler
 	var prefix = 'rtp-toolbar';
 
+	// define all toggle buttons
+	var toggler = {
+
+		// define function to define if state is on
+		stop : function () { return this.autosliding === null; },
+		pause : function () { return this.autosliding !== true; }
+
+	};
+
 	// @@@ plugin: config @@@
 	prototype.plugin('config', function (extend)
 	{
@@ -21,37 +30,23 @@
 		// add defaults
 		extend({
 
+			// enable feature
 			navToolbar: false,
 
-			// enable feature
 			// toolbar: 'first, rewind, pause, stop, play, toggle-stop, toggle-pause, forward, last'
 			navToolbarButtons: this.conf.carousel ?
 				'rewind, toggle-stop, toggle-pause, forward' :
-				'first, rewind, toggle-stop, toggle-pause, forward, last'
+				'first, rewind, toggle-stop, toggle-pause, forward, last',
 
-		});
-
-		// default configuration
-		this.klass = jQuery.extend
-		(
-			{
-				// navDot: prefix,
-				// panelHidden: prefix + '-hidden',
-				// panelPartial: prefix + '-partial',
-				// panelVisible: prefix + '-visible'
-			},
-			this.klass
-		);
-
-		// default configuration
-		this.tmpl = jQuery.extend
-		(
+			// add templates
+			tmpl :
 			{
 				navButtonWrapper: ['<a href="javascript:void(0);">', '</a>'],
 				navButton: '<img src="img/rtp-toolbar-{type}.gif" width="12" height="12" alt="{title}"/>'
-			},
-			this.tmpl
-		);
+			}
+
+		});
+
 	});
 	// @@@ EO plugin: config @@@
 
@@ -62,73 +57,83 @@
 		// create closure
 		var self = this;
 
+		// store the buttons
 		self.buttons = {};
 
-		function action (type)
+		// function for the button actions
+		function action (command)
 		{
 
-			switch (type)
+			switch (command)
 			{
 
-				case 'first':
-					this.goFirst()
-				break;
-				case 'rewind':
-					this.goPrev()
-				break;
-				case 'play':
-					this.startAutoSlide();
-				break;
-				case 'pause':
-					this.stopAutoSlide(true);
-				break;
-				case 'stop':
-					this.stopAutoSlide(false);
-				break;
+				// navigation commands
+				case 'last': this.goLast(); break;
+				case 'first': this.goFirst(); break;
+				case 'rewind': this.goPrev(); break;
+				case 'forward': this.goNext(); break;
+
+				// auto slide show commands
+				case 'play': this.startAutoSlide(); break;
+				case 'stop': this.stopAutoSlide(false); break;
+				case 'pause': this.stopAutoSlide(true); break;
+
+				// toggle pause/play
 				case 'toggle-pause':
-					if (this.autosliding)
+					if (!toggler.pause.call(this))
 					{ this.stopAutoSlide(true); }
 					else { this.startAutoSlide(); }
 				break;
+
+				// toggle stop/play
 				case 'toggle-stop':
-					if (this.autosliding !== null)
+					if (!toggler.stop.call(this))
 					{ this.stopAutoSlide(false); }
 					else { this.startAutoSlide(); }
-				break;
-				case 'forward':
-					this.goNext()
-				break;
-				case 'last':
-					this.goLast()
 				break;
 
 			}
 
 		}
+		// EO fn action
 
-		// activate autoslide
-		if (self.conf.navToolbar)
+		// check if the feature is activated and configured
+		if (self.conf.navToolbar && self.conf.navToolbarButtons)
 		{
 
+			// get all buttons for the toolbar
 			var buttons = self.conf.navToolbarButtons.split(/\s*,\s*/), nodes = [];
 
-			// create the wrapper around all nav dots
+			// create the wrapper around all toolbar buttons
 			var wrapper = jQuery('<div class="' + prefix + '">');
 
+			// now create all configured buttons
 			for (var i = 0, l = buttons.length; i < l; i++)
 			{
+
+				// create the button node
 				var button = jQuery(
-					'<span class="rtp-toolbar-' + buttons[i] + '">'
+					'<span class="' + prefix + '-' + buttons[i] + '">'
 					+ self.tmpl.navButtonWrapper[0]
 					+ self.tmpl.navButton
-					   .replace(/{type}/g, buttons[i].replace('toggle-', ''))
 				     .replace(/{title}/g, buttons[i])
+					   .replace(/{type}/g, buttons[i].replace('toggle-', ''))
 					+ self.tmpl.navButtonWrapper[1]
 					+ '</span>'
-				).click(jQuery.proxy(action, self, buttons[i]));
+				)
+
+				// attach click handler to the button
+				.click(jQuery.proxy(action, self, buttons[i]));
+
+				// add button to the outer wrapper node
 				wrapper.append(self.buttons[buttons[i]] = button);
+
+				// find and store all button images
+				button.imgs = button.find('IMG');
+
 			}
 
+			// store the toolbar wrapper
 			self.toolbarWrapper = wrapper;
 
 			// append wrapper to the main slider wrapper
@@ -141,51 +146,46 @@
 	});
 	// @@@ EO plugin: init @@@
 
-	var togglers = [ 'stop', 'pause' ];
 
+	// @@@ private fn: updateToggleButtons @@@
 	function updateToggleButtons ()
 	{
 
-		var n = 0;
-
-		var imgs = this.buttons['toggle-' + togglers[n]];
-
-		imgs = imgs ? imgs.find('IMG') : [];
-
-		var i = imgs.length; while (i--)
+		// process all toggle buttons
+		for(var type in toggler)
 		{
-			if (this.autosliding !== null)
+
+			// get value if feature is enabled
+			var enabled = toggler[type].call(this);
+
+			// get the images previousely stored
+			var imgs = this.buttons['toggle-' + type].imgs;
+
+			// process all button images
+			var i = imgs.length; while (i--)
 			{
-				imgs[i].src = imgs[i].src.replace('play', togglers[n]);
+
+				// get the current image src
+				var src = imgs[i].src.replace(
+					enabled ? type : 'play',
+					enabled ? 'play' : type
+				);
+
+				// check if src has changed
+				if (src != imgs[i].src)
+				{ imgs[i].src = src; }
+
 			}
-			else
-			{
-				imgs[i].src = imgs[i].src.replace(togglers[n], 'play');
-			}
+			// EO each image
+
 		}
-
-		n = 1;
-
-		var imgs = this.buttons['toggle-' + togglers[n]];
-
-		imgs = imgs ? imgs.find('IMG') : [];
-
-		var i = imgs.length; while (i--)
-		{
-			if (this.autosliding)
-			{
-				imgs[i].src = imgs[i].src.replace('play', togglers[n]);
-			}
-			else
-			{
-				imgs[i].src = imgs[i].src.replace(togglers[n], 'play');
-			}
-		}
-
+		// EO each toggler
 
 	}
+	// @@@ EO private fn: updateToggleButtons @@@
 
-	// @@@ plugin: autoslidePause @@@
+
+	// plug into various events to update buttons
 	prototype.plugin('ready', updateToggleButtons);
 	prototype.plugin('autoslideStop', updateToggleButtons);
 	prototype.plugin('autoslideStart', updateToggleButtons);
