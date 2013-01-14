@@ -152,7 +152,7 @@
 		// set the container width/height to the calculated value to contain all panels
 		// there is no getter or setter method for this particular container attribute
 		// we really only need to adjust this dimension if the panel dimensions have changed
-		this.container.css(getSizeCssStr.call(this), dim + 'px')
+		this.container.css(getSizeCssStr.call(this), Math.ceil(dim) + 'px')
 
 	}, - 9999);
 	// @@@ EO plugin: changedPanelsDim @@@
