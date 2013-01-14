@@ -124,6 +124,7 @@
 		var visible,
 		    panel_left = 0,
 		    visibility = [],
+		    smin = this.smin,
 		    widths = this.pd[0],
 		    i = this.slides.length,
 		    view_left = this.ct_off,
@@ -140,7 +141,7 @@
 			var slide = this.panel2slide(i);
 
 			// calculate the right panel edge
-			var panel_right = panel_left + widths[slide];
+			var panel_right = panel_left + widths[slide + smin];
 
 			// the panel is out on the left or out on the right
 			if (panel_right < view_left || panel_left > view_right)
