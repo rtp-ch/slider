@@ -51,41 +51,39 @@
 	prototype.plugin('layout', updateUI);
 
 	// hook into rtp slider class
-	prototype.plugin('init', function()
+	prototype.plugin('config', function(extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
-				navArrows: false, // should we generate navigation arrows
-				navArrowAttach: 'wrapper', // wrapper or panels
-				navArrowPosition: 'default', // prepend, reverse, append
-				navArrowPrevText: '&#171; left', // text/html for the previous link
-				navArrowNextText: 'right &#187;' // text/html for the next link
-			},
-			this.conf
-		);
+		// add defaults
+		extend({
 
-		// default templates
-		this.tmpl = jQuery.extend
-		(
-			{
+			navArrows: false, // should we generate navigation arrows
+			navArrowAttach: 'wrapper', // wrapper or panels
+			navArrowPosition: 'default', // prepend, reverse, append
+			navArrowPrevText: '&#171; left', // text/html for the previous link
+			navArrowNextText: 'right &#187;', // text/html for the next link
+
+			tmpl : {
+
 				'arrow-prev' : ['<div class="rtp-nav-prev"><a href="javascript:void(0)">', '</a></div>'],
 				'arrow-next' : ['<div class="rtp-nav-next"><a href="javascript:void(0)">', '</a></div>']
-			},
-			this.tmpl, this.conf.tmpl
-		);
 
-		// default templates
-		this.selector = jQuery.extend
-		(
-			{
+			},
+
+			selector : {
+
 				'nav-prev' : '.rtp-nav-prev A',
 				'nav-next' : '.rtp-nav-next A'
-			},
-			this.selector, this.conf.selector
-		);
+
+			}
+
+		});
+
+	});
+
+	// hook into rtp slider class
+	prototype.plugin('init', function(extend)
+	{
 
 		// declare and init navigation arrows
 		this.arrows = { prev : jQuery(), next : jQuery() };

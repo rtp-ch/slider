@@ -107,31 +107,24 @@
 			{
 				// the default method is to change the opacity
 				this.navDotImg.eq(slide).css('opacity', progress);
-			}
+			},
 
-		});
+			klass : {
 
-		// default configuration
-		this.klass = jQuery.extend
-		(
-			{
 				navDot: prefix,
 				panelHidden: prefix + '-hidden',
 				panelPartial: prefix + '-partial',
 				panelVisible: prefix + '-visible'
-			},
-			this.klass
-		);
 
-		// default configuration
-		this.tmpl = jQuery.extend
-		(
-			{
+			},
+
+			tmpl : {
 				navDotWrapper: ['<span><a href="javascript:void(0);">', '</a></span>'],
 				navDotElement: '<img src="img/rtp-nav-dot-clear.gif" width="12" height="12" alt=""/>'
-			},
-			this.tmpl
-		);
+			}
+
+
+		});
 
 	});
 	// @@@ EO plugin: config @@@

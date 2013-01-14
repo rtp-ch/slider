@@ -13,24 +13,20 @@
 
 
 	// @@@ plugin: init @@@
-	prototype.plugin('init', function()
+	prototype.plugin('config', function (extend)
 	{
 
-		// default configuration
-		this.conf = jQuery.extend
-		(
-			{
+		// add defaults
+		extend({
 
-				// should we enable keyboard navigation
-				navKeyboard : false,
-				// jquery keycode for prev action
-				navKeyboardPrev : this.conf.vertical ? 38 : 37,
-				// jquery keycode for next action
-				navKeyboardNext : this.conf.vertical ? 40 : 39
+			// should we enable keyboard navigation
+			navKeyboard : false,
+			// jquery keycode for prev action
+			navKeyboardPrev : this.conf.vertical ? 38 : 37,
+			// jquery keycode for next action
+			navKeyboardNext : this.conf.vertical ? 40 : 39
 
-			},
-			this.conf
-		);
+		});
 
 	});
 	// @@@ EO plugin: init @@@

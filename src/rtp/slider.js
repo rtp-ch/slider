@@ -26,9 +26,21 @@
 		if (slider.inited) { return; }
 		else { slider.inited = true; }
 
-		// mix defaults with given settings
-		slider.conf = jQuery.extend(
+		// @@@ private fn: extend @@@
+		function extend (config)
 		{
+
+			// add more default configuration options (deep extend)
+			return slider.conf = jQuery.extend(true, config, slider.conf);
+
+		}
+		// @@@ EO private fn: extend @@@
+
+		// first store given config
+		slider.conf = conf;
+
+		// add defaults
+		extend({
 
 			// the panel alignment to the position
 			align: 'center',
@@ -57,59 +69,43 @@
 
 			// initialize some structures
 			// they can be used by plugins
-			text: {}, // localized texts
-			tmpl: {}, // templates fragments
-			klass: {}, // classes to assign
-			selector: {} // dom css selectors
 
-		}, conf);
+			// localized texts
+			text: {},
 
-		// classes to mark panels
-		slider.klass = jQuery.extend
-		(
-		{
-			next: 'next',
-			current: 'current',
+			// templates fragments
+			tmpl:
+			{
+				wrapper : '<div class="rtp-slider-wrapper"></div>',
+				container : '<div class="rtp-slider-container"></div>'
+			},
+
+			// classes to assign
+			klass:
+			{
+				next: 'next',
+				current: 'current',
 				previous: 'previous',
 				vertical: 'rtp-slider-vertical',
 				horizontal: 'rtp-slider-horizontal'
 			},
-			slider.conf.klass
-		);
 
-		// templating bits might be overridden
-		slider.tmpl = jQuery.extend
-		(
-		{
-				wrapper : '<div class="rtp-slider-wrapper"></div>',
-				container : '<div class="rtp-slider-container"></div>'
-			},
-			slider.conf.tmpl
-		);
+			// dom css selectors
+			selector:
+			{
+				panel : 'DIV.rtp-slider-panel',
+				container : 'DIV.rtp-slider-container'
+			}
 
-		// selectors for dom elements
-		slider.selector = jQuery.extend
-		(
-		{
-			panel : 'DIV.rtp-slider-panel',
-			container : 'DIV.rtp-slider-container'
-			},
-			slider.conf.selector
-		);
-
-
-		// @@@ private fn: extend @@@
-		function extend (config)
-		{
-
-			// add more default configuration options
-			slider.conf = jQuery.extend(config, slider.conf);
-
-		}
-		// @@@ EO private fn: extend @@@
+		});
 
 		// execute all config hooks
+		// this will add more defaults
 		slider.trigger('config', extend);
+
+		// assign shortcuts to access nested config
+		jQuery(['text', 'tmpl', 'klass', 'selector'])
+		.each(function() { slider[this] = slider.conf[this]; })
 
 		// assertion for some options
 		if (isNaN(slider.conf.align))
@@ -136,13 +132,13 @@
 		slider.rmin = slider.smin = slider.pmin = 0;
 
 		// markup the wrapper if we are vertical/horizontal
-		if (this.conf.vertical && slider.klass.vertical)
-		{ this.wrapper.addClass(slider.klass.vertical); }
-		if (!this.conf.vertical && slider.klass.horizontal)
-		{ this.wrapper.addClass(slider.klass.horizontal); }
+		if (slider.conf.vertical && slider.klass.vertical)
+		{ slider.wrapper.addClass(slider.klass.vertical); }
+		if (!slider.conf.vertical && slider.klass.horizontal)
+		{ slider.wrapper.addClass(slider.klass.horizontal); }
 
 		// first slide to load may be a function
-		this.position = jQuery.isFunction(slider.conf.slideFirst)
+		slider.position = jQuery.isFunction(slider.conf.slideFirst)
 			? slider.conf.slideFirst.call(slider)
 			: slider.conf.slideFirst || 0;
 
@@ -228,26 +224,26 @@
 		slider.panels = viewport.find(slider.selector.panel);
 
 		// to which side should we float the panels / container
-		var floating = this.conf.offsetReverse ? 'right' : 'left';
+		var floating = slider.conf.offsetReverse ? 'right' : 'left';
 
-		if (this.conf.vertical) floating = 'none';
+		if (slider.conf.vertical) floating = 'none';
 
-		var overflow = this.conf.carousel3d ? 'visible' : 'hidden';
+		var overflow = slider.conf.carousel3d ? 'visible' : 'hidden';
 
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		this.viewport
+		slider.viewport
 			.css({
 				'overflow' : overflow
 			});
 
-		this.panels
+		slider.panels
 			.css({
 				'float' : floating
 			})
-			.add(this.viewport)
-			.add(this.container)
+			.add(slider.viewport)
+			.add(slider.container)
 			.css({
 				'zoom' : 1,
 				// 'overflow' : overflow,
@@ -255,12 +251,12 @@
 			});
 
 /*
-if (this.conf.vertical)
+if (slider.conf.vertical)
 {
-		this.viewport.css({
+		slider.viewport.css({
 			'min-height': '50px'
 		});
-		this.container.css({
+		slider.container.css({
 			'top': '0px',
 			'left': '0px',
 			'right': '0px',
@@ -271,10 +267,10 @@ if (this.conf.vertical)
 */
 
 		// setup floats for the container
-		if (!this.conf.vertical)
+		if (!slider.conf.vertical)
 		{
 			// we either float the container right or left
-			this.container.css('float', floating)
+			slider.container.css('float', floating)
 				// insert a float clearing div after the container
 				.after('<DIV style="clear:both;"/>');
 		}
