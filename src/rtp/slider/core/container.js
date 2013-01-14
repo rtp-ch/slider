@@ -53,15 +53,23 @@
 	prototype.setContainerOffset = function(offset, invert)
 	{
 
+		/*
+
+		Tests have shown that the clamping is not needed here!
+		So this has been disabled on purpose for performance!
+		Keep the code anyway, as it might become needed again!
+
 		// get the left and right position
 		// also calculate size of all slides
-		var left = this.offset[this.smin],
-		    right = this.offset[this.smax + 1],
+		var conf = this.conf
+		    align = conf.align * conf.vp_x,
+		    left = this.offset[this.smin] + align,
+		    right = this.offset[this.smax + 1] + align,
 		    size = right - left;
 
 		// shift into range when in carousel
 		// protect from endless loop condition
-		if (this.conf.carousel && size > 0)
+		if (conf.carousel && size > 0)
 		{
 			// shift into prefered and best visible area
 			// this may go wrong if floated to the right?
@@ -73,6 +81,9 @@
 		// allow offsets outside the valid range
 		// if (offset < left) { offset = left; }
 		// if (right < offset) { offset = right; }
+
+		*/
+
 
 		// set the offset position of the container to the viewport
 		this.container.css(getOffsetCssStr.call(this, invert), - offset);
