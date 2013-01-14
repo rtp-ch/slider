@@ -138,8 +138,8 @@
 			.wrapInner(slider.tmpl.container)
 				.find(slider.selector.container);
 
-		// min index for slides and panels
-		slider.rmin = slider.smin = slider.pmin = 0;
+		// min and max index for slides
+		slider.smin = slider.smax = 0;
 
 		// markup the wrapper if we are vertical/horizontal
 		if (slider.conf.vertical && slider.klass.vertical)
