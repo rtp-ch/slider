@@ -45,6 +45,7 @@
 	var evt_stop = 'touchend';
 	var evt_move = 'touchmove';
 	var evt_start = 'touchstart';
+	var evt_cancel = 'touchcancel';
 	// var evt_abort = 'dragstart';
 
 	function handleTouchChange (data, evt)
@@ -127,6 +128,9 @@
 		// call swipe move handler with coordinates
 		this.trigger('swipeMove', swipe, scroll, data, evt);
 
+		// prevent default action if swiping
+		if (data.swipeDrag) evt.preventDefault()
+
 		// abort if swipe dragging
 		return ! data.swipeDrag;
 
@@ -145,6 +149,7 @@
 		// handlers when the touch is dragged afterwards
 		this.viewport.bind(evt_stop, jQuery.proxy(handleTouchChange, this, data));
 		this.viewport.bind(evt_start, jQuery.proxy(handleTouchChange, this, data));
+		this.viewport.bind(evt_cancel, jQuery.proxy(handleTouchChange, this, data));
 
 	});
 	// @@@ EO plugin: ready @@@
