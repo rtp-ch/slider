@@ -189,7 +189,7 @@
 			{
 
 				// return the calculated position (intoPanel / panelSize + i - offset)
-				return (px - panel_left) / (panel_right - panel_left) + i - this.smin - align;
+				return (px - panel_left) / (panel_right - panel_left) + i - align;
 
 			}
 			// EO if position in panel
