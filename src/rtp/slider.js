@@ -191,7 +191,7 @@
 		slider.cloned = jQuery();
 
 		// create cloned panels
-		if (slider.conf.carousel)
+		if (slider.conf.carousel && slides.length)
 		{
 
 			// Clone as many panels needed to fill the viewport.
@@ -357,9 +357,13 @@ if (slider.conf.vertical)
 			// adjust for carousel
 			if (this.conf.carousel)
 			{
+				// get number of slides
+				var count = this.slides.length;
+				// protect from endless loop
+				if (count == 0) return 0;
 				// adjust panels into the valid range
-				while (panel > this.smax) panel -= this.slides.length;
-				while (panel < this.smin) panel += this.slides.length;
+				while (panel > this.smax) panel -= count;
+				while (panel < this.smin) panel += count;
 			}
 			else
 			{
