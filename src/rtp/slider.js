@@ -285,11 +285,6 @@
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		slider.viewport
-			.css({
-				'overflow' : overflow
-			});
-
 		slider.panels
 			.css({
 				'float' : floating
@@ -298,33 +293,19 @@
 			.add(slider.container)
 			.css({
 				'zoom' : 1,
-				// 'overflow' : overflow,
+				'overflow' : overflow,
 				'position' : 'relative'
-			});
-
-/*
-if (slider.conf.vertical)
-{
-		slider.viewport.css({
-			'min-height': '50px'
-		});
-		slider.container.css({
-			'top': '0px',
-			'left': '0px',
-			'right': '0px',
-			'bottom': '0px',
-			'position': 'absolute'
-		});
-}
-*/
+			})
 
 		// setup floats for the container
 		if (!slider.conf.vertical)
 		{
+			// define html code for float clearer
+			var clearer = '<DIV style="clear:both;"/>';
 			// we either float the container right or left
 			slider.container.css('float', floating)
 				// insert a float clearing div after the container
-				.after('<DIV style="clear:both;"/>');
+				.append(clearer).after(clearer);
 		}
 
 		// defer until all images are loaded
