@@ -199,16 +199,20 @@
 			var panelsToClone = slider.conf.clonePanels ||
 			                    Math.ceil(slider.conf.panelsVisible);
 
-			// add cloned panels on both sides
-			var cloneAfter = slider.conf.cloneAfter ? Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5) : 0;
-			var cloneBefore = slider.conf.cloneBefore ? Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5) : 0;
+			// distribute cloned panels before (left/top)
+			var cloneBefore = slider.conf.cloneBefore === false ? 0 :
+				isNaN(slider.conf.cloneBefore) ? slider.conf.cloneBefore :
+				Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5);
+
+			// distribute cloned panels after (right/bottom)
+			var cloneAfter = slider.conf.cloneAfter === false ? 0 :
+				isNaN(slider.conf.cloneAfter) ? slider.conf.cloneAfter :
+				Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5);
+
 
 			// accumulate all cloned panels
 			// we may clone each slide more than once
-			var after = jQuery(), before = jQuery();
-
-			// clone panels from end to extend the container
-			if (cloneBefore > 0) before = before.add(slides.slice(- cloneBefore).clone());
+			var after = jQuery([]), before = jQuery([]);
 
 			// I will clone as many as you wish
 			while (cloneBefore > slides.length)
@@ -216,7 +220,14 @@
 				// remove a full set of slides
 				cloneBefore -= slides.length;
 				// clone and add another full set
-				before = before.add(slides.clone());
+				jQuery.merge(before, slides.clone());
+			}
+
+			// clone panels before
+			if (cloneBefore > 0)
+			{
+				// clone panels from end to extend the container
+				before = jQuery.merge(slides.slice(- cloneBefore).clone(), before);
 			}
 
 			// I will clone as many as you wish
@@ -225,11 +236,15 @@
 				// remove a full set of slides
 				cloneAfter -= slides.length;
 				// clone and add another full set
-				after = after.add(slides.clone());
+				jQuery.merge(after, slides.clone());
 			}
 
-			// clone panels from begining to extend the container
-			after = after.add(slides.slice(0, cloneAfter).clone());
+			// clone panels after
+			if (cloneAfter > 0)
+			{
+				// clone panels from begining to extend the container
+				jQuery.merge(after, slides.slice(0, cloneAfter).clone());
+			}
 
 			// append the cloned panels to the container and set class
 			after.appendTo(slider.container).addClass('cloned');
@@ -240,12 +255,16 @@
 			slider.smax += before.length;
 			slider.smin += before.length;
 
-			// store a combined object of cloned panels
-			slider.cloned = jQuery.merge(before, after);
+			// all cloned panels
+			var cloned = [];
+			// merge other array into
+			jQuery.merge(cloned, before);
+			jQuery.merge(cloned, after)
 
 			// store the cloned panels
-			slider.after = after;
+			slider.cloned = cloned;
 			slider.before = before;
+			slider.after = after;
 
 		}
 		// EO if conf.carousel
