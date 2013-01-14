@@ -22,7 +22,7 @@
 	   http://en.wikipedia.org/wiki/Least_squares
 	   http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
 	*/
-	var LeastSquaresFitting = function (points)
+	var LeastSquaresFitting = function (points, scale)
 	{
 
 		// no result if less than 2 points given
@@ -37,7 +37,8 @@
 		for (var i = 0, l = points.length; i < l; i++)
 		{
 
-			var y = points[i][0], x = points[i][2] - timestamp;
+			var y = points[i][0] / scale,
+			    x = points[i][2] - timestamp;
 
 			sum_x += x; sum_xx += x * x;
 			sum_y += y; sum_xy += x * y;
@@ -239,13 +240,15 @@ data.vp_off = vp_off.x;
 		while (moves.length && moves[0][2] < limit) moves.shift();
 
 		// get fitted linear function parameters
-		var least = LeastSquaresFitting(moves);
+		var least = LeastSquaresFitting(moves, this.vp_x / 2);
 
 		// linear fn -> y = m*x + n
-		var m = least[0], n = least[1];
+		var m = least[0] * this.vp_x / 2, n = least[1];
+
+		var sign = m < 0 ? -1 : 1;
 
 		// check to which position we will swipe
-		var to = parseInt(this.position + 0.5 + m * -0.4)
+		var to = parseInt(this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5))
 
 		// get absolute speed
 		var speed = Math.abs(m);
