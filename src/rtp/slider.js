@@ -258,14 +258,11 @@
 			slider.smax += before.length;
 			slider.smin += before.length;
 
-			// all cloned panels
-			var cloned = [];
-			// merge other array into
-			jQuery.merge(cloned, before);
-			jQuery.merge(cloned, after)
+			// merge all cloned panels
+			jQuery.merge(slider.cloned, before);
+			jQuery.merge(slider.cloned, after)
 
 			// store the cloned panels
-			slider.cloned = cloned;
 			slider.before = before;
 			slider.after = after;
 
@@ -330,21 +327,20 @@ if (slider.conf.vertical)
 				.after('<DIV style="clear:both;"/>');
 		}
 
-		// private named function
-		// execute when images loaded
-		function loaded ()
+		// defer until all images are loaded
+		// otherwise we will not get valid info
+		// about resource dimensions like images
+		jQuery('IMG', viewport)
+			// wait loading images
+			.imagesLoaded()
+			// execute when ready
+			.done(function()
 		{
 
 			// trigger ready hook
 			slider.trigger('ready');
 
-		};
-		// EO fn loaded
-
-		// defer until all images are loaded
-		// otherwise we will not get valid info
-		// about resource dimensions like images
-		jQuery('IMG', viewport).imagesLoaded().done(loaded);
+			});
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
@@ -353,6 +349,7 @@ if (slider.conf.vertical)
 	/* @@@@@@@@@@ RTP CLASS @@@@@@@@@@ */
 	(function (prototype, jQuery)
 	{
+
 
 		// @@@ method: panel2panel @@@
 		prototype.panel2panel = function(panel)
