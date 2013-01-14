@@ -67,6 +67,16 @@
 			// also defines how many panels are cloned
 			panelsVisible: 1,
 
+			// how many panels should be cloned
+			// if this is set to 0, we will use
+			// the panelsVisible option for this
+			clonePanels: 0,
+
+			// in which direction should we clone
+			// adds cloned panels before or after
+			cloneAfter: true,
+			cloneBefore: true,
+
 			// initialize some structures
 			// they can be used by plugins
 
@@ -142,6 +152,37 @@
 			? slider.conf.slideFirst.call(slider)
 			: slider.conf.slideFirst || 0;
 
+		// @@@ private fn: resolve_align @@@
+		// this can be a number between -INF and +INF
+		// or you can use "left", "center" or "right"
+		function resolve_align (key, preset)
+		{
+
+			// get configured option
+			var align = slider.conf[key];
+
+			// check if align matches any of our strings
+			if (new RegExp(/^l/i).test(align)) align = 0.0;
+			if (new RegExp(/^c/i).test(align)) align = 0.5;
+			if (new RegExp(/^r/i).test(align)) align = 1.0;
+
+			// now check if it's valid or use given preset
+			if (isNaN(parseInt(align, 10))) align = preset;
+			// maybe there was no preset given, check again
+			if (isNaN(parseInt(align, 10))) align = 0.5;
+
+			// assign and return the number
+			return slider.conf[key] = align;
+
+		}
+		// EO @@@ private fn: resolve_align @@@
+
+		// first resolve the shared value to inherit from
+		var preset = resolve_align('align', 0.5);
+		// then resolve the specific align options
+		resolve_align('alignViewport', preset);
+		resolve_align('alignPanel', preset);
+
 		// init array always
 		// avoid checks in code
 		slider.cloned = jQuery();
@@ -155,67 +196,59 @@
 			// to adjust how many panels you want to have cloned
 			// In this mode the viewport might be much wider than
 			// all panels inside. Todo: Maybe support this better.
-			var panelsToClone = this.conf.clonePanels ||
-			                    Math.ceil(this.conf.panelsVisible);
+			var panelsToClone = slider.conf.clonePanels ||
+			                    Math.ceil(slider.conf.panelsVisible);
+
+			// add cloned panels on both sides
+			var cloneAfter = slider.conf.cloneAfter ? Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5) : 0;
+			var cloneBefore = slider.conf.cloneBefore ? Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5) : 0;
 
 			// accumulate all cloned panels
 			// we may clone each slide more than once
-			var cloned = jQuery();
+			var after = jQuery(), before = jQuery();
+
+			// clone panels from end to extend the container
+			if (cloneBefore > 0) before = before.add(slides.slice(- cloneBefore).clone());
 
 			// I will clone as many as you wish
-			while (panelsToClone > slides.length)
+			while (cloneBefore > slides.length)
 			{
 				// remove a full set of slides
-				panelsToClone -= slides.length;
+				cloneBefore -= slides.length;
 				// clone and add another full set
-				cloned = cloned.add(slides.clone());
+				before = before.add(slides.clone());
+			}
+
+			// I will clone as many as you wish
+			while (cloneAfter > slides.length)
+			{
+				// remove a full set of slides
+				cloneAfter -= slides.length;
+				// clone and add another full set
+				after = after.add(slides.clone());
 			}
 
 			// clone panels from begining to extend the container
-			cloned = cloned.add(slides.slice(0, panelsToClone).clone());
+			after = after.add(slides.slice(0, cloneAfter).clone());
 
 			// append the cloned panels to the container and set class
-			cloned.appendTo(slider.container).addClass('cloned');
+			after.appendTo(slider.container).addClass('cloned');
+			before.prependTo(slider.container).addClass('cloned');
 
-			// increase maximum slide index
-			slider.smax += cloned.length;
+			// increase min and max slide index
+			slider.smax += after.length;
+			slider.smax += before.length;
+			slider.smin += before.length;
+
+			// store a combined object of cloned panels
+			slider.cloned = jQuery.merge(before, after);
 
 			// store the cloned panels
-			slider.cloned = cloned;
+			slider.after = after;
+			slider.before = before;
 
 		}
 		// EO if conf.carousel
-
-		// @@@ private fn: resolve_align @@@
-		// this can be a number between -INF and +INF
-		// or you can use "left", "center" or "right"
-		function resolve_align (key, preset)
-		{
-
-			// get configured option
-			var align = this.conf[key];
-
-			// check if align matches any of our strings
-			if (new RegExp(/^l/i).test(align)) align = 0.0;
-			if (new RegExp(/^c/i).test(align)) align = 0.5;
-			if (new RegExp(/^r/i).test(align)) align = 1.0;
-
-			// now check if it's valid or use given preset
-			if (isNaN(parseInt(align, 10))) align = preset;
-			// maybe there was no preset given, check again
-			if (isNaN(parseInt(align, 10))) align = 0.5;
-
-			// assign and return the number
-			return this.conf[key] = align;
-
-		}
-		// EO @@@ private fn: resolve_align @@@
-
-		// first resolve the shared value to inherit from
-		var preset = resolve_align.call(this, 'align', 0.5);
-		// then resolve the specific align options
-		resolve_align.call(this, 'alignViewport', preset);
-		resolve_align.call(this, 'alignPanel', preset);
 
 		// execute all init hooks
 		slider.trigger('init');
