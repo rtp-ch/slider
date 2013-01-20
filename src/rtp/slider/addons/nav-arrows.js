@@ -102,14 +102,14 @@
 			// switch positions by given configuration
 			switch(this.conf.navArrowPosition.substr(0,1))
 			{
-				case 'r':
+				case 'r': // reverse
 					navPositionPrev = this.viewport.append;
 					navPositionNext = this.viewport.prepend;
 				break;
-				case 'p':
+				case 'p': // prepend
 					navPositionNext = this.viewport.prepend;
 				break;
-				case 'a':
+				case 'a': // append
 					navPositionPrev = this.viewport.append;
 				break;
 			}

@@ -193,7 +193,7 @@
 				});
 
 				// append wrapper to the main slider wrapper
-				self.navDotWrapper.appendTo(self.wrapper);
+				self.wrapper.append(self.navDotWrapper);
 
 				// self.navDotWrapper.wrap('<div class="rtp-nav-dots-outer">');
 				// self.navDotWrapper.wrap('<div class="rtp-nav-dots-wrapper">');

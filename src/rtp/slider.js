@@ -111,6 +111,7 @@
 			}
 
 		});
+		// EO extend config
 
 		// execute all config hooks
 		// this will add more defaults
