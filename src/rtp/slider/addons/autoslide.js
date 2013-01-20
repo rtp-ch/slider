@@ -97,6 +97,9 @@
 
 		if (this.queue.length > 0 || this.animating || this.locked) return;
 
+		// wait for next slide action
+		this.trigger('autoslideWaitStart', delay);
+
 		// setup and create new function to start autoslider
 		this.autosliding = window.setTimeout(jQuery.proxy(function ()
 		{
@@ -105,6 +108,9 @@
 
 			// if config option is a function, execute to get action
 			if (jQuery.isFunction(action)) action = action.call(this);
+
+			// we are now executing slide action
+			this.trigger('autoslideWaitStop');
 
 				// get default action from given config
 			if (isNaN(action)) action = this.conf.autoslideAction;
@@ -131,6 +137,9 @@
 		// a timeout has been stored
 		if (this.autosliding !== true)
 		{
+
+			// we are aborting slide waiter
+			this.trigger('autoslideWaitStop', true);
 
 			// clear the next autoslide timeout
 			window.clearTimeout(this.autosliding)
