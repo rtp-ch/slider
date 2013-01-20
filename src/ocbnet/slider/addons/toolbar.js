@@ -143,7 +143,7 @@
 			self.toolbarWrapper.appendTo(self.wrapper);
 
 		}
-		// EO if conf.autoslide
+		// EO if conf.navToolbar
 
 
 	});
@@ -154,35 +154,42 @@
 	function updateToggleButtons ()
 	{
 
-		// process all toggle buttons
-		for(var type in toggler)
+		// check if the feature is activated and configured
+		if (this.conf.navToolbar && this.conf.navToolbarButtons)
 		{
 
-			// get value if feature is enabled
-			var enabled = toggler[type].call(this);
-
-			// get the images previousely stored
-			var imgs = this.buttons['toggle-' + type].imgs;
-
-			// process all button images
-			var i = imgs.length; while (i--)
+			// process all toggle buttons
+			for(var type in toggler)
 			{
 
-				// get the current image src
-				var src = imgs[i].src.replace(
-					enabled ? type : 'play',
-					enabled ? 'play' : type
-				);
+				// get value if feature is enabled
+				var enabled = toggler[type].call(this);
 
-				// check if src has changed
-				if (src != imgs[i].src)
-				{ imgs[i].src = src; }
+				// get the images previousely stored
+				var imgs = this.buttons['toggle-' + type].imgs;
+
+				// process all button images
+				var i = imgs.length; while (i--)
+				{
+
+					// get the current image src
+					var src = imgs[i].src.replace(
+						enabled ? type : 'play',
+						enabled ? 'play' : type
+					);
+
+					// check if src has changed
+					if (src != imgs[i].src)
+					{ imgs[i].src = src; }
+
+				}
+				// EO each image
 
 			}
-			// EO each image
+			// EO each toggler
 
 		}
-		// EO each toggler
+		// EO if conf.navToolbar
 
 	}
 	// @@@ EO private fn: updateToggleButtons @@@
