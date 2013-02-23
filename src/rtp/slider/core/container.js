@@ -142,6 +142,7 @@
 
 		// in vertical mode the container always
 		// has the panels correctly layed out
+		if (this.conf.carousel3d) return;
 		if (this.conf.vertical) return;
 
 		// sum up the dimensions for the container
