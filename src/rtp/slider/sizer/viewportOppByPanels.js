@@ -35,7 +35,7 @@
 	{
 
 		// declare local variables for loop
-		var opps = [], exposure = this.s_e,
+		var opps = [], exposure = this.se,
 		    // dead zone for out of view panel
 		    dead_zone = this.conf.autoVpOppDeadZone || 1;
 

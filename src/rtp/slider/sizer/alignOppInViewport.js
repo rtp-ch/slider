@@ -26,7 +26,7 @@
 		extend({
 
 			// center in viewport
-			alignOpp: 0.5
+			alignPanelOpp: 0.5
 
 		});
 
@@ -39,7 +39,7 @@
 	{
 
 		// declare local variables
-		var align = this.conf.alignOpp,
+		var align = this.conf.alignPanelOpp,
 		    // get the css attribute to set
 		    css = this.conf.vertical ? 'left' : 'top';
 
