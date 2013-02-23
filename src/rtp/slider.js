@@ -91,8 +91,9 @@
 			// templates fragments
 			tmpl:
 			{
-				wrapper : '<div class="rtp-slider-wrapper"></div>',
-				container : '<div class="rtp-slider-container"></div>'
+				wrapper : '<div/>',
+				viewport : '<div/>',
+				container : '<div/>'
 			},
 
 			// classes to assign
@@ -102,18 +103,30 @@
 				current: 'current',
 				previous: 'previous',
 				vertical: 'rtp-slider-vertical',
-				horizontal: 'rtp-slider-horizontal'
-			},
-
-			// dom css selectors
-			selector:
-			{
-				panel : 'DIV.rtp-slider-panel',
-				container : 'DIV.rtp-slider-container'
+				horizontal: 'rtp-slider-horizontal',
+				panel : 'rtp-slider-panel',
+				wrapper: 'rtp-slider-wrapper',
+				viewport : 'rtp-slider-viewport',
+				container : 'rtp-slider-container'
 			}
 
 		});
 		// EO extend config
+
+		// dynamic extending
+		extend({
+
+			// dom css selectors
+			selector:
+			{
+				panel : '.' + this.conf.klass.panel,
+				wrapper: '.' + this.conf.klass.wrapper,
+				viewport : '.' + this.conf.klass.viewport,
+				container : '.' + this.conf.klass.container
+			}
+
+		});
+		// EO dynamic config
 
 		// execute all config hooks
 		// this will add more defaults
@@ -127,22 +140,41 @@
 		if (isNaN(slider.conf.align))
 		{ slider.conf.align = 0.5; }
 		if (isNaN(slider.conf.panelsVisible))
-		{ slider.conf.panelsVisible = 0.5; }
+		{ slider.conf.panelsVisible = 1.0; }
 
-		// current element is used as our viewport
-		var viewport = slider.viewport = jQuery(el);
+		// current element is used as our container
+		var container = slider.container = jQuery(el);
 
 		// get all intial panels (slides) once at startup (after config)
-		var slides = slider.slides = viewport.find(slider.selector.panel);
+		var slides = slider.slides = container.find(slider.selector.panel);
 
-		// put a wrapper around everything
+		// put viewport around container
+		var viewport = slider.viewport = container
+			.wrapAll(slider.tmpl.viewport).parent();
+
+		// put wrapper around viewport
 		var wrapper = slider.wrapper = viewport
 			.wrapAll(slider.tmpl.wrapper).parent();
 
-		// wrap all panels into container
-		var container = slider.container = viewport
-			.wrapInner(slider.tmpl.container)
-				.find(slider.selector.container);
+		// move all attributes from container to viewport
+		var attrs = el.attributes, idx = attrs.length;
+
+		// process all attributes
+		while (idx--)
+		{
+			// copy the attribute from container to viewport
+			viewport.attr(attrs[idx].name, attrs[idx].value);
+			// remove the attribute on the container
+			container.removeAttr(attrs[idx].name);
+		}
+
+		// force the container to have no margin and padding
+		container.css({ 'margin' : '0', 'padding' : '0' });
+
+		// add default class to all elements
+		wrapper.addClass(slider.klass.wrapper);
+		viewport.addClass(slider.klass.viewport);
+		container.addClass(slider.klass.container);
 
 		// min and max index for slides
 		slider.smin = slider.smax = 0;
@@ -208,14 +240,13 @@
 
 			// distribute cloned panels before (left/top)
 			var cloneBefore = slider.conf.cloneBefore === false ? 0 :
-				isNaN(slider.conf.cloneBefore) ? slider.conf.cloneBefore :
+				! isNaN(slider.conf.cloneBefore) ? slider.conf.cloneBefore :
 				Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5);
 
 			// distribute cloned panels after (right/bottom)
 			var cloneAfter = slider.conf.cloneAfter === false ? 0 :
-				isNaN(slider.conf.cloneAfter) ? slider.conf.cloneAfter :
+				! isNaN(slider.conf.cloneAfter) ? slider.conf.cloneAfter :
 				Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5);
-
 
 			// accumulate all cloned panels
 			// we may clone each slide more than once
@@ -294,23 +325,31 @@
 				'float' : floating
 			})
 			.add(slider.viewport)
+			.css({
+				'overflow' : overflow
+			})
 			.add(slider.container)
 			.css({
 				'zoom' : 1,
-				'overflow' : overflow,
 				'position' : 'relative'
 			})
 
 		// setup floats for the container
 		if (!slider.conf.vertical)
 		{
+			// get the tagname for panels
+			var tag = slider.panels[0].tagName;
 			// define html code for float clearer
-			var clearer = '<DIV style="clear:both;"/>';
+			var clearer_div = '<DIV style="clear:both;"/>';
+			var clearer_tag = '<' + tag + ' style="clear:both;"/>';
 			// we either float the container right or left
 			slider.container.css('float', floating)
 				// insert a float clearing div after the container
-				.append(clearer).after(clearer);
+				.append(clearer_tag).after(clearer_div);
 		}
+
+		// trigger loading hook
+		slider.trigger('loading');
 
 		// defer until all images are loaded
 		// otherwise we will not get valid info
@@ -406,4 +445,3 @@
 
 // END anonymous scope
 })(jQuery);
-
