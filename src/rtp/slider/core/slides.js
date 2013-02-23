@@ -118,5 +118,37 @@
 	// @@@ EO method: getPanelsBySlide @@@
 
 
+	// @@@ plugin: ready @@@
+	prototype.plugin('ready', function ()
+	{
+
+		// initialize slidepanels
+		this.slidepanels = [];
+
+		// get slides length
+		this.slen = this.slides.length;
+
+		// max index for real slider panels (not cloned ones)
+		this.smax = this.smin + this.slen - 1;
+
+		// test how much viewable each panel is right now
+		for(var i = 0; i < this.panels.length; i ++)
+		{
+
+			// normalize from panel to slide
+			var slide = this.panel2slide(i);
+
+			// generate slidepanels array
+			if (!this.slidepanels[slide])
+			{ this.slidepanels[slide] = [i]; }
+			else { this.slidepanels[slide].push(i); }
+
+		}
+		// EO foreach panel
+
+	}, - 99999);
+	// @@@ EO plugin: ready @@@
+
+
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
