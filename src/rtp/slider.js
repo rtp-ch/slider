@@ -47,8 +47,10 @@
 
 			// the panel alignment to the position
 			align: 'center',
+
 			// inherit from align
-			alignPanel: false,
+			alignPanelDim: false,
+			alignPanelOpp: false,
 			alignViewport: false,
 
 			// vertical sliding is also supported
@@ -166,9 +168,9 @@
 			var align = slider.conf[key];
 
 			// check if align matches any of our strings
-			if (new RegExp(/^l/i).test(align)) align = 0.0;
-			if (new RegExp(/^c/i).test(align)) align = 0.5;
-			if (new RegExp(/^r/i).test(align)) align = 1.0;
+			if (new RegExp(/^[lt]/i).test(align)) align = 0.0;
+			if (new RegExp(/^[cm]/i).test(align)) align = 0.5;
+			if (new RegExp(/^[rb]/i).test(align)) align = 1.0;
 
 			// now check if it's valid or use given preset
 			if (isNaN(parseInt(align, 10))) align = preset;
@@ -184,8 +186,9 @@
 		// first resolve the shared value to inherit from
 		var preset = resolve_align('align', 0.5);
 		// then resolve the specific align options
+		resolve_align('alignPanelDim', preset);
+		resolve_align('alignPanelOpp', preset);
 		resolve_align('alignViewport', preset);
-		resolve_align('alignPanel', preset);
 
 		// init array always
 		// avoid checks in code

@@ -24,7 +24,7 @@
 
 		// declare local variables
 		var conf = this.conf,
-		    alignPanel = conf.alignPanel,
+		    alignPanelDim = conf.alignPanelDim,
 		    alignViewport = conf.alignViewport,
 		    panelsVisible = conf.panelsVisible;
 
@@ -37,7 +37,7 @@
 			{
 
 				// calculate the left and right space to be filled
-				var fill_left = panelsVisible * alignViewport - alignPanel,
+				var fill_left = panelsVisible * alignViewport - alignPanelDim,
 				    fill_right = -1 * fill_left + panelsVisible - 1;
 
 				// adjust panel position to make those
@@ -68,7 +68,7 @@
 		// EO if not conf.carousel
 
 		// adjust the panel position for the viewport and panel alignment
-		position += alignPanel - alignViewport * panelsVisible;
+		position += alignPanelDim - alignViewport * panelsVisible;
 
 		// declare local variables
 		var exposure = [],
@@ -103,10 +103,10 @@
 
 		// store state before calling the changed hock
 		// reset the status first, but pass before status
-		var s_e = this.s_e; this.s_e = exposure;
+		var se = this.se; this.se = exposure;
 
 		// execute the updatedSlideExposure hook for slides
-		this.trigger('changedExposure', exposure, s_e);
+		this.trigger('changedExposure', exposure, se);
 
 
 	}
@@ -185,10 +185,10 @@
 
 		// store state before calling the changed hock
 		// reset the status first, but pass before status
-		var s_v = this.s_v; this.s_v = visibility;
+		var sv = this.sv; this.sv = visibility;
 
 		// execute the changedVisibility hook for slides
-		this.trigger('changedVisibility', visibility, s_v);
+		this.trigger('changedVisibility', visibility, sv);
 
 	}
 	// @@@ EO fn: updateSlideVisibility @@@

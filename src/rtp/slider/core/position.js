@@ -49,7 +49,7 @@
 
 		// declare local variables
 		var conf = this.conf,
-		    alignPanel = conf.alignPanel,
+		    alignPanelDim = conf.alignPanelDim,
 		    alignViewport = conf.alignViewport,
 		    panelsVisible = conf.panelsVisible;
 
@@ -62,7 +62,7 @@
 			{
 
 				// calculate the left and right space to be filled
-				var fill_left = panelsVisible * alignViewport - alignPanel,
+				var fill_left = panelsVisible * alignViewport - alignPanelDim,
 				    fill_right = -1 * fill_left + panelsVisible - 1;
 
 				// adjust panel position to make those
@@ -113,7 +113,7 @@
 	{
 
 		// index is meant as slide, get into panels
-		index += this.smin + this.conf.alignPanel;
+		index += this.smin + this.conf.alignPanelDim;
 
 		if (this.conf.carousel)
 		{
@@ -158,7 +158,7 @@
 		// also calculate size of all slides
 		var left = this.offset[this.smin],
 		    right = this.offset[this.smax + 1],
-		    align = this.conf.alignPanel + this.smin;
+		    align = this.conf.alignPanelDim + this.smin;
 
 
 		if (this.conf.carousel && right > left)
