@@ -61,15 +61,15 @@
 		// get the box size strings (ie left/right)
 		var css = getBoxSizeCssStr.call(this, invert);
 
-		// get the left and right value for this css box object
-		var left = parseFloat(panel.css(prefix + css[0] + suffix), 10);
-		var right = parseFloat(panel.css(prefix + css[1] + suffix), 10);
+		// get the left/top and right/bottom value for this css box
+		var lt = parseFloat(panel.css(prefix + css[0] + suffix), 10);
+		var rb = parseFloat(panel.css(prefix + css[1] + suffix), 10);
 
 		// some browser may return auto when the actual value is zero (ie8)
-		if(isNaN(left)) left = 0; if(isNaN(right)) right = 0;
+		if(isNaN(lt)) lt = 0; if(isNaN(rb)) rb = 0;
 
 		// return an array with values and sum
-		return [left, right, left + right];
+		return [lt, rb, lt + rb];
 
 	}
 	// @@@ EO privat fn: getPanelBoxCss @@@
@@ -118,6 +118,11 @@
 		// return the panel axis size
 		return this.conf.vertical ^ invert
 			? panel.height() : panel.width();
+
+		// return the panel axis size
+		// return this.conf.vertical ^ invert
+		// 	? panel.get(0).clientHeight ? panel.get(0).clientHeight : panel.height()
+		// 	: panel.get(0).clientWidth ? panel.get(0).clientWidth : panel.width();
 
 	}
 	// @@@ EO method: getPanelSize @@@
@@ -225,6 +230,12 @@
 		// trigger hook for updated panels
 		this.trigger('changedPanelsDim');
 
+		// read the new panel opps from UA
+		// updates the ps[1] and pd[1] arrays
+		// this is only needed if the opp is fluid
+		// which means it can change when dim changes
+		// if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
+
 	};
 	// @@@ EO method: readPanelsDim @@@
 
@@ -238,6 +249,12 @@
 
 		// trigger hook for updated panels
 		this.trigger('changedPanelsOpp');
+
+		// read the new panel dims from UA
+		// updates the ps[0] and pd[0] arrays
+		// this is only needed if the dim is fluid
+		// which means it can change when opp changes
+		// if (this.conf.fluidPanelsDim) this.readPanelsDim();
 
 	};
 	// @@@ EO method: readPanelsOpp @@@

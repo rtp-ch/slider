@@ -49,6 +49,7 @@
 		slide = this.slide2slide(slide);
 
 		// get array with all panels for slide
+		// contains only indexes and not objects
 		var panels = this.slidepanels[slide];
 
 		// process original and cloned panels for slide
@@ -64,22 +65,25 @@
 			// we cannot have a negative outer size
 			if (outerdim < boxdiff) outerdim = boxdiff;
 
-			// update dimension and inner size of this panel
+			// update inner dimension of panel
+			var innerdim = outerdim - boxdiff;
+
+			// update outer dimension of panel
 			this.pd[invert][p] = outerdim;
 
-			this.ps[invert][p] = outerdim - boxdiff;
+			// update inner dimension of panel
+			this.ps[invert][p] = innerdim;
 
-			var dim = this.ps[invert][p];
-
+			// adjust for box sizing layout
 			// if (layout[i] == 'content-box')
-			// { dim += padding[i][2]; }
+			// { innerdim += padding[i][2]; }
 			// else if (layout[i] == 'border-box')
-			// { dim += padding[i][2] + border[i][2]; }
+			// { innerdim += padding[i][2] + border[i][2]; }
 
-			// update panel size
+			// update the panel size in dom
 			if (this.conf.vertical ^ invert)
-			{ jQuery(panel).height(dim); }
-			else { jQuery(panel).width(dim); }
+			{ jQuery(panel).height(innerdim); }
+			else { jQuery(panel).width(innerdim); }
 
 		}
 		// EO each panel
