@@ -194,7 +194,7 @@
 		// call start hook defered
 		this.trigger('start');
 
-	}, 9999);
+	}, 99999);
 	// @@@ EO plugin: ready @@@
 
 
