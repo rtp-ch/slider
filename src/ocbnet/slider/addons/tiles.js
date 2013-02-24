@@ -381,6 +381,8 @@
 	function alignOppInViewport ()
 	{
 
+		if (!this.conf.tiles) return;
+
 		// declare local variables
 		var align = this.conf.alignPanelOpp,
 		    // get the css attribute to set
@@ -408,9 +410,36 @@ var p = this.slide2panel(i);
 	}
 	// @@@ EO private fn: alignOppInViewport @@@
 
+	function changedPanelsSize()
+	{
+
+		if (!this.conf.tiles) return;
+
+		// loop all slides to setup their 3d transformation
+		var i = this.slides.length; while (i--)
+		{
+
+			var p = this.slide2panel(i);
+
+			// calculate the possible margin and multiply
+			var dim = this.pd[0][p], opp = this.pd[1][p]
+
+			// set this panel margin for direction
+			jQuery('.rtp-slider-slide-' + i, this.fader)
+			.css({
+				'width': dim + 'px',
+				'height': opp + 'px'
+			});
+
+		}
+
+	}
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
+	prototype.plugin('updatedViewportOpp', alignOppInViewport, 99999);
+
+	prototype.plugin('changedPanelsDim', changedPanelsSize, 99999);
+	prototype.plugin('changedPanelsOpp', changedPanelsSize, 99999);
 
 
 
