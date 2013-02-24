@@ -104,4 +104,3 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 }).call(RTP.Multievent.prototype);
-

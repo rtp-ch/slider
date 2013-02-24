@@ -157,5 +157,3 @@
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
-

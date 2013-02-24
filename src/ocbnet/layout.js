@@ -333,5 +333,3 @@
 
 })(jQuery);
 // EO private scope
-
-

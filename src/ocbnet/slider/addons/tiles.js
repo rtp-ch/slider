@@ -395,7 +395,7 @@
 		var i = this.slides.length; while (i--)
 		{
 
-var p = this.slide2panel(i);
+			var p = this.slide2panel(i);
 
 			// calculate the possible margin and multiply
 			var margin = (this.vp_y - this.pd[1][p]) * align;
@@ -445,4 +445,3 @@ var p = this.slide2panel(i);
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
