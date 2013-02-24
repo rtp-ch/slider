@@ -34,8 +34,8 @@
 	// @@@ EO plugin: config @@@
 
 
-	// @@@ private fn: centerOppInViewport @@@
-	function centerOppInViewport ()
+	// @@@ private fn: alignOppInViewport @@@
+	function alignOppInViewport ()
 	{
 
 		// declare local variables
@@ -60,11 +60,11 @@
 			// EO all panels
 
 	}
-	// @@@ EO private fn: centerOppInViewport @@@
+	// @@@ EO private fn: alignOppInViewport @@@
 
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', centerOppInViewport, 999);
+	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
 
 
 // EO extend class prototype
