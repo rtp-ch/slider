@@ -284,12 +284,13 @@
 					'height' : height * prog_h + 'px',
 
 					'marginTop' : align_h * height * (1 - prog_h) + 'px',
-					'marginLeft' : align_w * width * (1 - prog_w) + 'px',
+					'marginLeft' : align_w * width * (1 - prog_w) + 'px'
 
 
 				});
 
 				this.tiles[i][n].css({
+
 					 'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
 					 'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
 
