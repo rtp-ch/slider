@@ -24,7 +24,7 @@
 		extend({
 
 			// enable plugin
-			progressBar: false,
+			tiles: false,
 
 			// how many tiles for animations
 			tileRows: 15, tileCols: 1,
@@ -42,6 +42,8 @@
 	// @@@ plugin: config @@@
 	prototype.plugin('ready', function (extend)
 	{
+
+		if (!this.conf.tiles) return;
 
 		this.rows = [];
 		this.cols = [];
@@ -67,6 +69,8 @@
 		this.getContainerOffset = function(invert)
 		{
 
+			if (!this.conf.tiles) return this.__proto__.getContainerOffset.apply(this, arguments)
+
 			if (typeof this.ct_off != "undefined") return this.ct_off;
 
 			// return a float number from the container offset
@@ -79,6 +83,8 @@
 		// @@@ overload method: setContainerOffset @@@
 		this.setContainerOffset = function(offset, invert)
 		{
+
+			if (!this.conf.tiles) return this.__proto__.setContainerOffset.apply(this, arguments)
 
 			// search position to clamp container to
 			var i = this.offset.length; while(i--)
@@ -97,6 +103,8 @@
 		// @@@ overload method: getOffsetByPosition @@@
 		this.getOffsetByPosition = function (index)
 		{
+
+			if (!this.conf.tiles) return this.__proto__.getOffsetByPosition.apply(this, arguments)
 
 			return prototype.getOffsetByPosition.call(this, index)
 
@@ -164,6 +172,8 @@
 	function layout()
 	{
 
+		if (!this.conf.tiles) return;
+
 		var off_y = 0,
 		    rows = this.rows,
 		    cols = this.cols,
@@ -230,11 +240,20 @@
 	function change(position, part)
 	{
 
+		if (!this.conf.tiles) return;
+
 		var width = this.vp_x / this.conf.tileCols;
 		var height = this.vp_y / this.conf.tileRows;
 
+		var off_y = 0,
+		    y = this.vp_y / this.conf.tileRows,
+		    x = this.vp_x / this.conf.tileCols;
+
 		for (var i = 0; i < this.conf.tileRows; i ++)
 		{
+
+			var off_x = 0;
+
 			for (var n = 0; n < this.conf.tileCols; n ++)
 			{
 
@@ -242,10 +261,10 @@
 				// one start when other ends
 				// var d_w = 1 / this.conf.tileCols, s_w = d_w * n;
 
+				// distribute it from the left/top
 				var d_w = 1 / this.conf.tileCols * this.conf.tileColsAtOnce,
 				    s_w = this.conf.tileCols == 1 ? 0 :
 				          (1 - d_w) / (this.conf.tileCols - 1) * n;
-
 				var d_h = 1 / this.conf.tileRows * this.conf.tileRowsAtOnce,
 				    s_h = this.conf.tileRows == 1 ? 0 :
 				          (1 - d_h) / (this.conf.tileRows - 1) * i;
@@ -256,14 +275,32 @@
 				var prog_h = (part - s_h) / (d_h);
 				prog_h = Math.max(0, Math.min(1, prog_h));
 
+				var align_h = 0,
+				    align_w = 0;
+
 				this.cols[i][n].css({
 
 					'width' : width * prog_w + 'px',
-					'height' : height * prog_h + 'px'
+					'height' : height * prog_h + 'px',
+
+					'marginTop' : align_h * height * (1 - prog_h) + 'px',
+					'marginLeft' : align_w * width * (1 - prog_w) + 'px',
+
 
 				});
 
+				this.tiles[i][n].css({
+					 'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
+					 'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
+
+				});
+
+				off_x += x;
+
 			}
+
+			off_y += y;
+
 		}
 
 	}
@@ -274,6 +311,8 @@
 	// @@@ plugin: changedPosition @@@
 	prototype.plugin('changedPosition', function (position, previous, original)
 	{
+
+		if (!this.conf.tiles) return;
 
 		// get the integer via method
 		var int_pos = parseInt(position, 10),
