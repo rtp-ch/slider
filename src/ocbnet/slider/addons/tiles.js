@@ -1,5 +1,4 @@
 /*
-
   Copyright (c) Marcel Greter 2013 - ocbnet.ch - RTP jQuery Slider Tiles plugin
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
@@ -27,10 +26,13 @@
 			tiles: false,
 
 			// how many tiles for animations
-			tileRows: 15, tileCols: 1,
+			tileRows: 1, tileCols: 1,
 
 			// how many tiles should animate at once
-			tileRowsAtOnce: 10, tileColsAtOnce: 0
+			tileRowsAtOnce: 1, tileColsAtOnce: 1,
+
+			// from where should tile animation start
+			tileDimOrigin: 0.5, tileOppOrigin: 0.5
 
 		});
 		// EO extend config
@@ -275,8 +277,8 @@
 				var prog_h = (part - s_h) / (d_h);
 				prog_h = Math.max(0, Math.min(1, prog_h));
 
-				var align_h = 0,
-				    align_w = 0;
+				var align_h = this.conf.tileOppOrigin || 0,
+				    align_w = this.conf.tileDimOrigin || 0;
 
 				this.cols[i][n].css({
 
