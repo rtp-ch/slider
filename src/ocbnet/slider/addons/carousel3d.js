@@ -86,7 +86,7 @@
 
 			// declare local variables
 			var conf = this.conf,
-			    alignPanel = conf.alignPanel,
+			    alignPanelDim = conf.alignPanelDim,
 			    alignViewport = conf.alignViewport,
 			    panelsVisible = conf.panelsVisible;
 
@@ -100,7 +100,7 @@
 			distance = parseFloat(paneldim / Math.tan(angle), 10);
 
 			// calculate the alignment / offset position (use panelsVisible to assume viewport)
-			var align = panelsVisible * (alignViewport - 0.5) - alignPanel + 0.5
+			var align = panelsVisible * (alignViewport - 0.5) - alignPanelDim + 0.5
 
 			// setup 3d panels
 			this.panels.css({
