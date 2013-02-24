@@ -3213,8 +3213,8 @@ $.fn.imagesLoaded = function( callback ) {
 	// @@@ EO plugin: config @@@
 
 
-	// @@@ private fn: centerOppInViewport @@@
-	function centerOppInViewport ()
+	// @@@ private fn: alignOppInViewport @@@
+	function alignOppInViewport ()
 	{
 
 		// declare local variables
@@ -3239,11 +3239,11 @@ $.fn.imagesLoaded = function( callback ) {
 			// EO all panels
 
 	}
-	// @@@ EO private fn: centerOppInViewport @@@
+	// @@@ EO private fn: alignOppInViewport @@@
 
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', centerOppInViewport, 999);
+	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
 
 
 // EO extend class prototype
@@ -5777,7 +5777,7 @@ data.vp_off = vp_off.x;
 			{
 				for(var n = 0; n < this.conf.tileCols; n++)
 				{
-					this.tiles[i][n].empty().append(panel.clone());
+					this.tiles[i][n].empty().append(panel.clone().css({ 'margin': '0' }));
 				}
 			}
 
@@ -5808,6 +5808,44 @@ data.vp_off = vp_off.x;
 
 	}, 0);
 	// @@@ EO plugin: layout @@@
+
+
+
+	// @@@ private fn: alignOppInViewport @@@
+	function alignOppInViewport ()
+	{
+
+		// declare local variables
+		var align = this.conf.alignPanelOpp,
+		    // get the css attribute to set
+		    css = this.conf.vertical ? 'left' : 'top';
+
+		// check for valid number
+		if (isNaN(align)) return;
+
+		// loop all slides to setup their 3d transformation
+		var i = this.slides.length; while (i--)
+		{
+
+var p = this.slide2panel(i);
+
+			// calculate the possible margin and multiply
+			var margin = (this.vp_y - this.pd[1][p]) * align;
+
+			// set this panel margin for direction
+			jQuery('.rtp-slider-slide-' + i).css(css, margin + 'px');
+			// jQuery(this.panels[i]).css(css, margin + 'px');
+
+		}
+			// EO all panels
+
+	}
+	// @@@ EO private fn: alignOppInViewport @@@
+
+
+	// run late after the viewport opposition has been changed/updated
+	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
+
 
 
 // EO extend class prototype
@@ -5985,4 +6023,4 @@ data.vp_off = vp_off.x;
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
 
-/* crc: 3C989FEA6E9B4D9C18AE7B6DC0CB5BC1 */
+/* crc: 505A433AF817C25170FE992F363168AE */
