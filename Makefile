@@ -19,6 +19,7 @@ merge:
 		${SRC_DIR}rtp/slider/sizer.js \
 		${SRC_DIR}rtp/slider/sizer/alignOppInViewport.js \
 		${SRC_DIR}rtp/slider/sizer/panelsDimByViewport.js \
+		${SRC_DIR}rtp/slider/sizer/panelsOppByViewport.js \
 		${SRC_DIR}rtp/slider/sizer/viewportDimByPanels.js \
 		${SRC_DIR}rtp/slider/sizer/viewportOppByPanels.js \
 		${SRC_DIR}rtp/slider/addons/nav-dots.js \
@@ -31,6 +32,7 @@ merge:
 		${SRC_DIR}ocbnet/slider/swipe/mouse.js \
 		${SRC_DIR}ocbnet/slider/swipe/touch.js \
 		${SRC_DIR}ocbnet/slider/addons/toolbar.js \
+		${SRC_DIR}ocbnet/slider/addons/progressbar.js \
 		${SRC_DIR}lib/csshooks.js \
 		${SRC_DIR}ocbnet/slider/addons/carousel3d.js \
 		> rtp.slider.js

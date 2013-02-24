@@ -18,17 +18,31 @@ The libraries can be found in the dependencies folder.
 
 ### Configuration
 
-<pre>sizer: option (default: false)</pre>
+<pre>sizerDim: option (default: false)</pre>
 
-How should the slider be layouted / sized. Valid options are 'panelsByViewport' or
-'viewportByPanels'. We will either adjust the panels to a fluid viewport or set the
-viewport to the size of the actual panel.
+How should the slider dimension be layouted / sized (width for horizontal and height for vertical).
+Valid options are 'panelsByViewport' or 'viewportByPanels'. We will either adjust the panels to a
+fluid viewport or set the viewport to the size of the actual panel.
+
+<pre>sizerOpp: option (default: false)</pre>
+
+How should the slider opposition be layouted / sized (height for horizontal and width for vertical).
+Valid options are 'panelsByViewport' or 'viewportByPanels'. We will either adjust the panels to a
+fluid viewport or set the viewport to the size of the actual panel.
+
+<pre>fluidPanelsDim: bool (default: false)</pre>
+
+When set we will re-read the panel dimensions when the panel oppositions has changed. This is only usefull
+if the panels have a forced aspect ratio (i.e. due to an image inside it).
+
+<pre>fluidPanelsOpp: bool (default: false)</pre>
+
+When set we will re-read the panel oppositions when the panel dimensions has changed. This is only usefull
+if the panels have a forced aspect ratio (i.e. due to an image inside it).
 
 <pre>setFloat: bool (default: true)</pre>
 
 Set panels to float if vertical is not enabled.
-
-Enable vertical sliding. Default is horizontal.
 
 <pre>vertical: bool (default: false)</pre>
 
@@ -52,25 +66,38 @@ Enable the carousel or endless swipe mode.
 
 How many panels should be visible at once.
 
+<pre>clonePanels: integer (default: false)</pre>
+
+Force number of cloned panels. Will be distributed acording to alignViewport option.
+
+<pre>cloneBefore: integer (default: false)</pre>
+
+Force number of cloned panels at the begining of the container.
+
+<pre>cloneAfter: integer (default: false)</pre>
+
+Force number of cloned panels at the end of the container.
+
 <pre>align: float (default: 0.5)</pre>
 
 This is a shared value for both align options (alignPanel and alignViewport). It does not
 do anything on it's own, but normally you want both align options to be the same. You may
 also use 'left', 'center' or 'right' (only the first letter is important).
 
-<pre>alignPanel: float (default: 0.5)</pre>
+<pre>alignPanelDim: float (default: 0.5)</pre>
 
-Offset the panel to align it to the viewport position. If you align it to the right (1), the
+Offset the panel to align it to the viewport dimension. If you align it to the right (1), the
 right side of the panel will be shown at the viewport position.
+
+<pre>alignPanelOpp: float (default: 0.5)</pre>
+
+Offset the panel to align it to the viewport opposition. If you align it to the bottom (1), the
+bottom side of the panel will be shown at the viewport position.
 
 <pre>alignViewport: float (default: 0.5)</pre>
 
 Offset the shown position into the viewport. Align it to left (0), center (0.5) or right (1).
 Use alignPanel to offset the panel itself to align the active slide as you want.
-
-<pre>autoVpOpp (default: true)</pre>
-
-Automatically adjust the opposite dimension of the viewport to match the current shown panel.
 
 <pre>autoVpOppDeadZone: float (default: 0.5)</pre>
 
@@ -109,6 +136,14 @@ Delay after initialization or any other autoslide resume/start call.
 
 Special delay when the autoslider is resumed from the paused state.
 
+<pre>progressBar: bool (default: false)</pre>
+
+Show a progress bar while waiting for the next (auto) slide.
+
+<pre>progressBarPosition: string (default: 'append')</pre>
+
+Where should we put the progress bar dom node. Valid options are 'append', 'prepend' or 'both'.
+
 <pre>curClass: string (default: 'current')</pre>
 
 Mark the currently active panel with this class.
@@ -125,7 +160,7 @@ The duration of one slide step.
 
 Easing function for the slide step.
 
-<pre>firstSlideToLoad: float (default: 0)</pre>
+<pre>slideFirst: float (default: 0)</pre>
 
 The first slide to load on initialization. Can also be a function which should return the value.
 
@@ -138,10 +173,6 @@ or updating the layout otherwise, which will also happen when doing swipes and o
 
 Do layout and other updates as soon as we receive the corresponding events.
 
-<pre>swipe: bool (default: false)</pre>
-
-Enable the swipe functionality.
-
 <pre>mouseSwipe: bool (default: false)</pre>
 
 Enable the mouse for swiping.
@@ -153,11 +184,12 @@ Enable touch devices for swiping.
 <pre>swipeVsync: bool (default: false)</pre>
 
 Update the user interface as soon as the swipe event is triggered. If disabled we will
-defer the updates and try to achieve as many frames per second as defined in swipeFps.
+defer the updates and try to achieve as many frames per second as defined in fps.
 
 <pre>swipeThreshold: integer (default: 5)</pre>
 
-Minimum amount of pixels before the swipe events are triggered.
+Minimum amount of pixels before we decide in which direction the swipe is going. This
+is done to still be able to scroll the page via touch events.
 
 <pre>linkWrapperToViewportDim: bool (default: true)</pre>
 
