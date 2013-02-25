@@ -5,6 +5,10 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
+  Distribute the height of the viewport fully to all visibile panels.
+  Maybe add distribution factors or fixed heights for panels later.
+  This sizer adjusts the panels if the viewport dimension changes.
+
 */
 
 // extend class prototype
@@ -21,12 +25,12 @@
 		// abort if this feature is not enabled
 		if (this.conf.sizerOpp != 'panelsByViewport') return;
 
-		// process all slides to set opp size
+		// process all slides to set opposition
 		var i = this.slides.length; while (i--)
 		{
 
 			// set size to full viewport opp
-			this.setSlideOpp(i, this.vp_y);
+			this.setSlideOpp(i, this.getSlideOppFromVp(i));
 
 		}
 
@@ -41,6 +45,23 @@
 
 	}
 	// @@@ EO private fn: panelsOppByViewport @@@
+
+
+	// @@@ method: getSlideOppFromVp @@@
+	// get the opposition for the given slide
+	prototype.getSlideOppFromVp = function (slide)
+	{
+
+		// declare and normalize slide
+		// var panel = this.slide2panel(slide),
+		//     slide = this.panel2slide(panel);
+
+		// extend to the full opposition
+		// todo: implement a more complex method
+		return parseFloat(this.vp_y, 10)
+
+	}
+	// @@@ EO method: getSlideOppFromVp @@@
 
 
 	// hook into various change events to adjust panels

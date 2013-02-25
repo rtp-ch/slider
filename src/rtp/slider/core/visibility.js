@@ -205,12 +205,12 @@
 	// calculate the exposure array very early
 	prototype.plugin('ready', updatePanelExposure, -9999);
 	prototype.plugin('changedPosition', updatePanelExposure, -9999);
-	prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
+	// prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
 
 	// calculate the visibility array very late
 	prototype.plugin('ready', updateSlideVisibility, 9999);
 	prototype.plugin('changedPosition', updateSlideVisibility, 9999);
-	prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
+	// prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
 
 
 // EO extend class prototype

@@ -17,6 +17,7 @@
 	// declare our namespace
 	if (!window.RTP) window.RTP = {};
 
+
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
 	RTP.Slider = function (el, conf)
 	{
@@ -48,7 +49,7 @@
 			// the panel alignment to the position
 			align: 'center',
 
-			// inherit from align
+			// inherits from align
 			alignPanelDim: false,
 			alignPanelOpp: false,
 			alignViewport: false,
@@ -311,6 +312,7 @@
 		slider.panels = viewport.find(slider.selector.panel);
 
 		// to which side should we float the panels / container
+		// TODO: this seems to be an undocumented feature?
 		var floating = slider.conf.offsetReverse ? 'right' : 'left';
 
 		if (slider.conf.vertical) floating = 'none';
@@ -384,7 +386,7 @@
 				// get number of slides
 				var count = this.slides.length;
 				// protect from endless loop
-				if (count == 0) return 0;
+				if (count <= 0) return 0;
 				// adjust panels into the valid range
 				while (panel > this.smax) panel -= count;
 				while (panel < this.smin) panel += count;
@@ -437,7 +439,7 @@
 			// check if already initialized
 			if (typeof jQuery(this).data('rtp-slider') == 'undefined')
 			{ jQuery(this).data('rtp-slider', new RTP.Slider(this, conf)); }
-			// else { rtp.log('tried to init slider twice') }
+			// else { throw('you tried to init rtp-slider twice') }
 		});
 	}
 	/* @@@@@@@@@@ JQUERY CONNECTOR @@@@@@@@@@ */

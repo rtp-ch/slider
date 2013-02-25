@@ -34,13 +34,16 @@
 	function viewportOppByPanels ()
 	{
 
+		// abort if feature is not enabled
+		if (this.conf.sizerOpp != 'viewportByPanels') return;
+
 		// declare local variables for loop
 		var opps = [], exposure = this.se,
 		    // dead zone for out of view panel
-		    dead_zone = this.conf.autoVpOppDeadZone || 1;
+		    dead_zone = parseFloat(this.conf.autoVpOppDeadZone, 10);
 
-		// abort if feature is not enabled
-		if (this.conf.sizerOpp != 'viewportByPanels') return;
+		// assertion for numeric value
+		if (isNaN(dead_zone)) dead_zone = 1;
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)

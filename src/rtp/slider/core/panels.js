@@ -119,7 +119,7 @@
 		return this.conf.vertical ^ invert
 			? panel.height() : panel.width();
 
-		// return the panel axis size
+		// return the accurate panel size
 		// return this.conf.vertical ^ invert
 		// 	? panel.get(0).clientHeight ? panel.get(0).clientHeight : panel.height()
 		// 	: panel.get(0).clientWidth ? panel.get(0).clientWidth : panel.width();
@@ -288,7 +288,7 @@
 
 		}
 		// hardcore calculation by getting the real offsets
-		// this will lead to perfect offset positions
+		// this should lead to perfect offset positions
 		else
 		{
 

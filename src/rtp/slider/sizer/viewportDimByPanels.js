@@ -18,11 +18,11 @@
 	function viewportDimByPanels ()
 	{
 
-		// calculate dimension from exposure
-		var dim = 0, exposure = this.se;
-
 		// abort if feature is not enabled
 		if (this.conf.sizerDim != 'viewportByPanels') return;
+
+		// calculate dimension from exposure
+		var dim = 0, exposure = this.se;
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)

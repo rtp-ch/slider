@@ -63,7 +63,10 @@
 	// @@@ private fn: ordersort @@@
 	function ordersort(a, b)
 	{
+
+		// sort numerical by order
 		return a.order - b.order;
+
 	}
 	// @@@ EO private fn: ordersort @@@
 

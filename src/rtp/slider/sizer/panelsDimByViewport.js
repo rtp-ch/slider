@@ -7,7 +7,7 @@
 
   Distribute the width of the viewport evenly to all visibile panels.
   Maybe add distribution factors or fixed widths for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
+  This sizer adjusts the panels if the viewport opposition changes.
 
 */
 
@@ -25,7 +25,7 @@
 		// abort if this feature is not enabled
 		if (this.conf.sizerDim != 'panelsByViewport') return;
 
-		// process all slides to reset opp
+		// process all slides to set dimension
 		var i = this.slides.length; while (i--)
 		{
 

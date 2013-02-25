@@ -28,8 +28,10 @@
 			sizerDim: 'panelsByViewport',
 			sizerOpp: 'viewportByPanels',
 
-			fluidPanelsDim: true, // this.conf.vertical ? false : true,
-			fluidPanelsOpp: true // this.conf.vertical ? true : false,
+			// indicate if some panel dimension are fluid
+			// TODO: find out how this exactly interacts ...
+			fluidPanelsOpp: true, // this.conf.vertical ? true : false,
+			fluidPanelsDim: false // this.conf.vertical ? false : true
 
 		});
 
@@ -119,11 +121,14 @@
 
 
 	// @@@ plugin: changedPosition @@@
+	// A position change may change the opposition
+	// which could trigger a scrollbar, so check for
+	// this condition here on the corresponding event
 	prototype.plugin('changedPosition', function()
-		{
+	{
 
-		// re-layout the widgets
-		// only when viewport changes
+		// re-layout all widgets on the page
+		// but only when its viewport changes
 			OCBNET.Layout();
 
 	});

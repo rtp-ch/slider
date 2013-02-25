@@ -38,26 +38,26 @@
 	function alignOppInViewport ()
 	{
 
-		// declare local variables
-		var align = this.conf.alignPanelOpp,
 		    // get the css attribute to set
-		    css = this.conf.vertical ? 'left' : 'top';
+		var css = this.conf.vertical ? 'left' : 'top',
+		    // get the alignment number (between 0 and 1)
+		    align = parseFloat(this.conf.alignPanelOpp, 10);
 
 		// check for valid number
 		if (isNaN(align)) return;
 
-		// loop all slides to setup their 3d transformation
+		// loop all slides to set their offset
 		var i = this.panels.length; while (i--)
 		{
 
-			// calculate the possible margin and multiply
-			var margin = (this.vp_y - this.pd[1][i]) * align;
+			// calculate the difference and multiply to align
+			var offset = (this.vp_y - this.pd[1][i]) * align;
 
-			// set this panel margin for direction
-			jQuery(this.panels[i]).css(css, margin + 'px');
+			// set this panel offset for given direction
+			jQuery(this.panels[i]).css(css, offset + 'px');
 
 		}
-			// EO all panels
+			// EO each panel
 
 	}
 	// @@@ EO private fn: alignOppInViewport @@@
