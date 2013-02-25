@@ -34,16 +34,9 @@
 		else
 		{
 
-			// show/hide prev/next scroll navigation by slide position
-			if (isNaN(duration)) duration = this.conf.slideEaseDuration;
-
-			if(this.position < this.smin + 1) // show/hide prev links
-			{ if(prev.is(':visible')) prev.stop(true, true).fadeOut(duration); }
-			else { if(!prev.is(':visible')) prev.stop(true, true).fadeIn(duration); }
-
-			if(this.position > this.smax - 1) // show/hide next links
-			{ if(next.is(':visible')) next.stop(true, true).fadeOut(duration); }
-			else { if(!next.is(':visible')) next.stop(true, true).fadeIn(duration); }
+			// set opacity according to current position (fade out at edges)
+			prev.css('opacity', Math.max(0, Math.min(1, this.position - this.smin)));
+			next.css('opacity', Math.max(0, Math.min(1, this.smax - this.position)));
 
 		}
 
@@ -52,6 +45,8 @@
 
 	// hook into rtp slider class
 	prototype.plugin('layout', updateUI);
+	prototype.plugin('changedPosition', updateUI);
+
 
 	// hook into rtp slider class
 	prototype.plugin('config', function(extend)
