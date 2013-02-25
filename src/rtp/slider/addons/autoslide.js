@@ -30,7 +30,7 @@
 			// start auto slide on load
 			autoslide: false,
 			// direction for autoslide
-			autoslideAction: '+1',
+			autoslideAction: +1,
 			// delay for next slide
 			autoslideDelay: 3500,
 			// overwrite first slide delay
@@ -86,7 +86,8 @@
 	prototype.startAutoSlide = function (delay, action)
 	{
 
-		if (isNaN(action)) action = '+1';
+		// get default action from given config
+		if (isNaN(action)) action = parseFloat(this.conf.autoslideAction || 1);
 
 		// abort if autoslider timeout is waiting
 		if (this.autosliding && this.autosliding !== true) return;
@@ -96,6 +97,10 @@
 		this.trigger('autoslideStart');
 
 		if (this.queue.length > 0 || this.animating || this.locked) return;
+
+		// stop the autoslide if end is reached (either on the begining or the end)
+		if (!this.conf.carousel && ((this.position <= this.smin && action < 0) || (this.position >= this.smax && action > 0)))
+		{ return this.stopAutoSlide(); }
 
 		// wait for next slide action
 		this.trigger('autoslideWaitStart', delay);
@@ -113,10 +118,10 @@
 			this.trigger('autoslideWaitStop');
 
 				// get default action from given config
-			if (isNaN(action)) action = this.conf.autoslideAction;
+			if (isNaN(action)) action = this.conf.autoslideAction || 1;
 
 			// add action and start animation
-			this.goTo(action);
+			this.goTo(action > 0 ? '+' + action : action);
 
 			// autosliding has been activated
 			this.autosliding = true;
