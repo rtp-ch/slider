@@ -30,18 +30,18 @@
 		if (slider.inited) { return; }
 		else { slider.inited = true; }
 
+		// store config on instance
+		slider.conf = conf;
+
 		// @@@ private fn: extend @@@
 		function extend (config)
 		{
 
 			// add more default configuration options (deep extend)
-			return slider.conf = jQuery.extend(true, config, slider.conf);
+			return slider.conf = conf = jQuery.extend(true, config, conf);
 
 		}
 		// @@@ EO private fn: extend @@@
-
-		// first store given config
-		slider.conf = conf;
 
 		// add defaults
 		extend({
@@ -74,9 +74,10 @@
 			panelsVisible: 1,
 
 			// how many panels should be cloned
-			// if this is set to 0, we will use
+			// if this is set to true, we will use
 			// the panelsVisible option for this
-			clonePanels: 0,
+			// set to false to disable cloning
+			clonePanels: true,
 
 			// in which direction should we clone
 			// adds cloned panels before or after
@@ -100,9 +101,9 @@
 			// classes to assign
 			klass:
 			{
-				next: 'next',
-				current: 'current',
-				previous: 'previous',
+				next: 'rtp-slider-next',
+				current: 'rtp-slider-current',
+				previous: 'rtp-slider-previous',
 				vertical: 'rtp-slider-vertical',
 				horizontal: 'rtp-slider-horizontal',
 				panel : 'rtp-slider-panel',
@@ -135,27 +136,32 @@
 
 		// assign shortcuts to access nested config
 		jQuery(['text', 'tmpl', 'klass', 'selector'])
-		.each(function() { slider[this] = slider.conf[this]; })
+		.each(function() { slider[this] = conf[this]; })
+
+		// optimize for compiler
+		var tmpl = slider.tmpl,
+		    klass = slider.klass,
+		    selector = slider.selector;
 
 		// assertion for some options
-		if (isNaN(slider.conf.align))
-		{ slider.conf.align = 0.5; }
-		if (isNaN(slider.conf.panelsVisible))
-		{ slider.conf.panelsVisible = 1.0; }
+		if (isNaN(conf.align))
+		{ conf.align = 0.5; }
+		if (isNaN(conf.panelsVisible))
+		{ conf.panelsVisible = 1.0; }
 
 		// current element is used as our container
 		var container = slider.container = jQuery(el);
 
 		// get all intial panels (slides) once at startup (after config)
-		var slides = slider.slides = container.find(slider.selector.panel);
+		var slides = slider.slides = container.find(selector.panel);
 
 		// put viewport around container
 		var viewport = slider.viewport = container
-			.wrapAll(slider.tmpl.viewport).parent();
+			.wrapAll(tmpl.viewport).parent();
 
 		// put wrapper around viewport
 		var wrapper = slider.wrapper = viewport
-			.wrapAll(slider.tmpl.wrapper).parent();
+			.wrapAll(tmpl.wrapper).parent();
 
 		// move all attributes from container to viewport
 		var attrs = el.attributes, idx = attrs.length;
@@ -173,23 +179,23 @@
 		container.css({ 'margin' : '0', 'padding' : '0' });
 
 		// add default class to all elements
-		wrapper.addClass(slider.klass.wrapper);
-		viewport.addClass(slider.klass.viewport);
-		container.addClass(slider.klass.container);
+		wrapper.addClass(klass.wrapper);
+		viewport.addClass(klass.viewport);
+		container.addClass(klass.container);
 
 		// min and max index for slides
 		slider.smin = slider.smax = 0;
 
-		// markup the wrapper if we are vertical/horizontal
-		if (slider.conf.vertical && slider.klass.vertical)
-		{ slider.wrapper.addClass(slider.klass.vertical); }
-		if (!slider.conf.vertical && slider.klass.horizontal)
-		{ slider.wrapper.addClass(slider.klass.horizontal); }
+		// mark wrapper indicating vertical/horizontal mode
+		if (conf.vertical && klass.vertical)
+		{ slider.wrapper.addClass(klass.vertical); }
+		if (!conf.vertical && klass.horizontal)
+		{ slider.wrapper.addClass(klass.horizontal); }
 
 		// first slide to load may be a function
-		slider.position = jQuery.isFunction(slider.conf.slideFirst)
-			? slider.conf.slideFirst.call(slider)
-			: slider.conf.slideFirst || 0;
+		slider.position = jQuery.isFunction(conf.slideFirst)
+			? conf.slideFirst.call(slider)
+			: conf.slideFirst || 0;
 
 		// @@@ private fn: resolve_align @@@
 		// this can be a number between -INF and +INF
@@ -198,7 +204,7 @@
 		{
 
 			// get configured option
-			var align = slider.conf[key];
+			var align = conf[key];
 
 			// check if align matches any of our strings
 			if (new RegExp(/^[lt]/i).test(align)) align = 0.0;
@@ -211,7 +217,7 @@
 			if (isNaN(parseInt(align, 10))) align = 0.5;
 
 			// assign and return the number
-			return slider.conf[key] = align;
+			return conf[key] = align;
 
 		}
 		// EO @@@ private fn: resolve_align @@@
@@ -228,26 +234,29 @@
 		slider.cloned = jQuery();
 
 		// create cloned panels
-		if (slider.conf.carousel && slides.length)
+		if (conf.carousel && slides.length)
 		{
+
+			// get variables (resolve afterwards)
+			var cloneAfter = conf.cloneAfter,
+			    cloneBefore = conf.cloneBefore,
+			    clonePanels = conf.clonePanels,
 
 			// Clone as many panels needed to fill the viewport.
 			// If sizer is false you can use this config option
 			// to adjust how many panels you want to have cloned
 			// In this mode the viewport might be much wider than
 			// all panels inside. Todo: Maybe support this better.
-			var panelsToClone = slider.conf.clonePanels ||
-			                    Math.ceil(slider.conf.panelsVisible);
-
-			// distribute cloned panels before (left/top)
-			var cloneBefore = slider.conf.cloneBefore === false ? 0 :
-				! isNaN(slider.conf.cloneBefore) ? slider.conf.cloneBefore :
-				Math.ceil(panelsToClone * (1 - slider.conf.alignViewport) + 0.5);
+			clonePanels = clonePanels === true ? Math.ceil(conf.panelsVisible) :
+			              clonePanels === false ? 0 : parseInt(clonePanels + 0.5);
 
 			// distribute cloned panels after (right/bottom)
-			var cloneAfter = slider.conf.cloneAfter === false ? 0 :
-				! isNaN(slider.conf.cloneAfter) ? slider.conf.cloneAfter :
-				Math.ceil(panelsToClone * (0 + slider.conf.alignViewport) + 0.5);
+			cloneAfter = cloneAfter === true ? Math.ceil(clonePanels * (0 + conf.alignViewport)) :
+			             cloneAfter === false ? 0 : isNaN(cloneAfter) ? 0 : cloneAfter;
+
+			// distribute cloned panels before (left/top)
+			cloneBefore = cloneBefore === true ? Math.ceil(clonePanels * (1 - conf.alignViewport)) :
+			              cloneBefore === false ? 0 : isNaN(cloneBefore) ? 0 : cloneBefore;
 
 			// accumulate all cloned panels
 			// we may clone each slide more than once
@@ -309,15 +318,15 @@
 		slider.trigger('init');
 
 		// lookup panels - equals slides if carousel == false
-		slider.panels = viewport.find(slider.selector.panel);
+		slider.panels = viewport.find(selector.panel);
 
 		// to which side should we float the panels / container
 		// TODO: this seems to be an undocumented feature?
-		var floating = slider.conf.offsetReverse ? 'right' : 'left';
+		var floating = conf.offsetReverse ? 'right' : 'left';
 
-		if (slider.conf.vertical) floating = 'none';
+		if (conf.vertical) floating = 'none';
 
-		var overflow = slider.conf.carousel3d ? 'visible' : 'hidden';
+		var overflow = conf.carousel3d ? 'visible' : 'hidden';
 
 		// set some css to fix some issues
 		// if you do not want this you have
@@ -337,7 +346,7 @@
 			})
 
 		// setup floats for the container
-		if (!slider.conf.vertical)
+		if (!conf.vertical)
 		{
 			// get the tagname for panels
 			var tag = slider.panels[0].tagName;
