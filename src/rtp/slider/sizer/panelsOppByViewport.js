@@ -41,7 +41,13 @@
 		// updates the ps[0] and pd[0] arrays
 		// this is only needed if the dim is fluid
 		// which means it can change when opp changes
-		if (this.conf.fluidPanelsDim) this.readPanelsDim();
+		if (
+		      this.conf.fluidPanelsDim ||
+		      this.conf.sizerDim == 'viewportByPanels'
+		)
+		{
+			this.readPanelsDim();
+		}
 
 	}
 	// @@@ EO private fn: panelsOppByViewport @@@
