@@ -1111,8 +1111,6 @@ $.fn.imagesLoaded = function( callback ) {
 
 */
 
-var indent = 0;
-
 // extend class prototype
 (function (prototype, jQuery)
 {
@@ -1133,12 +1131,6 @@ var indent = 0;
 
 		// get a copy of all arguments and shift off type
 		var args = [].slice.call(arguments), type = args.shift();
-
-		var ind = ''; for(var i = 0; i < indent; i ++) { ind += '  '; }
-
-		console.log(ind, type);
-
-		indent ++;
 
 		// first call our method by that name if it seems to be a function
 		if (this[type] && this[type].apply) this[type].apply(this, args);
@@ -1170,8 +1162,6 @@ var indent = 0;
 
 		}
 		// EO each hook array
-
-		indent --;
 
 	}
 	// @@@ EO method: trigger @@@
