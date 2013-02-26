@@ -5,13 +5,17 @@
 
 .rtp-slider-viewport
 {
+	border: 5px solid #333333;
+}
+
+.rtp-slider-wrapper
+{
 	-webkit-border-radius: 8px;
 	-khtml-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
-	border: 5px solid #333333;
+	overflow: hidden;
 }
-
 .rtp-nav-next
 {
 	position: absolute;
