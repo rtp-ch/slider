@@ -220,3 +220,34 @@ label
 	height: 100%;
 	position: absolute;
 }
+
+.rtp-progress-bar,
+.rtp-progress-bar
+{
+	z-index: 9999;
+	display: block;
+	position: absolute;
+	background-color: #CC0000;
+}
+
+.rtp-slider-vertical .rtp-progress-bar
+{
+	top: 0px;
+	bottom: 0px;
+	width: 5px;
+	height: auto;
+}
+
+.rtp-slider-horizontal .rtp-progress-bar
+{
+	left: 0px;
+	right: 0px;
+	width: auto;
+	height: 5px;
+}
+
+.rtp-slider-vertical .rtp-progress-bar-prepend { left: 0px; }
+.rtp-slider-vertical .rtp-progress-bar-append { right: 0px; }
+.rtp-slider-horizontal .rtp-progress-bar-prepend { top: 0px; }
+.rtp-slider-horizontal .rtp-progress-bar-append { bottom: 0px; }
+

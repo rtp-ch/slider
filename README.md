@@ -4,16 +4,28 @@ RTP Slider
 Extremly versatile and flexible slider. Strong support for fluid / responsive Designs, mobile browsers
 and touch devices. Has nearly every feature that you can find in other sliders on the web.
 
+
 ### Dependencies
 
 RTP Slider is dependent on following libraries:
 
-- jQuery
-- jquery.easing plugin
-- jquery.imagesloaded plugin
+- jQuery (1.7 or higher)
+- jquery.easing plugin (1.3 or higher)
+- jquery.imagesloaded plugin (2.1 or higher)
 
-The libraries can be found in the dependencies folder.
+It's recommended that you download the latest versions of the libraries yourself:
 
+- http://www.jquery.com/
+- http://gsgd.co.uk/sandbox/jquery/easing/
+- http://desandro.github.com/imagesloaded/
+
+You may also use a CDN (Content Delivery Network) to load the libraries directly from:
+
+<pre>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"></script>
+</pre>
 
 
 ### Configuration
