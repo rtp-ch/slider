@@ -1,85 +1,3 @@
-// taken from http://api.jquery.com/jQuery.cssHooks/
-
-(function($) {
-
-	if ( !$.cssHooks )
-	{
-		throw("jQuery 1.4.3+ is needed for this plugin to work");
-		return;
-	}
-
-	var css3 = [
-		'boxSizing',
-		'transform',
-		'perspective',
-		'transformStyle',
-		'backfaceVisibility'
-	];
-
-	function styleSupport( prop )
-	{
-
-		var vendorProp, supportedProp,
-		    capProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-		    prefixes = [ "Moz", "Webkit", "O", "ms" ],
-		    div = document.createElement( "div" );
-
-		if ( prop in div.style )
-		{
-			supportedProp = prop;
-		}
-		else
-		{
-			for ( var i = 0; i < prefixes.length; i++ )
-			{
-				vendorProp = prefixes[i] + capProp;
-				if ( vendorProp in div.style )
-				{
-					supportedProp = vendorProp;
-					break;
-				}
-			}
-		}
-
-		div = null;
-
-		$.support[ prop ] = supportedProp
-
-		return supportedProp;
-
-	}
-
-	var i = css3.length; while (i--)
-	{
-
-		(function()
-		{
-
-			var attr = css3[i],
-					support = styleSupport( attr );
-
-			// Set cssHooks only for browsers that
-			// supports a vendor-prefixed style only
-			if ( support && support !== attr )
-			{
-				$.cssHooks[attr] =
-				{
-					get: function( elem, computed, extra )
-					{
-						return $.css( elem, support );
-					},
-					set: function( elem, value)
-					{
-						elem.style[ support ] = value;
-					}
-				};
-			}
-
-		})()
-
-	}
-
-})(jQuery);
 /*
 
   Copyright (c) Marcel Greter 2012 - OCBNET Layouter 1.0.0
@@ -124,17 +42,32 @@
 	// old body overflow style
 	var overflow_x, overflow_y;
 
+	// get the user agent string in lowercase
+	// copy feature from jquery migrate plugin
+	// this was included in jquery before v1.9
+	var ua = navigator.userAgent.toLowerCase();
+
+	// only match for ie and mozilla so far
+	var match = // /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+	            // /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+	            // /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(msie) ([\w.]+)/.exec( ua ) ||
+	            ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+	            [];
+
+	// get splitted information about the user agent
+	var browser = match[ 1 ] || '', version = match[ 2 ] || '0';
+
 	// defer the resize event and filter multiple calls
 	// this is a bugfix for ie 8 where the resize event may is
 	// triggered multiple times when scrollbars appear/disappear
-	var vsync = ! jQuery.browser.msie ||
-	    parseInt(jQuery.browser.version, 10) != 8;
+	var vsync = ! browser == 'msie' || parseInt(version, 10) != 8;
 
 	// get firefox mode on startup / initialization
 	// firefox will show both scrollbars when the layout
 	// does not 'fit' perfectly. All other browsers will
 	// only show the scrollbar in the direction needed.
-	var firefox_overflow = jQuery.browser.mozilla;
+	var firefox_overflow = browser == 'mozilla';
 
 	// use requestAnimationFrame to defer functions
 	// this seems to work quite well, so include it
@@ -521,129 +454,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 }).call(RTP.Multievent.prototype);
-/*!
- * jQuery imagesLoaded plugin v2.1.0
- * http://github.com/desandro/imagesloaded
- *
- * MIT License. by Paul Irish et al.
- */
-
-/*jshint curly: true, eqeqeq: true, noempty: true, strict: true, undef: true, browser: true */
-/*global jQuery: false */
-
-;(function($, undefined) {
-'use strict';
-
-// blank image data-uri bypasses webkit log warning (thx doug jones)
-var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-
-$.fn.imagesLoaded = function( callback ) {
-	var $this = this,
-		deferred = $.isFunction($.Deferred) ? $.Deferred() : 0,
-		hasNotify = $.isFunction(deferred.notify),
-		$images = $this.find('img').add( $this.filter('img') ),
-		loaded = [],
-		proper = [],
-		broken = [];
-
-	// Register deferred callbacks
-	if ($.isPlainObject(callback)) {
-		$.each(callback, function (key, value) {
-			if (key === 'callback') {
-				callback = value;
-			} else if (deferred) {
-				deferred[key](value);
-			}
-		});
-	}
-
-	function doneLoading() {
-		var $proper = $(proper),
-			$broken = $(broken);
-
-		if ( deferred ) {
-			if ( broken.length ) {
-				deferred.reject( $images, $proper, $broken );
-			} else {
-				deferred.resolve( $images );
-			}
-		}
-
-		if ( $.isFunction( callback ) ) {
-			callback.call( $this, $images, $proper, $broken );
-		}
-	}
-
-	function imgLoaded( img, isBroken ) {
-		// don't proceed if BLANK image, or image is already loaded
-		if ( img.src === BLANK || $.inArray( img, loaded ) !== -1 ) {
-			return;
-		}
-
-		// store element in loaded images array
-		loaded.push( img );
-
-		// keep track of broken and properly loaded images
-		if ( isBroken ) {
-			broken.push( img );
-		} else {
-			proper.push( img );
-		}
-
-		// cache image and its state for future calls
-		$.data( img, 'imagesLoaded', { isBroken: isBroken, src: img.src } );
-
-		// trigger deferred progress method if present
-		if ( hasNotify ) {
-			deferred.notifyWith( $(img), [ isBroken, $images, $(proper), $(broken) ] );
-		}
-
-		// call doneLoading and clean listeners if all images are loaded
-		if ( $images.length === loaded.length ){
-			setTimeout( doneLoading );
-			$images.unbind( '.imagesLoaded' );
-		}
-	}
-
-	// if no images, trigger immediately
-	if ( !$images.length ) {
-		doneLoading();
-	} else {
-		$images.bind( 'load.imagesLoaded error.imagesLoaded', function( event ){
-			// trigger imgLoaded
-			imgLoaded( event.target, event.type === 'error' );
-		}).each( function( i, el ) {
-			var src = el.src;
-
-			// find out if this image has been already checked for status
-			// if it was, and src has not changed, call imgLoaded on it
-			var cached = $.data( el, 'imagesLoaded' );
-			if ( cached && cached.src === src ) {
-				imgLoaded( el, cached.isBroken );
-				return;
-			}
-
-			// if complete is true and browser supports natural sizes, try
-			// to check for image status manually
-			if ( el.complete && el.naturalWidth !== undefined ) {
-				imgLoaded( el, el.naturalWidth === 0 || el.naturalHeight === 0 );
-				return;
-			}
-
-			// cached images don't fire load sometimes, so we reset src, but only when
-			// dealing with IE, or image is complete (loaded) and failed manual check
-			// webkit hack from http://groups.google.com/group/jquery-dev/browse_thread/thread/eee6ab7b2da50e1f
-			if ( el.readyState || el.complete ) {
-				el.src = BLANK;
-				el.src = src;
-			}
-		});
-	}
-
-	return deferred ? deferred.promise( $this ) : $this;
-};
-
-})(jQuery);
 /*
 
   Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider
@@ -5455,6 +5265,88 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
+// taken from http://api.jquery.com/jQuery.cssHooks/
+
+(function($) {
+
+	if ( !$.cssHooks )
+	{
+		throw("jQuery 1.4.3+ is needed for this plugin to work");
+		return;
+	}
+
+	var css3 = [
+		'boxSizing',
+		'transform',
+		'perspective',
+		'transformStyle',
+		'backfaceVisibility'
+	];
+
+	function styleSupport( prop )
+	{
+
+		var vendorProp, supportedProp,
+		    capProp = prop.charAt(0).toUpperCase() + prop.slice(1),
+		    prefixes = [ "Moz", "Webkit", "O", "ms" ],
+		    div = document.createElement( "div" );
+
+		if ( prop in div.style )
+		{
+			supportedProp = prop;
+		}
+		else
+		{
+			for ( var i = 0; i < prefixes.length; i++ )
+			{
+				vendorProp = prefixes[i] + capProp;
+				if ( vendorProp in div.style )
+				{
+					supportedProp = vendorProp;
+					break;
+				}
+			}
+		}
+
+		div = null;
+
+		$.support[ prop ] = supportedProp
+
+		return supportedProp;
+
+	}
+
+	var i = css3.length; while (i--)
+	{
+
+		(function()
+		{
+
+			var attr = css3[i],
+					support = styleSupport( attr );
+
+			// Set cssHooks only for browsers that
+			// supports a vendor-prefixed style only
+			if ( support && support !== attr )
+			{
+				$.cssHooks[attr] =
+				{
+					get: function( elem, computed, extra )
+					{
+						return $.css( elem, support );
+					},
+					set: function( elem, value)
+					{
+						elem.style[ support ] = value;
+					}
+				};
+			}
+
+		})()
+
+	}
+
+})(jQuery);
 /*
   Copyright (c) Marcel Greter 2013 - ocbnet.ch - RTP jQuery Slider Tiles plugin
   This is free software; you can redistribute it and/or modify it under the terms
