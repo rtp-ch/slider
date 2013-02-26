@@ -24,12 +24,15 @@
 		extend({
 
 			// class for current panel
-			curClass: 'current',
+			curClass: false,
 
 			// panel dead zone
 			curClassDeadZone: 0.25
 
 		});
+
+		// marked elements store
+		this.curEls = jQuery();
 
 	});
 	// @@@ EO plugin: config @@@
@@ -37,53 +40,56 @@
 
 	// @@@ private fn: updateClasses @@@
 	function updateClasses ()
-		{
+	{
 
 		// check if feature is enabled
 		if (!this.conf.curClass) return;
 
 		// get the current position
 		var conf = this.conf,
+		    curEls = jQuery(),
 		    position = this.position,
 		    curClass = conf.curClass,
 		    deadZone = conf.curClassDeadZone;
 
-		// get the nearest panel to be select as current
-		var nearest = parseInt(this.position + 0.5, 10);
-
-		nearest = this.panel2panel(nearest);
-
-		// remove current class on all panels
-		this.panels.removeClass(curClass);
+		// get the nearest slide to be selected as current
+		var nearest = this.slide2slide(parseInt(this.position + 0.5, 10));
 
 		// mark current class if within dead zone
 		if (Math.abs(nearest - position) < deadZone)
 		{
 
+			// get jQuery collection of current panels
+			curEls = this.getPanelsBySlide(nearest);
+
+			// have nav dots?
 			if (this.navDot)
 			{
 
-				var idxs = this.slidepanels[nearest];
-
-				jQuery(this.navDot).removeClass(curClass);
-
-				var i = idxs.length; while (i--)
-				{
-					jQuery(this.navDot[idxs[i]])
-						.addClass(curClass);
-				}
+				// add dom element of current nav dot
+				curEls = curEls.add(this.navDot[nearest]);
 
 			}
-
-			this.getPanelsBySlide(nearest).addClass(curClass);
+			// EO if navDot
 
 		}
+		// EO if in dead zone
+
+		// add class to newly current elements
+		curEls.not(this.curEls).addClass(curClass);
+
+		// remove class from no longer current elements
+		this.curEls.not(curEls).removeClass(curClass);
+
+		// store current elements
+		this.curEls = curEls;
 
 	};
 	// @@@ EO private fn: updateClasses @@@
 
 
 	// reset the classes whenever the position changes
+	prototype.plugin('changedPosition', updateClasses)
 	prototype.plugin('layout', updateClasses)
 
 
