@@ -440,8 +440,8 @@
 	// run late after the viewport opposition has been changed/updated
 	prototype.plugin('updatedViewportOpp', alignOppInViewport, 99999);
 
-	prototype.plugin('changedPanelsDim', changedPanelsSize, 99999);
-	prototype.plugin('changedPanelsOpp', changedPanelsSize, 99999);
+	prototype.plugin('updatedPanelsDim', changedPanelsSize, 99999);
+	prototype.plugin('updatedPanelsOpp', changedPanelsSize, 99999);
 
 
 

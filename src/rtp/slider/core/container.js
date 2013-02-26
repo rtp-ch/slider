@@ -136,8 +136,8 @@
 	// @@@ EO method: checkContainerOffset @@@
 
 
-	// @@@ plugin: changedPanelsDim @@@
-	prototype.plugin('changedPanelsDim', function ()
+	// @@@ plugin: updatedPanelsDim @@@
+	prototype.plugin('updatedPanelsDim', function ()
 	{
 
 		// in vertical mode the container always
@@ -148,7 +148,7 @@
 		// sum up the dimensions for the container
 		// calculate it so we can later get the accurate
 		// pixel offset for the positioning from the ua
-		// the panels hook for changedPanelsDim runs later
+		// the panels hook for updatedPanelsDim runs later
 		var dim = 0, i = this.panels.length;
 		while (i--) { dim += this.pd[0][i]; }
 
@@ -158,7 +158,7 @@
 		this.container.css(getSizeCssStr.call(this), Math.ceil(dim) + 'px')
 
 	}, - 9999);
-	// @@@ EO plugin: changedPanelsDim @@@
+	// @@@ EO plugin: updatedPanelsDim @@@
 
 
 	// @@@ plugin: ready @@@

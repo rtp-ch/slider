@@ -46,7 +46,7 @@
 	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
 	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
-	prototype.plugin('changedPanelsDim', viewportDimByPanels, 99999);
+	prototype.plugin('updatedPanelsDim', viewportDimByPanels, 99999);
 
 
 // EO extend class prototype

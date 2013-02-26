@@ -86,7 +86,7 @@
 	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportOppByPanels, 99);
 	prototype.plugin('changedViewport', viewportOppByPanels, 99);
-	prototype.plugin('changedPanelsOpp', viewportOppByPanels, 99);
+	prototype.plugin('updatedPanelsOpp', viewportOppByPanels, 99);
 
 
 // EO extend class prototype

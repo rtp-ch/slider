@@ -220,50 +220,50 @@
 	// @@@ EO private fn: readPanelsStyles @@@
 
 
-	// @@@ method: readPanelsDim @@@
-	prototype.readPanelsDim = function()
+	// @@@ method: updatePanelsDim @@@
+	prototype.updatePanelsDim = function()
 	{
 
 		// get sizes for drag axis
 		readPanelsSize.call(this, 0);
 
 		// trigger hook for updated panels
-		this.trigger('changedPanelsDim');
+		this.trigger('updatedPanelsDim');
 
 		// read the new panel opps from UA
 		// updates the ps[1] and pd[1] arrays
 		// this is only needed if the opp is fluid
 		// which means it can change when dim changes
-		// if (this.conf.fluidPanelsOpp) this.readPanelsOpp();
+		// if (this.conf.fluidPanelsOpp) this.updatePanelsOpp();
 
 	};
-	// @@@ EO method: readPanelsDim @@@
+	// @@@ EO method: updatePanelsDim @@@
 
 
-	// @@@ method: readPanelsDim @@@
-	prototype.readPanelsOpp = function()
+	// @@@ method: updatePanelsDim @@@
+	prototype.updatePanelsOpp = function()
 	{
 
 		// get sizes for scroll axis
 		readPanelsSize.call(this, 1);
 
 		// trigger hook for updated panels
-		this.trigger('changedPanelsOpp');
+		this.trigger('updatedPanelsOpp');
 
 		// read the new panel dims from UA
 		// updates the ps[0] and pd[0] arrays
 		// this is only needed if the dim is fluid
 		// which means it can change when opp changes
-		// if (this.conf.fluidPanelsDim) this.readPanelsDim();
+		// if (this.conf.fluidPanelsDim) this.updatePanelsDim();
 
 	};
-	// @@@ EO method: readPanelsOpp @@@
+	// @@@ EO method: updatePanelsOpp @@@
 
 
-	// @@@ plugin: changedPanelsDim @@@
+	// @@@ plugin: updatedPanelsDim @@@
 	// the pd (panel dimension) has been updated
 	// recalculate the complete panel offset array
-	prototype.plugin('changedPanelsDim', function()
+	prototype.plugin('updatedPanelsDim', function()
 	{
 
 		// experimental feature
@@ -341,7 +341,7 @@
 		}
 
 	}, + 99);
-	// @@@ plugin: changedPanelsDim @@@
+	// @@@ plugin: updatedPanelsDim @@@
 
 
 	// @@@ plugin: ready @@@
@@ -353,8 +353,8 @@
 		readPanelsStyles.call(this, 1);
 
 		// read the dimensions
-		this.readPanelsDim();
-		this.readPanelsOpp();
+		this.updatePanelsDim();
+		this.updatePanelsOpp();
 
 	}, - 99);
 	// @@@ EO plugin: ready @@@

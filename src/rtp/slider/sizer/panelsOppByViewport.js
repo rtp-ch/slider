@@ -35,7 +35,7 @@
 		}
 
 		// trigger the changed panels opp hook
-		this.trigger('changedPanelsOpp');
+		this.trigger('updatedPanelsOpp');
 
 		// read the new panel dims from UA
 		// updates the ps[0] and pd[0] arrays
@@ -46,7 +46,7 @@
 		      this.conf.sizerDim == 'viewportByPanels'
 		)
 		{
-			this.readPanelsDim();
+			this.updatePanelsDim();
 		}
 
 	}
