@@ -1958,6 +1958,10 @@ RTP.Multievent = function (cb)
 
 		*/
 
+		// only set offset to full integers
+		// avoids some strange visual bugs
+		offset = parseInt(offset + 0.5);
+
 		// set the offset position of the container to the viewport
 		this.container.css(getOffsetCssStr.call(this, invert), - offset);
 
