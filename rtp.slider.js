@@ -540,6 +540,13 @@ RTP.Multievent = function (cb)
 			cloneAfter: true,
 			cloneBefore: true,
 
+			// define which axis of the panel is fixed
+			// the other axis can be fluid by some ratio
+			// this is possible by having an image inside
+			// which spans to 100% in both directions
+			// may gets overwritten by panelsByViewport sizer
+			panelFixedAxis: this.conf.vertical ? 'opp' : 'dim',
+
 			// initialize some structures
 			// they can be used by plugins
 
@@ -685,6 +692,23 @@ RTP.Multievent = function (cb)
 		resolve_align('alignPanelOpp', preset);
 		resolve_align('alignViewport', preset);
 
+		// fix the panel size from initial read
+		var i = this.slides.length; while (i--)
+		{
+
+			// get jQuery object of this slide
+			var slide = jQuery(this.slides[i]);
+
+			// fix the size of the panel
+			// TODO: make axis configurable
+			if (conf.panelFixedAxis == 'dim')
+			{ slide.width(slide.width()); }
+			else if (conf.panelFixedAxis == 'opp')
+			{ slide.height(slide.height()); }
+
+		}
+		// EO each slide
+
 		// init array always
 		// avoid checks in code
 		slider.cloned = jQuery();
@@ -807,12 +831,15 @@ RTP.Multievent = function (cb)
 			// get the tagname for panels
 			var tag = slider.panels[0].tagName;
 			// define html code for float clearer
-			var clearer_div = '<DIV style="clear:both;"/>';
-			var clearer_tag = '<' + tag + ' style="clear:both;"/>';
+			var clearer_div = jQuery('<DIV/>');
+			var clearer_tag = jQuery('<' + tag + '/>');
+			// define the css styles for the clearer tags
+			var clearer_styles = { width: 0, height: 0, clear: 'both' };
 			// we either float the container right or left
 			slider.container.css('float', floating)
 				// insert a float clearing div after the container
-				.append(clearer_tag).after(clearer_div);
+				.append(clearer_tag.css(clearer_styles))
+				.after(clearer_div.css(clearer_styles));
 		}
 
 		// trigger loading hook
