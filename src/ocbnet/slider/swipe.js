@@ -137,7 +137,7 @@ data.vp_off = vp_off.x;
 
 		data.swipeStartDrag = x;
 
-		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) +	 offset))
+		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) + offset))
 
 	})
 	// @@@ EO plugin: swipeDraw @@@

@@ -370,10 +370,10 @@
 			.imagesLoaded()
 			// execute when ready
 			.done(function()
-		{
+			{
 
-			// trigger ready hook
-			slider.trigger('ready');
+				// trigger ready hook
+				slider.trigger('ready');
 
 			});
 

@@ -242,8 +242,8 @@
 		}
 		// EO fn resume
 
-			// get the absolute position for this action
-			var pos = actionToPosition.call(this, animation.action);
+		// get the absolute position for this action
+		var pos = actionToPosition.call(this, animation.action);
 
 		// now trigger the preAnimation hook
 		// this might lock the animation which

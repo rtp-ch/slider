@@ -137,7 +137,7 @@
 	// @@@ EO private fn: getViewportSize @@@
 
 	// @@@ method: readViewportDim @@@
-	prototype.readViewportDim = function()
+	prototype.readViewportDim = function ()
 	{
 
 		// check if we are allowed to read from ua
@@ -150,7 +150,7 @@
 	// @@@ EO method: readViewportDim @@@
 
 	// @@@ method: readViewportOpp @@@
-	prototype.readViewportOpp = function()
+	prototype.readViewportOpp = function ()
 	{
 
 		// check if we are allowed to read from ua

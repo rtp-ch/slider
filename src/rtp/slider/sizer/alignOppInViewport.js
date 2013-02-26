@@ -38,7 +38,7 @@
 	function alignOppInViewport ()
 	{
 
-		    // get the css attribute to set
+		// get the css attribute to set
 		var css = this.conf.vertical ? 'left' : 'top',
 		    // get the alignment number (between 0 and 1)
 		    align = parseFloat(this.conf.alignPanelOpp, 10);

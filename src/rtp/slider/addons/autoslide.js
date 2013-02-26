@@ -46,7 +46,7 @@
 			autoslideStopOnAction: false
 
 		});
-	
+
 	});
 	// @@@ EO plugin: init @@@
 
@@ -117,7 +117,7 @@
 			// we are now executing slide action
 			this.trigger('autoslideWaitStop');
 
-				// get default action from given config
+			// get default action from given config
 			if (isNaN(action)) action = this.conf.autoslideAction || 1;
 
 			// add action and start animation

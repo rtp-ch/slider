@@ -129,7 +129,7 @@
 
 		// re-layout all widgets on the page
 		// but only when its viewport changes
-			OCBNET.Layout();
+		OCBNET.Layout();
 
 	});
 	// @@@ EO plugin: changedPosition @@@

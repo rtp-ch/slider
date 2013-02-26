@@ -54,7 +54,10 @@
 				{ hook[n].apply(this, args); }
 
 			}
+			// EO if hook type exists
+
 		}
+		// EO each hook array
 
 	}
 	// @@@ EO method: trigger @@@
