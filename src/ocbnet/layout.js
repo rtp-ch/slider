@@ -42,17 +42,32 @@
 	// old body overflow style
 	var overflow_x, overflow_y;
 
+	// get the user agent string in lowercase
+	// copy feature from jquery migrate plugin
+	// this was included in jquery before v1.9
+	var ua = navigator.userAgent.toLowerCase();
+
+	// only match for ie and mozilla so far
+	var match = // /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+	            // /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+	            // /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(msie) ([\w.]+)/.exec( ua ) ||
+	            ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+	            [];
+
+	// get splitted information about the user agent
+	var browser = match[ 1 ] || '', version = match[ 2 ] || '0';
+
 	// defer the resize event and filter multiple calls
 	// this is a bugfix for ie 8 where the resize event may is
 	// triggered multiple times when scrollbars appear/disappear
-	var vsync = ! jQuery.browser.msie ||
-	    parseInt(jQuery.browser.version, 10) != 8;
+	var vsync = ! browser == 'msie' || parseInt(version, 10) != 8;
 
 	// get firefox mode on startup / initialization
 	// firefox will show both scrollbars when the layout
 	// does not 'fit' perfectly. All other browsers will
 	// only show the scrollbar in the direction needed.
-	var firefox_overflow = jQuery.browser.mozilla;
+	var firefox_overflow = browser == 'mozilla';
 
 	// use requestAnimationFrame to defer functions
 	// this seems to work quite well, so include it
