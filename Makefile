@@ -3,7 +3,7 @@ SRC_DIR = ./src/
 all: merge minify
 
 merge:
-	cat \
+	awk 'FNR==1{print ""}1' \
 		${SRC_DIR}header.js \
 		${SRC_DIR}ocbnet/layout.js \
 		${SRC_DIR}rtp/common/multievent.js \
@@ -38,4 +38,4 @@ merge:
 		> rtp.slider.js
 
 minify:
-	uglifyjs rtp.slider.js > rtp.slider.min.js
+	java -jar compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS rtp.slider.js > rtp.slider.min.js

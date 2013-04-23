@@ -270,6 +270,13 @@ Enable the navigation toolbar (mainly for autoslider).
 Buttons available on the toolbar in that order. If carousel is not enabled we will
 add first and last button to the default configuration.
 
+### Compile slider sources
+
+To compile the slider sources there is a make file. This will probably only work on linux
+and maybe on Mac. It uses the google closure compiler. You will need to have java in your
+executable path and extract "compiler.jar" from the lastest closure compiler, available here:
+https://developers.google.com/closure/compiler/ (into same directory as the makefile)
+
 ### Licence
 
 This is free software; you can redistribute it and/or modify it under the terms
