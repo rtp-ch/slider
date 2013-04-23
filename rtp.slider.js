@@ -4933,7 +4933,7 @@ data.vp_off = vp_off.x;
 
 		// define function to define if state is on
 		stop : function () { return this.autosliding === null; },
-		pause : function () { return this.autosliding !== true; }
+		pause : function () { return ! this.autosliding; }
 
 	};
 
