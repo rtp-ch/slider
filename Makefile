@@ -34,6 +34,7 @@ merge:
 		${SRC_DIR}ocbnet/slider/addons/toolbar.js \
 		${SRC_DIR}ocbnet/slider/addons/progressbar.js \
 		${SRC_DIR}lib/csshooks.js \
+		${SRC_DIR}ocbnet/slider/addons/tiles.js \
 		${SRC_DIR}ocbnet/slider/addons/carousel3d.js \
 		> rtp.slider.js
 
