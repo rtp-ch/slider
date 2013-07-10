@@ -1,13 +1,3 @@
-
-/*
-
-  Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider 0.10.0
-  This is free software; you can redistribute it and/or modify it under the terms
-  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
-  either version 3 of the License, or (at your option) any later version.
-
-*/
-
 /*
 
   Copyright (c) Marcel Greter 2012 - OCBNET Layouter 1.0.0
@@ -2104,7 +2094,6 @@ RTP.Multievent = function (cb)
 
 	'use strict';
 
-
 	// @@@ private fn: updatePanelExposure @@@
 	function updatePanelExposure(current, previous)
 	{
@@ -2198,7 +2187,6 @@ RTP.Multievent = function (cb)
 
 		// execute the updatedSlideExposure hook for slides
 		this.trigger('changedExposure', exposure, se);
-
 
 	}
 	// @@@ EO private fn: updatePanelExposure @@@
@@ -5125,6 +5113,154 @@ data.vp_off = vp_off.x;
 	prototype.plugin('autoslideStart', updateToggleButtons);
 	prototype.plugin('autoslidePause', updateToggleButtons);
 
+
+// EO extend class prototype
+})(RTP.Slider.prototype, jQuery);
+/*
+
+  Copyright (c) Marcel Greter 2013 - ocbnet.ch - RTP jQuery Slider TabIndex Plugin
+  This is free software; you can redistribute it and/or modify it under the terms
+  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
+  either version 3 of the License, or (at your option) any later version.
+
+*/
+
+// extend class prototype
+(function (prototype, jQuery)
+{
+
+	'use strict';
+
+
+	// @@@ plugin: config @@@
+	prototype.plugin('config', function (extend)
+	{
+
+		// add defaults
+		extend({
+
+			// enable plugin
+			adjustTabIndex: true
+
+		});
+		// EO extend config
+
+	});
+	// @@@ EO plugin: config @@@
+
+
+	// @@@ plugin: start @@@
+	prototype.plugin('ready', function ()
+	{
+
+		// check if feature is enabled
+		if (!this.conf.adjustTabIndex) return;
+
+		// fetch all links within the slides
+		var i = this.slides.length; while (i --)
+		{
+			var slide = jQuery(this.slides[i]);
+			slide.data('links', jQuery('A', slide))
+		}
+
+		// first disable all links in all panels
+		// links in cloned panels are never selectable
+		jQuery('A', this.panels).attr('tabindex', '-1');
+
+	});
+	// @@@ EO plugin: start @@@
+
+
+	// @@@ plugin: changedSlideVisibility @@@
+	prototype.plugin('changedSlideVisibility', function (slide, visible)
+	{
+
+		// check if feature is enabled
+		if (!this.conf.adjustTabIndex) return;
+
+		// reset the tabindex for all links in this slide
+		jQuery(slide).data('links').attr('tabindex', visible ? '' : '-1');
+
+	});
+	// @@@ EO plugin: changedSlideVisibility @@@
+
+
+// EO extend class prototype
+})(RTP.Slider.prototype, jQuery);
+/*
+
+  Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Visibility Plugin
+  Map global changedVisibility event to slide specific events if visibilities change
+  This is free software; you can redistribute it and/or modify it under the terms
+  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
+  either version 3 of the License, or (at your option) any later version.
+
+*/
+
+// extend class prototype
+(function (prototype, jQuery)
+{
+
+	'use strict';
+
+
+	// events to emit according to within state
+	var events = [ 'slideHidden', 'slideShown' ];
+
+
+	// @@@ plugin: config @@@
+	prototype.plugin('config', function (extend)
+	{
+
+		// add defaults
+		extend({
+
+			// when is a slide visible
+			// how visible has it to be
+			withinThreshold : 0.995
+
+		});
+
+		// store per slide
+		this.within = [];
+
+	});
+	// @@@ EO plugin: config @@@
+
+
+	// @@@ plugin: changedVisibility @@@
+	prototype.plugin('changedVisibility', function (visibility, sv)
+	{
+
+		// process all slides, array must have
+		// same length as all registered slides
+		var i = visibility.length; while (i--)
+		{
+
+			// get the previous value
+			var prev = this.within[i];
+
+			// get status if slide is visible (int for array access)
+			var vis = visibility[i] > this.conf.withinThreshold ? 1 : 0;
+
+			// check is status has changed
+			if (vis != prev)
+			{
+
+				// store new status
+				this.within[i] = vis;
+
+				// emit an event to inform that this slide visibility has changed
+				this.trigger('changedSlideVisibility', this.slides[i], vis, prev);
+
+			}
+			// EO if state changed
+
+		}
+		// EO each slide
+
+	});
+	// @@@ EO plugin: changedVisibility @@@
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
