@@ -32,6 +32,8 @@ merge:
 		${SRC_DIR}ocbnet/slider/swipe/mouse.js \
 		${SRC_DIR}ocbnet/slider/swipe/touch.js \
 		${SRC_DIR}ocbnet/slider/addons/toolbar.js \
+		${SRC_DIR}ocbnet/slider/addons/tabindex.js \
+		${SRC_DIR}ocbnet/slider/addons/visibility.js \
 		${SRC_DIR}ocbnet/slider/addons/progressbar.js \
 		${SRC_DIR}lib/csshooks.js \
 		${SRC_DIR}ocbnet/slider/addons/tiles.js \
