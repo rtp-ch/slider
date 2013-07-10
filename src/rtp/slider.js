@@ -162,6 +162,9 @@
 		// get all intial panels (slides) once at startup (after config)
 		var slides = slider.slides = container.find(selector.panel);
 
+		// don't init further if there is only a single slide
+		if (conf.dontInitSingle && slides.length < 2) return;
+
 		// put viewport around container
 		var viewport = slider.viewport = container
 			.wrapAll(tmpl.viewport).parent();

@@ -358,7 +358,6 @@
 
 })(jQuery);
 // EO private scope
-
 /*
 
   Copyright (c) Marcel Greter 2010 - rtp.ch - RTP Multi Event Dispatcher v0.8.2
@@ -465,7 +464,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 }).call(RTP.Multievent.prototype);
-
 /*
 
   Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider
@@ -629,6 +627,9 @@ RTP.Multievent = function (cb)
 
 		// get all intial panels (slides) once at startup (after config)
 		var slides = slider.slides = container.find(selector.panel);
+
+		// don't init further if there is only a single slide
+		if (conf.dontInitSingle && slides.length < 2) return;
 
 		// put viewport around container
 		var viewport = slider.viewport = container
@@ -951,7 +952,6 @@ RTP.Multievent = function (cb)
 
 // END anonymous scope
 })(jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Hook Functions
@@ -1224,7 +1224,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Slides Functions
@@ -1379,7 +1378,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Panels Functions
@@ -1744,7 +1742,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Viewport Functions
@@ -1912,7 +1909,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Container Functions
@@ -2093,7 +2089,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Visibility Core Functions
@@ -2311,7 +2306,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Position Functions
@@ -2545,7 +2539,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Core Animation Functions
@@ -2904,7 +2897,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Sizer Functions
@@ -3044,7 +3036,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panels By Viewport Sizer
@@ -3116,7 +3107,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panels By Viewport Sizer
@@ -3195,7 +3185,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panels By Viewport Sizer
@@ -3274,7 +3263,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport By Panels Sizer
@@ -3328,7 +3316,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport Height by Visibility Sizer
@@ -3422,7 +3409,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Navigation Dots Plugin
@@ -3639,7 +3625,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Navigation Arrows Plugin
@@ -3778,7 +3763,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Keyboard Navigation Plugin
@@ -3843,7 +3827,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panel Status Class Plugin
@@ -3941,7 +3924,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Auto Slide Plugin
@@ -4203,7 +4185,6 @@ RTP.Multievent = function (cb)
 	// @@@ EO _init @@@
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Panel Info Box Plugin
@@ -4332,7 +4313,6 @@ RTP.Multievent = function (cb)
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Core Swipe Plugin
@@ -4634,7 +4614,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Mouse Swipe Plugin
@@ -4784,7 +4763,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Touch Swipe Plugin
@@ -4944,7 +4922,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Toolbar Plugin
@@ -5151,7 +5128,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2013 - ocbnet.ch - RTP jQuery Slider Progress Bar Plugin
@@ -5339,7 +5315,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 // taken from http://api.jquery.com/jQuery.cssHooks/
 
 (function($) {
@@ -5422,7 +5397,6 @@ data.vp_off = vp_off.x;
 	}
 
 })(jQuery);
-
 /*
   Copyright (c) Marcel Greter 2013 - ocbnet.ch - RTP jQuery Slider Tiles plugin
   This is free software; you can redistribute it and/or modify it under the terms
@@ -5872,7 +5846,6 @@ data.vp_off = vp_off.x;
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
-
 /*
 
   Copyright (c) Marcel Greter 2012 - ocbnet.ch - RTP jQuery Slider Carousel 3D Plugin
