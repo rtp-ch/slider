@@ -2094,6 +2094,7 @@ RTP.Multievent = function (cb)
 
 	'use strict';
 
+
 	// @@@ private fn: updatePanelExposure @@@
 	function updatePanelExposure(current, previous)
 	{
@@ -2187,6 +2188,7 @@ RTP.Multievent = function (cb)
 
 		// execute the updatedSlideExposure hook for slides
 		this.trigger('changedExposure', exposure, se);
+
 
 	}
 	// @@@ EO private fn: updatePanelExposure @@@
@@ -3500,6 +3502,11 @@ RTP.Multievent = function (cb)
 
 			// enable plugin
 			navDots: false,
+			// enable wrappers
+			navDotWrappers: false,
+			// function name to add dom node
+			// ex: prepend, append, after or before
+			navDotPosition: 'append',
 			// format for alt and title tag
 			navDotAltFormat: formatTitle,
 			navDotTitleFormat: formatTitle,
@@ -3523,6 +3530,10 @@ RTP.Multievent = function (cb)
 			tmpl : {
 				navDotWrapper: ['<span><a href="javascript:void(0);">', '</a></span>'],
 				navDotElement: '<img src="img/rtp-nav-dot-clear.gif" width="12" height="12" alt=""/>'
+			},
+
+			selector : {
+				navDotImage: 'IMG'
 			}
 
 
@@ -3537,10 +3548,12 @@ RTP.Multievent = function (cb)
 	{
 
 		// create closure
-		var self = this;
+		var self = this,
+		    tmpl = self.tmpl,
+		    conf = self.conf;
 
 		// activate autoslide
-		if (self.conf.navDots)
+		if (conf.navDots)
 		{
 
 			// only if more than one slide
@@ -3559,9 +3572,9 @@ RTP.Multievent = function (cb)
 
 					// create a new jquery dom object
 					var navDot = jQuery(
-						self.tmpl.navDotWrapper[0] +
-							self.tmpl.navDotElement +
-						self.tmpl.navDotWrapper[1]
+						tmpl.navDotWrapper[0] +
+							tmpl.navDotElement +
+						tmpl.navDotWrapper[1]
 					)
 
 						// add generic class to the item
@@ -3573,14 +3586,14 @@ RTP.Multievent = function (cb)
 						.click(function () { self.animate(i); })
 
 						// append object to wrapper
-						.appendTo(self.navDotWrapper)
+						.appendTo(self.navDotWrapper);
 
 					// get the nav dot image node
-					var navDotImg = jQuery('IMG', navDot)
+					var navDotImg = jQuery(conf.selector.navDotImage, navDot);
 
 					// set some attributes for the image (overwrite format functions to personalize)
-					if (isFn(self.conf.navDotAltFormat)) navDotImg.attr('alt', self.conf.navDotAltFormat.call(self, i));
-					if (isFn(self.conf.navDotTitleFormat)) navDotImg.attr('title', self.conf.navDotTitleFormat.call(self, i));
+					if (isFn(conf.navDotAltFormat)) navDotImg.attr('alt', conf.navDotAltFormat.call(self, i));
+					if (isFn(conf.navDotTitleFormat)) navDotImg.attr('title', conf.navDotTitleFormat.call(self, i));
 
 					// collect all real dom nodes
 					self.navDot.push(navDot.get(0));
@@ -3591,11 +3604,18 @@ RTP.Multievent = function (cb)
 
 				});
 
-				// append wrapper to the main slider wrapper
-				self.wrapper.append(self.navDotWrapper);
+				// get configured function from node
+				var fn = self.wrapper[conf.navDotPosition];
+				// call to add wrapper to the main slider wrapper
+				if (fn) fn.call(self.wrapper, self.navDotWrapper);
 
-				// self.navDotWrapper.wrap('<div class="rtp-nav-dots-outer">');
-				// self.navDotWrapper.wrap('<div class="rtp-nav-dots-wrapper">');
+				// enable additional wrappers
+				if (conf.navDotWrappers)
+				{
+					// these can be usefull to center them in all browsers
+					self.navDotWrapper.wrap('<div class="rtp-nav-dots-outer">');
+					self.navDotWrapper.wrap('<div class="rtp-nav-dots-wrapper">');
+				}
 
 			}
 			// EO if slides > 1
@@ -5149,7 +5169,7 @@ data.vp_off = vp_off.x;
 	// @@@ EO plugin: config @@@
 
 
-	// @@@ plugin: start @@@
+	// @@@ plugin: ready @@@
 	prototype.plugin('ready', function ()
 	{
 
@@ -5168,7 +5188,7 @@ data.vp_off = vp_off.x;
 		jQuery('A', this.panels).attr('tabindex', '-1');
 
 	});
-	// @@@ EO plugin: start @@@
+	// @@@ EO plugin: ready @@@
 
 
 	// @@@ plugin: changedSlideVisibility @@@
@@ -5202,10 +5222,6 @@ data.vp_off = vp_off.x;
 {
 
 	'use strict';
-
-
-	// events to emit according to within state
-	var events = [ 'slideHidden', 'slideShown' ];
 
 
 	// @@@ plugin: config @@@
@@ -5261,6 +5277,7 @@ data.vp_off = vp_off.x;
 
 	});
 	// @@@ EO plugin: changedVisibility @@@
+
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
