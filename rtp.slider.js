@@ -1816,7 +1816,7 @@ RTP.Multievent = function (cb)
 	{
 
 		// check if we are allowed to read from ua
-		if (this.conf.sizerDim != 'viewportByPanels') debugger;
+		if (this.conf.sizerDim != 'viewportByPanels') eval('debugger');
 
 		// does the value really change
 		if (this.vp_x == value) return;
@@ -1838,7 +1838,7 @@ RTP.Multievent = function (cb)
 	{
 
 		// check if we are allowed to read from ua
-		if (this.conf.sizerOpp != 'viewportByPanels') debugger;
+		if (this.conf.sizerOpp != 'viewportByPanels') eval('debugger');
 
 		// does the value really change
 		if (this.vp_y == value) return;
@@ -1875,7 +1875,7 @@ RTP.Multievent = function (cb)
 	{
 
 		// check if we are allowed to read from ua
-		if (this.conf.sizerDim == 'viewportByPanels') debugger;
+		if (this.conf.sizerDim == 'viewportByPanels') eval('debugger');
 
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
@@ -1888,7 +1888,7 @@ RTP.Multievent = function (cb)
 	{
 
 		// check if we are allowed to read from ua
-		if (this.conf.sizerOpp == 'viewportByPanels') debugger;
+		if (this.conf.sizerOpp == 'viewportByPanels') eval('debugger');
 
 		// store the current viewport opposition
 		this.vp_y = getViewportSize.call(this, 1);
