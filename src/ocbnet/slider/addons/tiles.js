@@ -60,8 +60,8 @@
 
 			// return the string according to options
 			return this.conf.vertical ^ invert
-				? (reverse ? 'marginBottom' : 'marginTop')
-				: (reverse ? 'marginRight' : 'marginLeft');
+			  ? (reverse ? 'marginBottom' : 'marginTop')
+			  : (reverse ? 'marginRight' : 'marginLeft');
 
 		}
 		// @@@ EO private fn: getOffsetCssStr @@@

@@ -181,7 +181,7 @@
 
 		// maybe use special timeout for first auto slide
 		var timeout = isNaN(this.conf.autoslideFirstDelay) ?
-			this.conf.autoslideDelay : this.conf.autoslideFirstDelay;
+		    this.conf.autoslideDelay : this.conf.autoslideFirstDelay;
 
 		// call first autoslide with setting
 		this.startAutoSlide(timeout);
@@ -224,7 +224,7 @@
 
 				// maybe use special timeout for resume auto slide
 				var timeout = this.conf.autoslideResumeDelay != false ?
-					this.conf.autoslideResumeDelay : this.conf.autoslideDelay;
+				    this.conf.autoslideResumeDelay : this.conf.autoslideDelay;
 
 				// restart autoslide on mouse out with optional timeout
 				if(this.conf.autoslidePauseOnHover) this.startAutoSlide(timeout);
@@ -241,6 +241,7 @@
 	// start is defered after ready
 	prototype.plugin('swipeStart', function()
 	{
+		// XXX - implement this properly
 		this.backup = this.autosliding;
 		if (this.autosliding)
 		{

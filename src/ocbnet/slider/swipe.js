@@ -15,12 +15,12 @@
 
 
 	/*
-	   This function is used to calculate the speed when
-	   the user releases the mouse or swipe gesture.
-	   We record the positions of the points and the timestamp,
-	   then this function calculates the average speed.
-	   http://en.wikipedia.org/wiki/Least_squares
-	   http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
+	  This function is used to calculate the speed when
+	  the user releases the mouse or swipe gesture.
+	  We record the positions of the points and the timestamp,
+	  then this function calculates the average speed.
+	  http://en.wikipedia.org/wiki/Least_squares
+	  http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
 	*/
 	var LeastSquaresFitting = function (points, scale)
 	{
@@ -89,7 +89,7 @@
 		if (this.autoSlidePause) this.autoSlidePause();
 
 		// assert that, when swiping is given, animation lock is set
-// 		if (this.locked && !this.animation) alert('invalid status');
+		// if (this.locked && !this.animation) alert('invalid status');
 
 		// lock the animations
 		this.animation = true;
@@ -110,7 +110,7 @@
 
 		var offset = this.ct_off + x - vp_off.x;
 
-data.vp_off = vp_off.x;
+		data.vp_off = vp_off.x;
 
 		// get the position where the drag has been started / initiated (point of interest)
 		data.swipeStartDragPos = this.getPositionByOffset(offset);

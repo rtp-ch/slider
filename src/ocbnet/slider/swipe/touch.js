@@ -5,8 +5,8 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-	A swipe gesture is always generated with a start, several move and a stop event.
-	From these events we calculate the speed of the cursor/finger when the event is triggered.
+  A swipe gesture is always generated with a start, several move and a stop event.
+  From these events we calculate the speed of the cursor/finger when the event is triggered.
 
 */
 
@@ -96,15 +96,15 @@
 			return true;
 		}
 
-        if (touches.length == 0)
-        {
-            // unbind my move event handler when done
-            if (data.move) jQuery(document).unbind(evt_move, data.move);
+		if (touches.length == 0)
+		{
+			// unbind my move event handler when done
+			if (data.move) jQuery(document).unbind(evt_move, data.move);
 
-            // call swipe stop handler with coordinates
-            this.trigger('swipeStop', swipe, scroll, data);
-            for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-        }
+			// call swipe stop handler with coordinates
+			this.trigger('swipeStop', swipe, scroll, data);
+			for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
+		}
 	}
 
 	// @@@ private fn: handleMove @@@

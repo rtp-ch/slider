@@ -5,12 +5,12 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-	A swipe gesture is always generated with a start, several move and a stop event.
-	From these events we calculate the speed of the cursor/finger when the event is triggered.
+  A swipe gesture is always generated with a start, several move and a stop event.
+  From these events we calculate the speed of the cursor/finger when the event is triggered.
 
-	Known problems:
-	 - MouseUp event is not fired when some element is dragged, then the mouse
-	   moves outside the window and is then released -> http://jsfiddle.net/hL3mg/8/
+  Known problems:
+   - MouseUp event is not fired when some element is dragged, then the mouse
+     moves outside the window and is then released -> http://jsfiddle.net/hL3mg/8/
 
 */
 
