@@ -5,9 +5,7 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the height of the viewport fully to all visibile panels.
-  Maybe add distribution factors or fixed heights for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
+  Adjust the panels opposition to the available viewport opposition.
 
 */
 

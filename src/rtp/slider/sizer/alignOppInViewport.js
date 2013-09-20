@@ -5,9 +5,9 @@
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the width of the viewport evenly to all visibile panels.
-  Maybe add distribution factors or fixed widths for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
+  Align the panels to the opposite direction of the viewport. Just usefull if the
+  viewport has a fixed height and no fluid panels. So you may want to align the
+  panels vertically to the bottom or to the middle (like css vertical-align).
 
 */
 

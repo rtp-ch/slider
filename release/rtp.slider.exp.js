@@ -1347,7 +1347,7 @@ RTP.Multievent = function (cb)
 		// max index for real slider panels (not cloned ones)
 		this.smax = this.smin + this.slen - 1;
 
-		// test how much viewable each panel is right now
+		// process all panels to create slide index
 		for(var i = 0; i < this.panels.length; i ++)
 		{
 
@@ -3033,9 +3033,9 @@ RTP.Multievent = function (cb)
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the width of the viewport evenly to all visibile panels.
-  Maybe add distribution factors or fixed widths for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
+  Align the panels to the opposite direction of the viewport. Just usefull if the
+  viewport has a fixed height and no fluid panels. So you may want to align the
+  panels vertically to the bottom or to the middle (like css vertical-align).
 
 */
 
@@ -3104,7 +3104,7 @@ RTP.Multievent = function (cb)
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the width of the viewport evenly to all visibile panels.
+  Distribute the width of the viewport evenly to all visible panels.
   Maybe add distribution factors or fixed widths for panels later.
   This sizer adjusts the panels if the viewport opposition changes.
 
@@ -3182,9 +3182,7 @@ RTP.Multievent = function (cb)
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-  Distribute the height of the viewport fully to all visibile panels.
-  Maybe add distribution factors or fixed heights for panels later.
-  This sizer adjusts the panels if the viewport dimension changes.
+  Adjust the panels opposition to the available viewport opposition.
 
 */
 
@@ -3260,6 +3258,8 @@ RTP.Multievent = function (cb)
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
+  Adjust the viewport dimension to the currently shown panel(s).
+
 */
 
 // extend class prototype
@@ -3308,10 +3308,12 @@ RTP.Multievent = function (cb)
 })(RTP.Slider.prototype, jQuery);
 /*
 
-  Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport Height by Visibility Sizer
+  Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport By Panels Sizer
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
+
+  Adjust the viewport opposition to the currently shown panel(s).
 
 */
 

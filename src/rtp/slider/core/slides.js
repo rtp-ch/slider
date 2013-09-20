@@ -131,7 +131,7 @@
 		// max index for real slider panels (not cloned ones)
 		this.smax = this.smin + this.slen - 1;
 
-		// test how much viewable each panel is right now
+		// process all panels to create slide index
 		for(var i = 0; i < this.panels.length; i ++)
 		{
 

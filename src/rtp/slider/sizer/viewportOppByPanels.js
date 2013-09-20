@@ -1,9 +1,11 @@
 /*
 
-  Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport Height by Visibility Sizer
+  Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Viewport By Panels Sizer
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
+
+  Adjust the viewport opposition to the currently shown panel(s).
 
 */
 
