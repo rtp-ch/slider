@@ -1,0 +1,111 @@
+<xml>
+
+	<!-- include default configuration file (relative to this file) -->
+	<include src="{EXT}/conf/common.conf.xml" />
+
+	<!-- default configuration -->
+	<config>
+
+		<!-- where is you htdocs root directory -->
+		<!-- this is needed to create absolute urls -->
+		<!-- default is relative to the config file -->
+		<webroot>{CONF}/..</webroot>
+
+		<!-- define a current working directory -->
+		<!-- you can adjust this also in the xml config -->
+		<directory>{WWW}</directory>
+
+		<!-- disable headers -->
+		<headtmpl></headtmpl>
+
+		<!-- disable crc file -->
+		<crc-file>0</crc-file>
+
+		<!-- disable comments -->
+		<crc-comment>0</crc-comment>
+		<head-comment>0</head-comment>
+
+	</config>
+
+	<!-- optimize operations (id needed to overwrite) -->
+	<optimize id="optimize" step="optimize" disabled="false">
+		<!-- clean/fix text files -->
+		<txt disabled="false">
+			<!-- clean all js and css files -->
+			<file path="." file="*.md" recursive="true" />
+			<file path="." file="*.css" recursive="true" />
+			<file path="." file="*.txt" recursive="true" />
+			<file path="." file="*.html" recursive="true" />
+			<file path="src" file="*.js" recursive="true" />
+		</txt>
+		<!-- best gif compression -->
+		<gif disabled="false">
+			<!-- recursively improve gif compression -->
+			<file path="." file="*.gif" recursive="true" />
+		</gif>
+		<!-- best jpg compression -->
+		<jpg disabled="false">
+			<!-- recursively improve jpg compression -->
+			<file path="." file="*.jpg" recursive="true" />
+		</jpg>
+		<!-- best png compression -->
+		<png disabled="false">
+			<!-- recursively improve png compression -->
+			<file path="." file="*.png" recursive="true" />
+		</png>
+	</optimize>
+
+	<!-- main merge operations -->
+	<merge id="default" disabled="false">
+
+		<js id="core" step="core" >
+
+			<input path="src/ocbnet/layout.js" />
+			<input path="src/rtp/common/multievent.js" />
+
+			<!-- include core javascript files -->
+			<input path="src/rtp/slider.js" />
+			<input path="src/rtp/slider/core/hooks.js" />
+			<input path="src/rtp/slider/core/slides.js" />
+			<input path="src/rtp/slider/core/panels.js" />
+			<input path="src/rtp/slider/core/viewport.js" />
+			<input path="src/rtp/slider/core/container.js" />
+			<input path="src/rtp/slider/core/visibility.js" />
+			<input path="src/rtp/slider/core/position.js" />
+			<input path="src/rtp/slider/core/animation.js" />
+
+			<input path="src/rtp/slider/sizer.js" />
+			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
+			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
+			<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
+			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
+			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
+
+			<input path="src/rtp/slider/addons/nav-dots.js" />
+			<input path="src/rtp/slider/addons/nav-arrows.js" />
+			<input path="src/rtp/slider/addons/nav-keyboard.js" />
+			<input path="src/rtp/slider/addons/classes.js" />
+			<input path="src/rtp/slider/addons/autoslide.js" />
+			<input path="src/rtp/slider/addons/panel-infobox.js" />
+
+			<input path="src/ocbnet/slider/swipe.js" />
+			<input path="src/ocbnet/slider/swipe/mouse.js" />
+			<input path="src/ocbnet/slider/swipe/touch.js" />
+			<input path="src/ocbnet/slider/addons/toolbar.js" />
+			<input path="src/ocbnet/slider/addons/tabindex.js" />
+			<input path="src/ocbnet/slider/addons/visibility.js" />
+			<input path="src/ocbnet/slider/addons/progressbar.js" />
+
+			<input path="src/lib/csshooks.js" />
+			<input path="src/ocbnet/slider/addons/tiles.js" />
+			<input path="src/ocbnet/slider/addons/carousel3d.js" />
+
+			<!-- generate different output versions -->
+			<output path="rtp.slider.js" target="join" />
+			<output path="rtp.slider.min.js" target="compile" />
+
+		</js>
+
+	</merge>
+
+</xml>

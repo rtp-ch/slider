@@ -4115,7 +4115,7 @@ RTP.Multievent = function (cb)
 
 		// maybe use special timeout for first auto slide
 		var timeout = isNaN(this.conf.autoslideFirstDelay) ?
-			this.conf.autoslideDelay : this.conf.autoslideFirstDelay;
+		    this.conf.autoslideDelay : this.conf.autoslideFirstDelay;
 
 		// call first autoslide with setting
 		this.startAutoSlide(timeout);
@@ -4158,7 +4158,7 @@ RTP.Multievent = function (cb)
 
 				// maybe use special timeout for resume auto slide
 				var timeout = this.conf.autoslideResumeDelay != false ?
-					this.conf.autoslideResumeDelay : this.conf.autoslideDelay;
+				    this.conf.autoslideResumeDelay : this.conf.autoslideDelay;
 
 				// restart autoslide on mouse out with optional timeout
 				if(this.conf.autoslidePauseOnHover) this.startAutoSlide(timeout);
@@ -4175,6 +4175,7 @@ RTP.Multievent = function (cb)
 	// start is defered after ready
 	prototype.plugin('swipeStart', function()
 	{
+		// XXX - implement this properly
 		this.backup = this.autosliding;
 		if (this.autosliding)
 		{
@@ -4338,12 +4339,12 @@ RTP.Multievent = function (cb)
 
 
 	/*
-	   This function is used to calculate the speed when
-	   the user releases the mouse or swipe gesture.
-	   We record the positions of the points and the timestamp,
-	   then this function calculates the average speed.
-	   http://en.wikipedia.org/wiki/Least_squares
-	   http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
+	  This function is used to calculate the speed when
+	  the user releases the mouse or swipe gesture.
+	  We record the positions of the points and the timestamp,
+	  then this function calculates the average speed.
+	  http://en.wikipedia.org/wiki/Least_squares
+	  http://pcbheaven.com/wikipages/The_Least_Squares_Fitting/
 	*/
 	var LeastSquaresFitting = function (points, scale)
 	{
@@ -4412,7 +4413,7 @@ RTP.Multievent = function (cb)
 		if (this.autoSlidePause) this.autoSlidePause();
 
 		// assert that, when swiping is given, animation lock is set
-// 		if (this.locked && !this.animation) alert('invalid status');
+		// if (this.locked && !this.animation) alert('invalid status');
 
 		// lock the animations
 		this.animation = true;
@@ -4433,7 +4434,7 @@ RTP.Multievent = function (cb)
 
 		var offset = this.ct_off + x - vp_off.x;
 
-data.vp_off = vp_off.x;
+		data.vp_off = vp_off.x;
 
 		// get the position where the drag has been started / initiated (point of interest)
 		data.swipeStartDragPos = this.getPositionByOffset(offset);
@@ -4629,12 +4630,12 @@ data.vp_off = vp_off.x;
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-	A swipe gesture is always generated with a start, several move and a stop event.
-	From these events we calculate the speed of the cursor/finger when the event is triggered.
+  A swipe gesture is always generated with a start, several move and a stop event.
+  From these events we calculate the speed of the cursor/finger when the event is triggered.
 
-	Known problems:
-	 - MouseUp event is not fired when some element is dragged, then the mouse
-	   moves outside the window and is then released -> http://jsfiddle.net/hL3mg/8/
+  Known problems:
+   - MouseUp event is not fired when some element is dragged, then the mouse
+     moves outside the window and is then released -> http://jsfiddle.net/hL3mg/8/
 
 */
 
@@ -4778,8 +4779,8 @@ data.vp_off = vp_off.x;
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
 
-	A swipe gesture is always generated with a start, several move and a stop event.
-	From these events we calculate the speed of the cursor/finger when the event is triggered.
+  A swipe gesture is always generated with a start, several move and a stop event.
+  From these events we calculate the speed of the cursor/finger when the event is triggered.
 
 */
 
@@ -4869,15 +4870,15 @@ data.vp_off = vp_off.x;
 			return true;
 		}
 
-        if (touches.length == 0)
-        {
-            // unbind my move event handler when done
-            if (data.move) jQuery(document).unbind(evt_move, data.move);
+		if (touches.length == 0)
+		{
+			// unbind my move event handler when done
+			if (data.move) jQuery(document).unbind(evt_move, data.move);
 
-            // call swipe stop handler with coordinates
-            this.trigger('swipeStop', swipe, scroll, data);
-            for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-        }
+			// call swipe stop handler with coordinates
+			this.trigger('swipeStop', swipe, scroll, data);
+			for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
+		}
 	}
 
 	// @@@ private fn: handleMove @@@
@@ -5612,8 +5613,8 @@ data.vp_off = vp_off.x;
 
 			// return the string according to options
 			return this.conf.vertical ^ invert
-				? (reverse ? 'marginBottom' : 'marginTop')
-				: (reverse ? 'marginRight' : 'marginLeft');
+			  ? (reverse ? 'marginBottom' : 'marginTop')
+			  : (reverse ? 'marginRight' : 'marginLeft');
 
 		}
 		// @@@ EO private fn: getOffsetCssStr @@@
