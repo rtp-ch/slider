@@ -23,8 +23,10 @@
 		// add defaults
 		extend({
 
+			// when is a panel not visible
+			autoVpOppDeadZone: 0.2,
 			// when is a panel fully visible
-			autoVpOppDeadZone: 0.5
+			autoVpOppLifeZone: 0.8
 
 		});
 
@@ -40,12 +42,31 @@
 		if (this.conf.sizerOpp != 'viewportByPanels') return;
 
 		// declare local variables for loop
-		var opps = [], exposure = this.se,
+		var min = 1E+100, opps = [], exposure = this.se,
 		    // dead zone for out of view panel
-		    dead_zone = parseFloat(this.conf.autoVpOppDeadZone, 10);
+		    dead_zone = parseFloat(this.conf.autoVpOppDeadZone, 10),
+		    // life zone for out of view panel
+		    life_zone = parseFloat(this.conf.autoVpOppLifeZone, 10);
 
 		// assertion for numeric value
-		if (isNaN(dead_zone)) dead_zone = 1;
+		if (isNaN(dead_zone)) dead_zone = 0.2;
+		if (isNaN(life_zone)) life_zone = 0.8;
+
+		// switch arguments if they seem to be
+		// defined in the opposite way (play safe)
+		if (dead_zone > life_zone)
+		{
+			var foobar = dead_zone;
+			dead_zone = life_zone;
+			life_zone = foobar;
+		}
+
+		// process all panel visibilites
+		var i = exposure.length; while (i --)
+		{
+			// check if current panel is visible and smaller than min
+			if (exposure[i] > 0 && this.pd[1][i] < min) min = this.pd[1][i];
+		}
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
@@ -55,20 +76,20 @@
 			if (exposure[i] === 0) continue;
 
 			// check if panel is fully visible
-			if (exposure[i] > dead_zone)
+			if (exposure[i] > life_zone)
 			{
 
-				// use full panel height
-				opps.push(this.pd[1][i]);
+				// use full panel size difference
+				opps.push((this.pd[1][i] - min));
 
 			}
 
 			// panel only partial visible
-			else
+			else if (exposure[i] > dead_zone)
 			{
 
-				// use a partial panel size (dead_zone == full size)
-				opps.push(this.pd[1][i] * exposure[i] / dead_zone);
+				// use a partial panel size diff (distribute from 0 to 1 between dead_zone and life_zone)
+				opps.push((this.pd[1][i] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
 
 			}
 
@@ -76,10 +97,11 @@
 		// EO foreach panel visiblity
 
 		// get the biggest value from array
-		var max = Math.max.apply(Math, opps);
+		var offset = Math.max.apply(Math, opps);
 
 		// update opposite viewport size
-		this.updateViewportOpp(max);
+		// take minimum size and add offset
+		this.updateViewportOpp(min + offset);
 
 	}
 	// @@@ EO private fn: viewportOppByPanels @@@
