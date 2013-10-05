@@ -3085,7 +3085,7 @@ RTP.Multievent = function (cb)
 			jQuery(this.panels[i]).css(css, offset + 'px');
 
 		}
-			// EO each panel
+		// EO each panel
 
 	}
 	// @@@ EO private fn: alignOppInViewport @@@

@@ -3085,7 +3085,7 @@ RTP.Multievent = function (cb)
 			jQuery(this.panels[i]).css(css, offset + 'px');
 
 		}
-			// EO each panel
+		// EO each panel
 
 	}
 	// @@@ EO private fn: alignOppInViewport @@@
@@ -3892,7 +3892,7 @@ RTP.Multievent = function (cb)
 		    deadZone = conf.curClassDeadZone;
 
 		// get the nearest slide to be selected as current
-		var nearest = this.slide2slide(parseInt(this.position + 0.5, 10));
+		var nearest = (parseInt(this.position + 0.5, 10));
 
 		// mark current class if within dead zone
 		if (Math.abs(nearest - position) < deadZone)
@@ -3904,10 +3904,10 @@ RTP.Multievent = function (cb)
 			// have nav dots?
 			if (this.navDot)
 			{
-
+				// bring value into valid range
+				nearest = this.slide2slide(nearest);
 				// add dom element of current nav dot
 				curEls = curEls.add(this.navDot[nearest]);
-
 			}
 			// EO if navDot
 
@@ -3990,7 +3990,6 @@ RTP.Multievent = function (cb)
 	// @@@ plugin: interaction @@@
 	prototype.plugin('interaction', function()
 	{
-
 
 		// stop the autoslider if configured to do so
 		if (this.conf.autoslideStopOnAction) this.stopAutoSlide(false);

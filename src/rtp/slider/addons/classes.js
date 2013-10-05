@@ -53,7 +53,7 @@
 		    deadZone = conf.curClassDeadZone;
 
 		// get the nearest slide to be selected as current
-		var nearest = this.slide2slide(parseInt(this.position + 0.5, 10));
+		var nearest = (parseInt(this.position + 0.5, 10));
 
 		// mark current class if within dead zone
 		if (Math.abs(nearest - position) < deadZone)
@@ -65,10 +65,10 @@
 			// have nav dots?
 			if (this.navDot)
 			{
-
+				// bring value into valid range
+				nearest = this.slide2slide(nearest);
 				// add dom element of current nav dot
 				curEls = curEls.add(this.navDot[nearest]);
-
 			}
 			// EO if navDot
 
