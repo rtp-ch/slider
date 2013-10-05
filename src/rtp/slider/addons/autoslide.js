@@ -55,7 +55,6 @@
 	prototype.plugin('interaction', function()
 	{
 
-
 		// stop the autoslider if configured to do so
 		if (this.conf.autoslideStopOnAction) this.stopAutoSlide(false);
 
