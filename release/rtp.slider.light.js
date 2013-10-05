@@ -1,4 +1,8 @@
 /*
+  RTP.Slider.js - minimal release
+  https://github.com/mgreter/slider
+*/
+/*
 
   Copyright (c) Marcel Greter 2012 - OCBNET Layouter 1.0.0
   This plugin available for use in all personal or commercial projects under both MIT and GPL licenses.

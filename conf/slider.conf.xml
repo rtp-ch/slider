@@ -71,6 +71,8 @@
 
 		<js id="core" step="core" >
 
+			<prepend path="conf/header.min.txt" />
+
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
 
@@ -104,6 +106,8 @@
 	<merge id="full" disabled="false">
 
 		<js id="core" step="core" >
+
+			<prepend path="conf/header.full.txt" />
 
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
@@ -153,6 +157,8 @@
 	<merge id="experimental" disabled="false">
 
 		<js id="core" step="core" >
+
+			<prepend path="conf/header.exp.txt" />
 
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
