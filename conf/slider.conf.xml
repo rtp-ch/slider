@@ -71,7 +71,7 @@
 
 		<js id="core" step="core" >
 
-			<prepend path="conf/header.min.txt" />
+			<prepend path="conf/header.min.js" />
 
 			<prepend path="src/header.js" />
 
@@ -109,7 +109,7 @@
 
 		<js id="core" step="core" >
 
-			<prepend path="conf/header.full.txt" />
+			<prepend path="conf/header.full.js" />
 
 			<prepend path="src/header.js" />
 
@@ -162,7 +162,7 @@
 
 		<js id="core" step="core" >
 
-			<prepend path="conf/header.exp.txt" />
+			<prepend path="conf/header.exp.js" />
 
 			<prepend path="src/header.js" />
 
