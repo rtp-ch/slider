@@ -289,6 +289,7 @@ either version 3 of the License, or (at your option) any later version.
 
 ### Examples
 
+ - http://slider.rtp.ocbnet.ch/slider/examples/swipe.html
  - http://slider.rtp.ocbnet.ch/slider/examples/addons.html
  - http://slider.rtp.ocbnet.ch/slider/examples/tiles.html (alpha)
  - http://slider.rtp.ocbnet.ch/slider/examples/carousel3d.html (alpha)
