@@ -71,10 +71,13 @@
 
 		<js id="core" step="core" >
 
+			<!-- include specific header file -->
 			<prepend path="conf/header.min.js" />
 
+			<!-- include common header file -->
 			<prepend path="src/header.js" />
 
+			<!-- include library javascript files -->
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
 
@@ -89,6 +92,7 @@
 			<input path="src/rtp/slider/core/position.js" />
 			<input path="src/rtp/slider/core/animation.js" />
 
+			<!-- include core sizer javascript files -->
 			<input path="src/rtp/slider/sizer.js" />
 			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
 			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
@@ -107,12 +111,15 @@
 	<!-- main merge operations -->
 	<merge id="full" disabled="false">
 
-		<js id="core" step="core" >
+		<js id="full" step="full" >
 
+			<!-- include specific header file -->
 			<prepend path="conf/header.full.js" />
 
+			<!-- include common header file -->
 			<prepend path="src/header.js" />
 
+			<!-- include library javascript files -->
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
 
@@ -127,6 +134,7 @@
 			<input path="src/rtp/slider/core/position.js" />
 			<input path="src/rtp/slider/core/animation.js" />
 
+			<!-- include core sizer javascript files -->
 			<input path="src/rtp/slider/sizer.js" />
 			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
 			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
@@ -134,6 +142,7 @@
 			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
 			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
 
+			<!-- include default addons javascript files -->
 			<input path="src/rtp/slider/addons/nav-dots.js" />
 			<input path="src/rtp/slider/addons/nav-arrows.js" />
 			<input path="src/rtp/slider/addons/nav-keyboard.js" />
@@ -141,9 +150,12 @@
 			<input path="src/rtp/slider/addons/autoslide.js" />
 			<input path="src/rtp/slider/addons/panel-infobox.js" />
 
+			<!-- include default swipe javascript files -->
 			<input path="src/ocbnet/slider/swipe.js" />
 			<input path="src/ocbnet/slider/swipe/mouse.js" />
 			<input path="src/ocbnet/slider/swipe/touch.js" />
+
+			<!-- include default extented javascript files -->
 			<input path="src/ocbnet/slider/addons/toolbar.js" />
 			<input path="src/ocbnet/slider/addons/tabindex.js" />
 			<input path="src/ocbnet/slider/addons/visibility.js" />
@@ -160,12 +172,15 @@
 	<!-- main merge operations -->
 	<merge id="experimental" disabled="false">
 
-		<js id="core" step="core" >
+		<js id="experimental" step="experimental" >
 
+			<!-- include specific header file -->
 			<prepend path="conf/header.exp.js" />
 
+			<!-- include common header file -->
 			<prepend path="src/header.js" />
 
+			<!-- include library javascript files -->
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
 
@@ -180,6 +195,7 @@
 			<input path="src/rtp/slider/core/position.js" />
 			<input path="src/rtp/slider/core/animation.js" />
 
+			<!-- include core sizer javascript files -->
 			<input path="src/rtp/slider/sizer.js" />
 			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
 			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
@@ -187,6 +203,7 @@
 			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
 			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
 
+			<!-- include default addons javascript files -->
 			<input path="src/rtp/slider/addons/nav-dots.js" />
 			<input path="src/rtp/slider/addons/nav-arrows.js" />
 			<input path="src/rtp/slider/addons/nav-keyboard.js" />
@@ -194,14 +211,18 @@
 			<input path="src/rtp/slider/addons/autoslide.js" />
 			<input path="src/rtp/slider/addons/panel-infobox.js" />
 
+			<!-- include default swipe javascript files -->
 			<input path="src/ocbnet/slider/swipe.js" />
 			<input path="src/ocbnet/slider/swipe/mouse.js" />
 			<input path="src/ocbnet/slider/swipe/touch.js" />
+
+			<!-- include default extented javascript files -->
 			<input path="src/ocbnet/slider/addons/toolbar.js" />
 			<input path="src/ocbnet/slider/addons/tabindex.js" />
 			<input path="src/ocbnet/slider/addons/visibility.js" />
 			<input path="src/ocbnet/slider/addons/progressbar.js" />
 
+			<!-- include default experimental javascript files -->
 			<input path="src/lib/csshooks.js" />
 			<input path="src/ocbnet/slider/addons/tiles.js" />
 			<input path="src/ocbnet/slider/addons/carousel3d.js" />
