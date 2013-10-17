@@ -1,3 +1,6 @@
 [submodule "webmerge"]
 	path = webmerge
 	url = https://github.com/mgreter/webmerge
+[submodule "src/lib/gestures"]
+	path = src/lib/gestures
+	url = https://github.com/mgreter/gestures

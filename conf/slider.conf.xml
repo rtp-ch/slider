@@ -184,6 +184,15 @@
 			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
 
+			<!-- include gesture javascript files -->
+			<input path="src/lib/gestures/src/ocbnet/gestures.js" />
+			<input path="src/lib/gestures/src/ocbnet/gestures/mouse.js" />
+			<input path="src/lib/gestures/src/ocbnet/gestures/touch.js" />
+			<input path="src/lib/gestures/src/ocbnet/gestures/pointer.js" />
+
+			<!-- include event trab javascript files -->
+			<input path="src/lib/gestures/src/ocbnet/jquery/event-trap.js" />
+
 			<!-- include core javascript files -->
 			<input path="src/rtp/slider.js" />
 			<input path="src/rtp/slider/core/hooks.js" />
@@ -215,6 +224,7 @@
 			<input path="src/ocbnet/slider/swipe.js" />
 			<input path="src/ocbnet/slider/swipe/mouse.js" />
 			<input path="src/ocbnet/slider/swipe/touch.js" />
+			<input path="src/ocbnet/slider/swipe/gesture.js" />
 
 			<!-- include default extented javascript files -->
 			<input path="src/ocbnet/slider/addons/toolbar.js" />
