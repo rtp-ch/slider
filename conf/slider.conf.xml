@@ -102,6 +102,7 @@
 
 			<!-- generate different output versions -->
 			<output path="release/rtp.slider.light.js" target="join" />
+			<output path="release/rtp.slider.light.dev.js" target="dev" />
 			<output path="release/rtp.slider.light.min.js" target="compile" />
 
 		</js>
@@ -163,6 +164,7 @@
 
 			<!-- generate different output versions -->
 			<output path="release/rtp.slider.full.js" target="join" />
+			<output path="release/rtp.slider.full.dev.js" target="dev" />
 			<output path="release/rtp.slider.full.min.js" target="compile" />
 
 		</js>
@@ -222,8 +224,6 @@
 
 			<!-- include default swipe javascript files -->
 			<input path="src/ocbnet/slider/swipe.js" />
-			<input path="src/ocbnet/slider/swipe/mouse.js" />
-			<input path="src/ocbnet/slider/swipe/touch.js" />
 			<input path="src/ocbnet/slider/swipe/gesture.js" />
 
 			<!-- include default extented javascript files -->
@@ -239,6 +239,7 @@
 
 			<!-- generate different output versions -->
 			<output path="release/rtp.slider.exp.js" target="join" />
+			<output path="release/rtp.slider.exp.dev.js" target="dev" />
 			<output path="release/rtp.slider.exp.min.js" target="compile" />
 
 		</js>
