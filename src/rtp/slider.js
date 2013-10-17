@@ -33,6 +33,9 @@
 		// store config on instance
 		slider.conf = conf;
 
+		// connect parent layout widget
+		slider.layout = { parent: conf.parent };
+
 		// @@@ private fn: extend @@@
 		function extend (config)
 		{
@@ -122,21 +125,6 @@
 		});
 		// EO extend config
 
-		// dynamic extending
-		extend({
-
-			// dom css selectors
-			selector:
-			{
-				panel : '.' + this.conf.klass.panel,
-				wrapper: '.' + this.conf.klass.wrapper,
-				viewport : '.' + this.conf.klass.viewport,
-				container : '.' + this.conf.klass.container
-			}
-
-		});
-		// EO dynamic config
-
 		// execute all config hooks
 		// this will add more defaults
 		slider.trigger('config', extend);
@@ -160,7 +148,7 @@
 		var container = slider.container = jQuery(el);
 
 		// get all intial panels (slides) once at startup (after config)
-		var slides = slider.slides = container.find(selector.panel);
+		var slides = slider.slides = container.find('>.' + klass.panel);
 
 		// don't init further if there is only a single slide
 		if (conf.dontInitSingle && slides.length < 2) return;
@@ -345,7 +333,7 @@
 		slider.trigger('init');
 
 		// lookup panels - equals slides if carousel == false
-		slider.panels = viewport.find(selector.panel);
+		slider.panels = container.find('>.' + klass.panel);
 
 		// to which side should we float the panels / container
 		// TODO: this seems to be an undocumented feature?
