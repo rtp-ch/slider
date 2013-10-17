@@ -120,6 +120,13 @@
 		// get values from the current internal status
 		var panel = this.ct_off;
 
+		// development assertion
+		if (isNaN(this.vp_x))
+		{ eval('debugger'); }
+		// development assertion
+		if (isNaN(this.ct_off))
+		{ eval('debugger'); }
+
 		// declare local variables
 		var visible,
 		    panel_left = 0,
@@ -208,7 +215,7 @@
 	// prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
 
 	// calculate the visibility array very late
-	prototype.plugin('ready', updateSlideVisibility, 9999);
+	prototype.plugin('layout', updateSlideVisibility, 9999);
 	prototype.plugin('changedPosition', updateSlideVisibility, 9999);
 	// prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
 
