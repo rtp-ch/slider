@@ -75,6 +75,13 @@
 	right: 10px;
 }
 
+.rtp-nav-dots .rtp-nav-dot
+{
+	width: 12px;
+	height: 12px;
+}
+
+
 .rtp-toolbar SPAN
 {
 	float: left;
