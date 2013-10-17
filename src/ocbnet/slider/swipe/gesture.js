@@ -35,6 +35,9 @@
 	var stop_handler = function (data, evt)
 	{
 
+		// return without aborting the event
+		if (!this.conf.gestureSwipe) return true;
+
 		// retrieve from event
 		var finger = evt.finger,
 		    gesture = evt.gesture;
@@ -53,6 +56,9 @@
 	// @@@ private fn: move_handler @@@
 	var move_handler = function (data, evt)
 	{
+
+		// return without aborting the event
+		if (!this.conf.gestureSwipe) return true;
 
 		// retrieve from event
 		var finger = evt.finger,
@@ -109,11 +115,31 @@
 					panX : !! this.conf.vertical
 				}
 			})
+			.bind('handmove', function (evt)
+			{
+				// evt.stopPropagation();
+				// evt.preventDefault();
+			})
 
 			// bind event listeners and create instance closures
 			.bind('handstop', jQuery.proxy(stop_handler, this, data))
 			.bind('handmove', jQuery.proxy(move_handler, this, data))
 			.bind('handstart', jQuery.proxy(start_handler, this, data))
+
+			.bind('handstart', function (evt)
+			{
+				if (evt.gesture.fingers == 0)
+				{
+					evt.stopPropagation();
+				}
+				if (evt.gesture.fingers == 1)
+				{
+					evt.preventDefault();
+				}
+
+			})
+
+
 
 	});
 	// @@@ EO plugin: ready @@@
