@@ -154,6 +154,9 @@ RTP.Multievent = function (cb)
 	// store scheduled timeout
 	var scheduled;
 
+	// widgets without parent
+	var roots = jQuery();
+
 	// widgets to be layouted
 	var widgets = jQuery();
 
@@ -210,19 +213,16 @@ RTP.Multievent = function (cb)
 
 	// static local function
 	// call function on all widgets
-	function exec(fn, data)
+	function exec(fn, data, widgets)
 	{
 
-		// loop all widgets reversed
-		var i = widgets.length; while (i--)
+		// loop all widgets in order of registration
+		for(var i = 0, l = widgets.length; i < l; i++)
 		{
 
-			// get local variables
-			var widget = widgets[i];
-			var method = widget[fn];
-
-			// call the method in context of the widget
-			if (jQuery.isFunction(method)) method.call(widget, data);
+			// call method in widget context
+			if (jQuery.isFunction(widgets[i][fn]))
+			{ widgets[i][fn].call(widgets[i], data); }
 
 		}
 
@@ -231,16 +231,55 @@ RTP.Multievent = function (cb)
 
 
 	// static local function
-	// call layout hooks on all widgets
-	function layout (data)
+	// call function on all widgets
+	function layout(data, widgets)
 	{
 
-		exec('preLayout', data);
-		exec('updateLayout', data);
-		exec('postLayout', data);
+		// first call pre on all widgets
+		exec('preLayout', data, widgets);
+
+		// loop all widgets in order of registration
+		for(var i = 0, l = widgets.length; i < l; i++)
+		{
+
+			// get childrens for widget from options
+			var children = widgets[i].layout.children;
+
+			// call layout for all childrens
+			if (children && children.length)
+			{ layout(data, children); }
+
+		}
+
+		// then call update on all widgets
+		exec('postLayout', data, widgets);
 
 	}
 	// EO layout
+
+	// static local function
+	// call function on all widgets
+	function finalize(data, widgets)
+	{
+
+		// first call post on all widgets
+		exec('updateLayout', data, widgets);
+
+		// loop all widgets in order of registration
+		for(var i = 0, l = widgets.length; i < l; i++)
+		{
+
+			// get childrens for widget from options
+			var children = widgets[i].layout.children;
+
+			// call finalize for all childrens
+			if (children && children.length)
+			{ finalize(data, children); }
+
+		}
+
+	}
+	// EO finalize
 
 
 	// static global function
@@ -261,7 +300,7 @@ RTP.Multievent = function (cb)
 		var body_1st_y = win.innerHeight();
 
 		// reflow layout
-		layout(data);
+		layout(data, roots);
 
 		// get the dimensions afterwards
 		var body_2nd_x = win.innerWidth();
@@ -272,7 +311,7 @@ RTP.Multievent = function (cb)
 		{
 
 			// reflow layout
-			layout(data);
+			layout(data, roots);
 
 			// get the dimensions afterwards
 			var body_3rd_x = win.innerWidth();
@@ -303,13 +342,16 @@ RTP.Multievent = function (cb)
 				}
 
 				// reflow layout
-				layout(data);
+				layout(data, roots);
 
 			}
 			// EO if 2nd changed
 
 		}
 		// EO if 1st changed
+
+		// execute last (only once)
+		finalize(data, roots);
 
 	};
 	// EO Manager
@@ -372,6 +414,20 @@ RTP.Multievent = function (cb)
 		// assign the body object only once
 		if (!body) body = jQuery('BODY:first');
 
+		// extend/initialize layout options property
+		widget.layout = jQuery.extend({ children: [] }, widget.layout)
+
+		// check if widget has a parent with children
+		// add ourself to our parent's children array
+		if (widget.layout && widget.layout.parent)
+		{
+			if (!widget.layout.parent.layout.children)
+			{ widget.layout.parent.layout.children = []; }
+			widget.layout.parent.layout.children.push(widget);
+		}
+		// otherwise it's a root widget without parent
+		else { roots = roots.add(jQuery(widget)); }
+
 		// jQueryfy input argument
 		widget = jQuery(widget);
 
@@ -380,7 +436,7 @@ RTP.Multievent = function (cb)
 		{ jQuery(window).bind('resize', resizer); }
 
 		// push instances to static array
-		widgets = widgets.add(jQuery(widget))
+		widgets = widgets.add(widget)
 
 		// make static array a global
 		// Manager.widgets = widgets;
@@ -501,6 +557,9 @@ RTP.Multievent = function (cb)
 		// store config on instance
 		slider.conf = conf;
 
+		// connect parent layout widget
+		slider.layout = { parent: conf.parent };
+
 		// @@@ private fn: extend @@@
 		function extend (config)
 		{
@@ -589,23 +648,6 @@ RTP.Multievent = function (cb)
 
 		});
 		// EO extend config
-
-		// dynamic extending
-		/*
-		extend({
-
-			// dom css selectors
-			selector:
-			{
-				panel : '.' + this.conf.klass.panel,
-				wrapper: '.' + this.conf.klass.wrapper,
-				viewport : '.' + this.conf.klass.viewport,
-				container : '.' + this.conf.klass.container
-			}
-
-		});
-		*/
-		// EO dynamic config
 
 		// execute all config hooks
 		// this will add more defaults
@@ -1277,7 +1319,7 @@ RTP.Multievent = function (cb)
 
 		// normalize the input variable
 		slide = this.slide2slide(slide);
-if (!this.slidepanels) debugger;
+
 		// get array with all panels for slide
 		// contains only indexes and not objects
 		var panels = this.slidepanels[slide];
@@ -1328,8 +1370,6 @@ if (!this.slidepanels) debugger;
 	prototype.getPanelsBySlide = function (slide)
 	{
 
-		if (isNaN(slide)) eval('debugger');
-
 		// parse into integer
 		slide = parseInt(slide + 0.5, 10);
 
@@ -1351,7 +1391,7 @@ if (!this.slidepanels) debugger;
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	prototype.plugin('loading', function ()
 	{
 
 		// initialize slidepanels
@@ -1730,13 +1770,20 @@ if (!this.slidepanels) debugger;
 	// @@@ plugin: updatedPanelsDim @@@
 
 
-	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	// @@@ plugin: loading @@@
+	prototype.plugin('loading', function ()
 	{
 
 		// read styles for both axes
 		readPanelsStyles.call(this, 0);
 		readPanelsStyles.call(this, 1);
+
+	}, - 99);
+	// @@@ EO plugin: loading @@@
+
+	// @@@ plugin: ready @@@
+	prototype.plugin('ready', function ()
+	{
 
 		// read the dimensions
 		this.updatePanelsDim();
@@ -1781,29 +1828,31 @@ if (!this.slidepanels) debugger;
 	});
 	// @@@ EO plugin: config @@@
 
+
 	// @@@ plugin: init @@@
 	prototype.plugin('init', function ()
 	{
-var closure = this;
-		// I get this from both inner childs, but only the visible
-		// one really has something to say about it ... defer call?
+		
+		// closure object
+		var slider = this;
 
-		this.viewport.bind('updatingViewportY', function (evt, widget)
+		// create closure function
+		function changedViewport (evt, widget)
 		{
-			if (evt.target !== evt.currentTarget)
-			{
-				// update opposite viewport size
-				// take minimum size and add offset
-				// setViewportSize.call(closure, widget.vp_y + 10, 1)
+			// trigger adjust viewport hook
+			// integrates ocbnet layout manager
+			slider.trigger('adjustViewport');
+			// do not propagate any further
+			// we may emit another event if needed
+			evt.stopPropagation();
+		}
 
-				// trigger the changed panels opp hook
-				if (closure.slidepanels) closure.trigger('changedViewport');
-
-			}
-		})
+		// event is emmited on wrapper, not on viewport
+		// otherwise we would handle our own event again
+		slider.viewport.bind('changedViewport', changedViewport)
 
 	});
-	// @@@ EO plugin: config @@@
+	// @@@ EO plugin: init @@@
 
 
 	// @@@ method: getViewportOffset @@@
@@ -1855,7 +1904,11 @@ var closure = this;
 	prototype.updateViewportDim = function (value)
 	{
 
+		// development assertion
+		if (isNaN(value)) eval('debugger');
+
 		// check if we are allowed to read from ua
+		// this should not happen, remove when use case emerges
 		if (this.conf.sizerDim != 'viewportByPanels') eval('debugger');
 
 		// does the value really change
@@ -1871,7 +1924,7 @@ var closure = this;
 		this.trigger('updatedViewportDim', value, before);
 
 		// issue an event for any outside listeners
-		this.wrapper.trigger('updatingViewport' + (this.conf.verical ? 'Y' : 'X'), this);
+		this.wrapper.trigger('changedViewport', this);
 
 	}
 	// @@@ EO method: updateViewportDim @@@
@@ -1880,10 +1933,12 @@ var closure = this;
 	prototype.updateViewportOpp = function (value)
 	{
 
-		// check if we are allowed to read from ua
-		if (this.conf.sizerOpp != 'viewportByPanels') eval('debugger');
+		// development assertion
+		if (isNaN(value)) eval('debugger');
 
-if (isNaN(value)) debugger;
+		// check if we are allowed to read from ua
+		// this should not happen, remove when use case emerges
+		if (this.conf.sizerOpp != 'viewportByPanels') eval('debugger');
 
 		// does the value really change
 		if (this.vp_y == value) return;
@@ -1898,10 +1953,11 @@ if (isNaN(value)) debugger;
 		this.trigger('updatedViewportOpp', value, before);
 
 		// issue an event for any outside listeners
-		this.wrapper.trigger('updatingViewport' + (this.conf.verical ? 'X' : 'Y'), this);
+		this.wrapper.trigger('changedViewport', this);
 
 	}
 	// @@@ EO method: updateViewportOpp @@@
+
 
 	// @@@ private fn: getViewportSize @@@
 	function getViewportSize (invert)
@@ -2233,7 +2289,7 @@ if (isNaN(value)) debugger;
 		// reset the status first, but pass before status
 		var se = this.se; this.se = exposure;
 
-		// execute the updatedSlideExposure hook for slides
+		// execute the changedExposure hook for slides
 		this.trigger('changedExposure', exposure, se);
 
 
@@ -2247,7 +2303,14 @@ if (isNaN(value)) debugger;
 
 		// get values from the current internal status
 		var panel = this.ct_off;
-if (isNaN(this.vp_x)) debugger;
+
+		// development assertion
+		if (isNaN(this.vp_x))
+		{ eval('debugger'); }
+		// development assertion
+		if (isNaN(this.ct_off))
+		{ eval('debugger'); }
+
 		// declare local variables
 		var visible,
 		    panel_left = 0,
@@ -2322,23 +2385,13 @@ if (isNaN(this.vp_x)) debugger;
 	// @@@ EO fn: updateSlideVisibility @@@
 
 
-	/*
-	   The priorities here are important. First we need to call
-	   updatePanelExposure to setup viewport dimension (the
-	   position has to be set already). Then in the middle we
-	   set the container offset, so we then later can call
-	   checkSlideVisibility with the updated viewport.
-	*/
-
 	// calculate the exposure array very early
-	prototype.plugin('ready', updatePanelExposure, -9999);
-	prototype.plugin('changedPosition', updatePanelExposure, -9999);
-	// prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
+	prototype.plugin('loading', updatePanelExposure, -99);
+	prototype.plugin('changedPosition', updatePanelExposure, -99);
 
 	// calculate the visibility array very late
-	prototype.plugin('ready', updateSlideVisibility, 9999);
-	prototype.plugin('changedPosition', updateSlideVisibility, 9999);
-	// prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
+	prototype.plugin('layout', updateSlideVisibility, 99);
+	prototype.plugin('changedPosition', updateSlideVisibility, 99);
 
 
 // EO extend class prototype
@@ -2998,36 +3051,35 @@ if (isNaN(this.vp_x)) debugger;
 			this.trigger('changedViewport', data);
 
 		}
+		// EO if dimension changed
 
 	}
 	// @@@ EO method: preLayout @@@
 
 
-	// @@@ method: updateLayout @@@
-	// called by OCBNET.Layout library
-	prototype.updateLayout = function(data)
-	{
-
-		{
-
-			// update and adjust all ui elements
-			this.trigger('adjustViewport', data);
-
-		}
-		// EO if dimension changed
-
-	}
-	// @@@ EO method: updateLayout @@@
-
-	prototype.updateLayout2 = function(data)
-	{
-
-
-	}
-
 	// @@@ method: postLayout @@@
 	// called by OCBNET.Layout library
 	prototype.postLayout = function(data)
+	{
+
+		if (
+			Math.abs(this.vp_x_lck - this.vp_x) > 0.0001 ||
+			Math.abs(this.vp_y_lck - this.vp_y) > 0.0001 ||
+			data.force
+		)
+		{
+
+			// adjust outer ui elements (viewport)
+			this.trigger('adjustViewport', data);
+
+		}
+
+	}
+	// @@@ EO method: postLayout @@@
+
+	// @@@ method: updateLayout @@@
+	// called by OCBNET.Layout library
+	prototype.updateLayout = function(data)
 	{
 
 		// check if viewport has changed
@@ -3051,7 +3103,7 @@ if (isNaN(this.vp_x)) debugger;
 		// EO if dimension changed
 
 	}
-	// @@@ EO method: postLayout @@@
+	// @@@ EO method: updateLayout @@@
 
 
 	// @@@ plugin: ready @@@
@@ -3176,8 +3228,8 @@ if (isNaN(this.vp_x)) debugger;
 	'use strict';
 
 
-	// @@@ private fn: panelsDimByViewport @@@
-	function panelsDimByViewport ()
+	// @@@ private fn: panelsDimByViewportRead @@@
+	function panelsDimByViewportRead ()
 	{
 
 		// abort if this feature is not enabled
@@ -3191,6 +3243,13 @@ if (isNaN(this.vp_x)) debugger;
 			this.setSlideDim(i, this.getSlideDimFromVp(i));
 
 		}
+
+	}
+	// @@@ EO private fn: panelsDimByViewportRead @@@
+
+	// @@@ private fn: panelsDimByViewportUpdate @@@
+	function panelsDimByViewportUpdate ()
+	{
 
 		// trigger the changed panels dim hook
 		this.trigger('updatedPanelsDim');
@@ -3208,7 +3267,7 @@ if (isNaN(this.vp_x)) debugger;
 		}
 
 	}
-	// @@@ EO private fn: panelsDimByViewport @@@
+	// @@@ EO private fn: panelsDimByViewportUpdate @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -3228,8 +3287,9 @@ if (isNaN(this.vp_x)) debugger;
 	// @@@ EO method: getSlideDimFromVp @@@
 
 
-	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsDimByViewport);
+	// hook into changed viewport event to adjust inner panels
+	prototype.plugin('changedViewport', panelsDimByViewportRead);
+	prototype.plugin('adjustViewport', panelsDimByViewportUpdate);
 
 
 // EO extend class prototype
@@ -3252,8 +3312,8 @@ if (isNaN(this.vp_x)) debugger;
 	'use strict';
 
 
-	// @@@ private fn: panelsOppByViewport @@@
-	function panelsOppByViewport ()
+	// @@@ private fn: panelsOppByViewportRead @@@
+	function panelsOppByViewportRead ()
 	{
 
 		// abort if this feature is not enabled
@@ -3267,6 +3327,17 @@ if (isNaN(this.vp_x)) debugger;
 			this.setSlideOpp(i, this.getSlideOppFromVp(i));
 
 		}
+
+	}
+	// @@@ EO private fn: panelsOppByViewportRead @@@
+
+
+	// @@@ private fn: panelsOppByViewportUpdate @@@
+	function panelsOppByViewportUpdate ()
+	{
+
+		// abort if this feature is not enabled
+		if (this.conf.sizerOpp != 'panelsByViewport') return;
 
 		// trigger the changed panels opp hook
 		this.trigger('updatedPanelsOpp');
@@ -3284,7 +3355,7 @@ if (isNaN(this.vp_x)) debugger;
 		}
 
 	}
-	// @@@ EO private fn: panelsOppByViewport @@@
+	// @@@ EO private fn: panelsOppByViewportUpdate @@@
 
 
 	// @@@ method: getSlideOppFromVp @@@
@@ -3305,7 +3376,8 @@ if (isNaN(this.vp_x)) debugger;
 
 
 	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsOppByViewport, 999999999);
+	prototype.plugin('changedViewport', panelsOppByViewportRead);
+	prototype.plugin('adjustViewport', panelsOppByViewportUpdate);
 
 
 // EO extend class prototype
@@ -3335,6 +3407,10 @@ if (isNaN(this.vp_x)) debugger;
 		// abort if feature is not enabled
 		if (this.conf.sizerDim != 'viewportByPanels') return;
 
+		// development assertions
+		if (exposure.length == 0) debugger;
+		if (this.pd[0].length == 0) debugger;
+
 		// calculate dimension from exposure
 		var dim = 0, exposure = this.se;
 
@@ -3358,9 +3434,8 @@ if (isNaN(this.vp_x)) debugger;
 
 
 	// hook into various change events to adjust viewport
-	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
-	prototype.plugin('adjustViewport', viewportDimByPanels, 99999);
-	prototype.plugin('updatedPanelsDim', viewportDimByPanels, 99999);
+	prototype.plugin('adjustViewport', viewportDimByPanels, 9999);
+	prototype.plugin('changedPosition', viewportDimByPanels, 9999);
 
 
 // EO extend class prototype
@@ -3406,7 +3481,6 @@ if (isNaN(this.vp_x)) debugger;
 	{
 
 		// abort if feature is not enabled
-		// happens as we are called as event handler
 		if (this.conf.sizerOpp != 'viewportByPanels') return;
 
 		// declare local variables for loop
@@ -3429,7 +3503,9 @@ if (isNaN(this.vp_x)) debugger;
 			life_zone = foobar;
 		}
 
-		if (this.pd[1].length == 0) return;
+		// development assertions
+		if (exposure.length == 0) debugger;
+		if (this.pd[1].length == 0) debugger;
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
@@ -3478,9 +3554,8 @@ if (isNaN(this.vp_x)) debugger;
 
 
 	// hook into various change events to adjust viewport
-	prototype.plugin('changedExposure', viewportOppByPanels, 99);
-	prototype.plugin('adjustViewport', viewportOppByPanels, 99);
-	prototype.plugin('updatedPanelsOpp', viewportOppByPanels, 99);
+	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
+	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
 
 
 // EO extend class prototype
