@@ -185,11 +185,15 @@ or updating the layout otherwise, which will also happen when doing swipes and o
 
 Do layout and other updates as soon as we receive the corresponding events.
 
-<pre>mouseSwipe: bool (default: false)</pre>
+<pre>gestureSwipe: bool (default: false)</pre>
+
+Enable the gesture library for swiping.
+
+<pre>mouseSwipe: bool (default: false) (deprecated)</pre>
 
 Enable the mouse for swiping.
 
-<pre>touchSwipe: bool (default: false)</pre>
+<pre>touchSwipe: bool (default: false) (deprecated)</pre>
 
 Enable touch devices for swiping.
 
@@ -295,4 +299,4 @@ either version 3 of the License, or (at your option) any later version.
  - http://slider.rtp.ocbnet.ch/slider/examples/tiles.html (alpha)
  - http://slider.rtp.ocbnet.ch/slider/examples/carousel3d.html (alpha)
 
-* use the mouse or touch device to swipe though the panels
+Use the mouse or touch device to swipe through the panels!
