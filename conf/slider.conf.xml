@@ -78,8 +78,10 @@
 			<prepend path="src/header.js" />
 
 			<!-- include library javascript files -->
-			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
+
+			<!-- include layout library files -->
+			<input path="src/lib/layout/layout.src.js" />
 
 			<!-- include core javascript files -->
 			<input path="src/rtp/slider.js" />
@@ -121,8 +123,10 @@
 			<prepend path="src/header.js" />
 
 			<!-- include library javascript files -->
-			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
+
+			<!-- include layout library files -->
+			<input path="src/lib/layout/layout.src.js" />
 
 			<!-- include core javascript files -->
 			<input path="src/rtp/slider.js" />
@@ -183,8 +187,10 @@
 			<prepend path="src/header.js" />
 
 			<!-- include library javascript files -->
-			<input path="src/ocbnet/layout.js" />
 			<input path="src/rtp/common/multievent.js" />
+
+			<!-- include layout library files -->
+			<input path="src/lib/layout/layout.src.js" />
 
 			<!-- include gesture javascript files -->
 			<input path="src/lib/gestures/src/ocbnet/gestures.js" />

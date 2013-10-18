@@ -49,15 +49,6 @@
 		if (this.conf.sizerDim != 'viewportByPanels') this.trigger('readViewportDim', data);
 		if (this.conf.sizerOpp != 'viewportByPanels') this.trigger('readViewportOpp', data);
 
-	}
-	// @@@ EO method: preLayout @@@
-
-
-	// @@@ method: updateLayout @@@
-	// called by OCBNET.Layout library
-	prototype.updateLayout = function(data)
-	{
-
 		// check if viewport has changed
 		// otherwise do nothing to safe cpu
 		if (
@@ -74,12 +65,32 @@
 		// EO if dimension changed
 
 	}
-	// @@@ EO method: updateLayout @@@
+	// @@@ EO method: preLayout @@@
 
 
 	// @@@ method: postLayout @@@
 	// called by OCBNET.Layout library
 	prototype.postLayout = function(data)
+	{
+
+		if (
+			Math.abs(this.vp_x_lck - this.vp_x) > 0.0001 ||
+			Math.abs(this.vp_y_lck - this.vp_y) > 0.0001 ||
+			data.force
+		)
+		{
+
+			// adjust outer ui elements (viewport)
+			this.trigger('adjustViewport', data);
+
+		}
+
+	}
+	// @@@ EO method: postLayout @@@
+
+	// @@@ method: updateLayout @@@
+	// called by OCBNET.Layout library
+	prototype.updateLayout = function(data)
 	{
 
 		// check if viewport has changed
@@ -103,7 +114,7 @@
 		// EO if dimension changed
 
 	}
-	// @@@ EO method: postLayout @@@
+	// @@@ EO method: updateLayout @@@
 
 
 	// @@@ plugin: ready @@@

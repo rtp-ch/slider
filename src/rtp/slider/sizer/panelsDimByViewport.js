@@ -18,8 +18,8 @@
 	'use strict';
 
 
-	// @@@ private fn: panelsDimByViewport @@@
-	function panelsDimByViewport ()
+	// @@@ private fn: panelsDimByViewportRead @@@
+	function panelsDimByViewportRead ()
 	{
 
 		// abort if this feature is not enabled
@@ -33,6 +33,13 @@
 			this.setSlideDim(i, this.getSlideDimFromVp(i));
 
 		}
+
+	}
+	// @@@ EO private fn: panelsDimByViewportRead @@@
+
+	// @@@ private fn: panelsDimByViewportUpdate @@@
+	function panelsDimByViewportUpdate ()
+	{
 
 		// trigger the changed panels dim hook
 		this.trigger('updatedPanelsDim');
@@ -50,7 +57,7 @@
 		}
 
 	}
-	// @@@ EO private fn: panelsDimByViewport @@@
+	// @@@ EO private fn: panelsDimByViewportUpdate @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -70,8 +77,9 @@
 	// @@@ EO method: getSlideDimFromVp @@@
 
 
-	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsDimByViewport);
+	// hook into changed viewport event to adjust inner panels
+	prototype.plugin('changedViewport', panelsDimByViewportRead);
+	prototype.plugin('adjustViewport', panelsDimByViewportUpdate);
 
 
 // EO extend class prototype

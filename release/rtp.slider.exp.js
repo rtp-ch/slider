@@ -12,6 +12,112 @@
 */;
 /*
 
+  Copyright (c) Marcel Greter 2010 - rtp.ch - RTP Multi Event Dispatcher v0.8.2
+  This is free software; you can redistribute it and/or modify it under the terms
+  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
+  either version 3 of the License, or (at your option) any later version.
+
+  Example:
+
+  var xml_doc, xsl_doc;
+
+  var mevent = new RTP.Multievent(function() {
+
+  	// do something with xml_doc and xsl_doc
+
+  })
+
+  // mevent is satisfied when all have been called
+  var xml_complete = mevent.prerequisite();
+  var xsl_complete = mevent.prerequisite();
+
+  // load url and call mevent prerequisites / store doc when completed
+  _ajax.load(xml_url, function (doc) { xml_doc = doc; xml_complete(); });
+  _ajax.load(xsl_url, function (doc) { xsl_doc = doc; xsl_complete(); });
+
+*/
+
+if (!window.RTP) window.RTP = {}; // ns
+
+/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
+
+// constructor (variables/settings and init)
+RTP.Multievent = function (cb)
+{
+	this.cb = cb; // callback when satisifed
+	this.ids = 0; // registered prerequisites
+	this.args = {}; // save callback arguments
+	this.required = 0; // registered prerequisites
+	this.listeners = []; // some additional listeners
+	this.satisfied = []; // satisfied prerequisites
+};
+
+/* @@@@@@@@@@ RTP CLASS @@@@@@@@@@ */
+
+// extend class prototype
+(function ()
+{
+
+	// get function checker
+	var isFn = jQuery.isFunction;
+
+	// @@@ request a new prerequisite that must be satisfied @@@
+	this.prerequisite = function(arg)
+	{
+
+		var cb = isFn(arg) ? arg : null;
+		var name = isFn(arg) ? null : arg;
+
+		var self = this;
+		this.required ++;
+		var id = this.ids ++;
+		this.satisfied[id] = false;
+
+		// return function to be called to signal satisfaction
+		return function ()
+		{
+			if (!self.satisfied[id])
+			{
+				if (cb) cb();
+				self.required --;
+				self.satisfied[id] = true;
+				if (name) self.args[name] = arguments;
+				if (self.required == 0 && self.cb)
+				{
+					self._cb = self.cb;
+					self.cb = false;
+					for(var i = 0; i < self.listeners.length; i++)
+					{ self.listeners[i]() }
+					return self._cb();
+				}
+			}
+		}
+	};
+
+	// @@@ finish this multievent @@@
+	this.finish = function()
+	{
+
+		/* call this method when you add prerequisites dynamically */
+		/* this will fire the callback immediately if no prerequisites */
+		/* were registered, otherwise we will wait till they are satisfied */
+
+		// execute the callback on no prerequisites
+		if (this.ids == 0 && this.cb)
+		{
+			this._cb = this.cb;
+			this.cb = false;
+			for(var i = 0; i < this.listeners.length; i++)
+			{ this.listeners[i]() }
+			return this._cb();
+		}
+
+	};
+
+// EO extend class prototype
+}).call(RTP.Multievent.prototype);;
+/*
+
   Copyright (c) Marcel Greter 2012 - OCBNET Layouter 1.0.0
   This plugin available for use in all personal or commercial projects under both MIT and GPL licenses.
 
@@ -360,112 +466,6 @@
 
 })(jQuery);
 // EO private scope;
-/*
-
-  Copyright (c) Marcel Greter 2010 - rtp.ch - RTP Multi Event Dispatcher v0.8.2
-  This is free software; you can redistribute it and/or modify it under the terms
-  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
-  either version 3 of the License, or (at your option) any later version.
-
-  Example:
-
-  var xml_doc, xsl_doc;
-
-  var mevent = new RTP.Multievent(function() {
-
-  	// do something with xml_doc and xsl_doc
-
-  })
-
-  // mevent is satisfied when all have been called
-  var xml_complete = mevent.prerequisite();
-  var xsl_complete = mevent.prerequisite();
-
-  // load url and call mevent prerequisites / store doc when completed
-  _ajax.load(xml_url, function (doc) { xml_doc = doc; xml_complete(); });
-  _ajax.load(xsl_url, function (doc) { xsl_doc = doc; xsl_complete(); });
-
-*/
-
-if (!window.RTP) window.RTP = {}; // ns
-
-/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
-
-// constructor (variables/settings and init)
-RTP.Multievent = function (cb)
-{
-	this.cb = cb; // callback when satisifed
-	this.ids = 0; // registered prerequisites
-	this.args = {}; // save callback arguments
-	this.required = 0; // registered prerequisites
-	this.listeners = []; // some additional listeners
-	this.satisfied = []; // satisfied prerequisites
-};
-
-/* @@@@@@@@@@ RTP CLASS @@@@@@@@@@ */
-
-// extend class prototype
-(function ()
-{
-
-	// get function checker
-	var isFn = jQuery.isFunction;
-
-	// @@@ request a new prerequisite that must be satisfied @@@
-	this.prerequisite = function(arg)
-	{
-
-		var cb = isFn(arg) ? arg : null;
-		var name = isFn(arg) ? null : arg;
-
-		var self = this;
-		this.required ++;
-		var id = this.ids ++;
-		this.satisfied[id] = false;
-
-		// return function to be called to signal satisfaction
-		return function ()
-		{
-			if (!self.satisfied[id])
-			{
-				if (cb) cb();
-				self.required --;
-				self.satisfied[id] = true;
-				if (name) self.args[name] = arguments;
-				if (self.required == 0 && self.cb)
-				{
-					self._cb = self.cb;
-					self.cb = false;
-					for(var i = 0; i < self.listeners.length; i++)
-					{ self.listeners[i]() }
-					return self._cb();
-				}
-			}
-		}
-	};
-
-	// @@@ finish this multievent @@@
-	this.finish = function()
-	{
-
-		/* call this method when you add prerequisites dynamically */
-		/* this will fire the callback immediately if no prerequisites */
-		/* were registered, otherwise we will wait till they are satisfied */
-
-		// execute the callback on no prerequisites
-		if (this.ids == 0 && this.cb)
-		{
-			this._cb = this.cb;
-			this.cb = false;
-			for(var i = 0; i < this.listeners.length; i++)
-			{ this.listeners[i]() }
-			return this._cb();
-		}
-
-	};
-
-// EO extend class prototype
-}).call(RTP.Multievent.prototype);;
 /*
 
   Copyright (c) Marcel Greter 2012 - OCBNET gesture 0.0.0
@@ -1151,7 +1151,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			var closure = this;
 
 			// trap mousedown locally on each element
-			jQuery(el).bind('mousedown trapmousedown', function (evt)
+			jQuery(el).bind('mousedown', function (evt)
 			{
 
 				// get variables from event
@@ -1237,7 +1237,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// EO mouseup
 
 	// trap mousemove globally, "trap" for all cases
-	jQuery(document).bind('mousemove trapmousemove', function (evt)
+	jQuery(document).bind('mousemove', function (evt)
 	{
 
 		// create new fingersmove event object
@@ -1600,11 +1600,11 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	jQuery.event.special['mouseup'] = special;
 	jQuery.event.special['mouseout'] = special;
 	jQuery.event.special['mouseover'] = special;
-	jQuery.event.special['mousemove'] = special;
-	jQuery.event.special['mousedown'] = special;
+	// jQuery.event.special['mousemove'] = special;
+	// jQuery.event.special['mousedown'] = special;
 	jQuery.event.special['touchend'] = special;
-	jQuery.event.special['touchmove'] = special;
-	jQuery.event.special['touchstart'] = special;
+	// jQuery.event.special['touchmove'] = special;
+	// jQuery.event.special['touchstart'] = special;
 	jQuery.event.special['touchcancel'] = special;
 
 
@@ -1736,6 +1736,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// EO extend config
 
 		// dynamic extending
+		/*
 		extend({
 
 			// dom css selectors
@@ -1748,6 +1749,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			}
 
 		});
+		*/
 		// EO dynamic config
 
 		// execute all config hooks
@@ -1773,7 +1775,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		var container = slider.container = jQuery(el);
 
 		// get all intial panels (slides) once at startup (after config)
-		var slides = slider.slides = container.find(selector.panel);
+		var slides = slider.slides = container.find('>.' + klass.panel);
 
 		// don't init further if there is only a single slide
 		if (conf.dontInitSingle && slides.length < 2) return;
@@ -1958,7 +1960,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		slider.trigger('init');
 
 		// lookup panels - equals slides if carousel == false
-		slider.panels = viewport.find(selector.panel);
+		slider.panels = container.find('>.' + klass.panel);
 
 		// to which side should we float the panels / container
 		// TODO: this seems to be an undocumented feature?
@@ -2420,7 +2422,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		// normalize the input variable
 		slide = this.slide2slide(slide);
-
+if (!this.slidepanels) debugger;
 		// get array with all panels for slide
 		// contains only indexes and not objects
 		var panels = this.slidepanels[slide];
@@ -2470,6 +2472,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// return the actual panel jquery nodes
 	prototype.getPanelsBySlide = function (slide)
 	{
+
+		if (isNaN(slide)) eval('debugger');
 
 		// parse into integer
 		slide = parseInt(slide + 0.5, 10);
@@ -2922,6 +2926,30 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	});
 	// @@@ EO plugin: config @@@
 
+	// @@@ plugin: init @@@
+	prototype.plugin('init', function ()
+	{
+var closure = this;
+		// I get this from both inner childs, but only the visible
+		// one really has something to say about it ... defer call?
+
+		this.viewport.bind('updatingViewportY', function (evt, widget)
+		{
+			if (evt.target !== evt.currentTarget)
+			{
+				// update opposite viewport size
+				// take minimum size and add offset
+				// setViewportSize.call(closure, widget.vp_y + 10, 1)
+
+				// trigger the changed panels opp hook
+				if (closure.slidepanels) closure.trigger('changedViewport');
+
+			}
+		})
+
+	});
+	// @@@ EO plugin: config @@@
+
 
 	// @@@ method: getViewportOffset @@@
 	prototype.getViewportOffset = function ()
@@ -2987,6 +3015,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// now trigger the updatedViewportDim hook
 		this.trigger('updatedViewportDim', value, before);
 
+		// issue an event for any outside listeners
+		this.wrapper.trigger('updatingViewport' + (this.conf.verical ? 'Y' : 'X'), this);
+
 	}
 	// @@@ EO method: updateViewportDim @@@
 
@@ -2996,6 +3027,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		// check if we are allowed to read from ua
 		if (this.conf.sizerOpp != 'viewportByPanels') eval('debugger');
+
+if (isNaN(value)) debugger;
 
 		// does the value really change
 		if (this.vp_y == value) return;
@@ -3009,9 +3042,11 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// now trigger the updatedViewportOpp hook
 		this.trigger('updatedViewportOpp', value, before);
 
+		// issue an event for any outside listeners
+		this.wrapper.trigger('updatingViewport' + (this.conf.verical ? 'X' : 'Y'), this);
+
 	}
 	// @@@ EO method: updateViewportOpp @@@
-
 
 	// @@@ private fn: getViewportSize @@@
 	function getViewportSize (invert)
@@ -3357,7 +3392,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		// get values from the current internal status
 		var panel = this.ct_off;
-
+if (isNaN(this.vp_x)) debugger;
 		// declare local variables
 		var visible,
 		    panel_left = 0,
@@ -4095,15 +4130,6 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		if (this.conf.sizerDim != 'viewportByPanels') this.trigger('readViewportDim', data);
 		if (this.conf.sizerOpp != 'viewportByPanels') this.trigger('readViewportOpp', data);
 
-	}
-	// @@@ EO method: preLayout @@@
-
-
-	// @@@ method: updateLayout @@@
-	// called by OCBNET.Layout library
-	prototype.updateLayout = function(data)
-	{
-
 		// check if viewport has changed
 		// otherwise do nothing to safe cpu
 		if (
@@ -4117,11 +4143,32 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			this.trigger('changedViewport', data);
 
 		}
+
+	}
+	// @@@ EO method: preLayout @@@
+
+
+	// @@@ method: updateLayout @@@
+	// called by OCBNET.Layout library
+	prototype.updateLayout = function(data)
+	{
+
+		{
+
+			// update and adjust all ui elements
+			this.trigger('adjustViewport', data);
+
+		}
 		// EO if dimension changed
 
 	}
 	// @@@ EO method: updateLayout @@@
 
+	prototype.updateLayout2 = function(data)
+	{
+
+
+	}
 
 	// @@@ method: postLayout @@@
 	// called by OCBNET.Layout library
@@ -4457,7 +4504,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
-	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
+	prototype.plugin('adjustViewport', viewportDimByPanels, 99999);
 	prototype.plugin('updatedPanelsDim', viewportDimByPanels, 99999);
 
 
@@ -4526,6 +4573,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			life_zone = foobar;
 		}
 
+		if (this.pd[1].length == 0) return;
+
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
@@ -4574,7 +4623,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 	// hook into various change events to adjust viewport
 	prototype.plugin('changedExposure', viewportOppByPanels, 99);
-	prototype.plugin('changedViewport', viewportOppByPanels, 99);
+	prototype.plugin('adjustViewport', viewportOppByPanels, 99);
 	prototype.plugin('updatedPanelsOpp', viewportOppByPanels, 99);
 
 
@@ -5840,6 +5889,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	var stop_handler = function (data, evt)
 	{
 
+		// return without aborting the event
+		if (!this.conf.gestureSwipe) return true;
+
 		// retrieve from event
 		var finger = evt.finger,
 		    gesture = evt.gesture;
@@ -5859,6 +5911,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	var move_handler = function (data, evt)
 	{
 
+		// return without aborting the event
+		if (!this.conf.gestureSwipe) return true;
+
 		// retrieve from event
 		var finger = evt.finger,
 		    gesture = evt.gesture;
@@ -5877,7 +5932,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// @@@ private fn: start_handler @@@
 	var start_handler = function (data, evt)
 	{
-
+console.log('start ', evt.gesture.el.id)
+				console.log(evt.isPropagationStopped())
 		// return without aborting the event
 		if (!this.conf.gestureSwipe) return true;
 
@@ -5914,11 +5970,33 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 					panX : !! this.conf.vertical
 				}
 			})
+			.bind('handmove', function (evt)
+			{
+				console.log('move me', evt.gesture.el.id);
+				evt.stopPropagation();
+				evt.preventDefault();
+				return false;
+			})
 
 			// bind event listeners and create instance closures
 			.bind('handstop', jQuery.proxy(stop_handler, this, data))
 			.bind('handmove', jQuery.proxy(move_handler, this, data))
 			.bind('handstart', jQuery.proxy(start_handler, this, data))
+
+			.bind('handstart', function (evt)
+			{
+				if (evt.gesture.fingers == 0)
+				{
+					// evt.stopPropagation();
+				}
+				if (evt.gesture.fingers == 1)
+				{
+					evt.preventDefault();
+				}
+
+			})
+
+
 
 	});
 	// @@@ EO plugin: ready @@@

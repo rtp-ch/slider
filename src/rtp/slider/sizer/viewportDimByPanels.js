@@ -23,6 +23,10 @@
 		// abort if feature is not enabled
 		if (this.conf.sizerDim != 'viewportByPanels') return;
 
+		// development assertions
+		if (exposure.length == 0) debugger;
+		if (this.pd[0].length == 0) debugger;
+
 		// calculate dimension from exposure
 		var dim = 0, exposure = this.se;
 
@@ -46,9 +50,8 @@
 
 
 	// hook into various change events to adjust viewport
-	prototype.plugin('changedExposure', viewportDimByPanels, 99999);
-	prototype.plugin('changedViewport', viewportDimByPanels, 99999);
-	prototype.plugin('updatedPanelsDim', viewportDimByPanels, 99999);
+	prototype.plugin('adjustViewport', viewportDimByPanels, 9999);
+	prototype.plugin('changedPosition', viewportDimByPanels, 9999);
 
 
 // EO extend class prototype

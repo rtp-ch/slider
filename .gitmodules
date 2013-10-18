@@ -4,3 +4,6 @@
 [submodule "src/lib/gestures"]
 	path = src/lib/gestures
 	url = https://github.com/mgreter/gestures
+[submodule "src/lib/layout"]
+	path = src/lib/layout
+	url = https://github.com/ocbnet/layout

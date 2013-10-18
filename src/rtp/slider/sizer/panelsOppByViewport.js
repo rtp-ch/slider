@@ -16,8 +16,8 @@
 	'use strict';
 
 
-	// @@@ private fn: panelsOppByViewport @@@
-	function panelsOppByViewport ()
+	// @@@ private fn: panelsOppByViewportRead @@@
+	function panelsOppByViewportRead ()
 	{
 
 		// abort if this feature is not enabled
@@ -31,6 +31,17 @@
 			this.setSlideOpp(i, this.getSlideOppFromVp(i));
 
 		}
+
+	}
+	// @@@ EO private fn: panelsOppByViewportRead @@@
+
+
+	// @@@ private fn: panelsOppByViewportUpdate @@@
+	function panelsOppByViewportUpdate ()
+	{
+
+		// abort if this feature is not enabled
+		if (this.conf.sizerOpp != 'panelsByViewport') return;
 
 		// trigger the changed panels opp hook
 		this.trigger('updatedPanelsOpp');
@@ -48,7 +59,7 @@
 		}
 
 	}
-	// @@@ EO private fn: panelsOppByViewport @@@
+	// @@@ EO private fn: panelsOppByViewportUpdate @@@
 
 
 	// @@@ method: getSlideOppFromVp @@@
@@ -69,7 +80,8 @@
 
 
 	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsOppByViewport, 999999999);
+	prototype.plugin('changedViewport', panelsOppByViewportRead);
+	prototype.plugin('adjustViewport', panelsOppByViewportUpdate);
 
 
 // EO extend class prototype

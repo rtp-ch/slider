@@ -105,7 +105,7 @@
 		// reset the status first, but pass before status
 		var se = this.se; this.se = exposure;
 
-		// execute the updatedSlideExposure hook for slides
+		// execute the changedExposure hook for slides
 		this.trigger('changedExposure', exposure, se);
 
 
@@ -201,23 +201,13 @@
 	// @@@ EO fn: updateSlideVisibility @@@
 
 
-	/*
-	   The priorities here are important. First we need to call
-	   updatePanelExposure to setup viewport dimension (the
-	   position has to be set already). Then in the middle we
-	   set the container offset, so we then later can call
-	   checkSlideVisibility with the updated viewport.
-	*/
-
 	// calculate the exposure array very early
-	prototype.plugin('ready', updatePanelExposure, -9999);
-	prototype.plugin('changedPosition', updatePanelExposure, -9999);
-	// prototype.plugin('changedSlidesVisible', updatePanelExposure, -9999);
+	prototype.plugin('loading', updatePanelExposure, -99);
+	prototype.plugin('changedPosition', updatePanelExposure, -99);
 
 	// calculate the visibility array very late
-	prototype.plugin('layout', updateSlideVisibility, 9999);
-	prototype.plugin('changedPosition', updateSlideVisibility, 9999);
-	// prototype.plugin('changedSlidesVisible', updateSlideVisibility, 9999);
+	prototype.plugin('layout', updateSlideVisibility, 99);
+	prototype.plugin('changedPosition', updateSlideVisibility, 99);
 
 
 // EO extend class prototype

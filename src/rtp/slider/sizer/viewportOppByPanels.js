@@ -61,6 +61,10 @@
 			life_zone = foobar;
 		}
 
+		// development assertions
+		if (exposure.length == 0) debugger;
+		if (this.pd[1].length == 0) debugger;
+
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
@@ -108,9 +112,8 @@
 
 
 	// hook into various change events to adjust viewport
-	prototype.plugin('changedExposure', viewportOppByPanels, 99);
-	prototype.plugin('changedViewport', viewportOppByPanels, 99);
-	prototype.plugin('updatedPanelsOpp', viewportOppByPanels, 99);
+	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
+	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
 
 
 // EO extend class prototype
