@@ -291,5 +291,8 @@ either version 3 of the License, or (at your option) any later version.
 
  - http://slider.rtp.ocbnet.ch/slider/examples/swipe.html
  - http://slider.rtp.ocbnet.ch/slider/examples/addons.html
+ - http://slider.rtp.ocbnet.ch/slider/examples/nested.html
  - http://slider.rtp.ocbnet.ch/slider/examples/tiles.html (alpha)
  - http://slider.rtp.ocbnet.ch/slider/examples/carousel3d.html (alpha)
+
+* use the mouse or touch device to swipe though the panels
