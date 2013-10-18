@@ -64,7 +64,8 @@
 
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
+	prototype.plugin('adjustViewport', alignOppInViewport, 99999);
+	prototype.plugin('changedPosition', alignOppInViewport, 99999);
 
 
 // EO extend class prototype
