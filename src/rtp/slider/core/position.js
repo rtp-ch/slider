@@ -30,14 +30,32 @@
 		// store normalized position
 		this.position = position;
 
-		// just reset the current position
-		this.setOffsetByPosition(this.position);
+		// sync to monitor?
+		if (this.conf.vsync)
+		{
+			// synchronize action with monitor
+			this.trigger('changedPosition', position, previous);
+		}
+		else
+		{
+			// defer draw to achieve the wished frame rate (approx)
+			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
 
-		// trigger the changedPosition event
-		this.trigger('changedPosition', position, previous);
+		}
 
 	}
 	// @@@ EO method: setPosition @@@
+
+
+	// @@@ plugin: layout @@@
+	prototype.plugin('changedPosition', function ()
+	{
+
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
+	});
+	// @@@ EO plugin: layout @@@
 
 
 	// @@@ method: setOffsetByPosition @@@
@@ -74,23 +92,6 @@
 
 			}
 			// EO if conf.fillViewport
-
-			// shrink the viewport on both ends
-			// the check here does not seem to be needed
-			// enable it anyway and if there is a bug, find
-			// out why this check should not be here
-			else if (conf.shrinkViewport)
-			{
-
-				// make sure we only show one slide at the end
-				if (position > this.smax + 1 - this.smin - panelsVisible)
-				{ panelsVisible = this.smax + 1 - position; }
-				// make sure we only show one slide at the start
-				else if (position < this.smin - 1 + panelsVisible)
-				{ panelsVisible = this.smin + 1 + position; }
-
-			}
-			// EO if conf.shrinkViewport
 
 		}
 		// EO if not conf.carousel

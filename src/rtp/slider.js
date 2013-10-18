@@ -76,6 +76,14 @@
 			// also defines how many panels are cloned
 			panelsVisible: 1,
 
+			// frames per second to draw
+			// defer all position updates
+			// leave the UA some idle loops
+			fps: 5,
+			// synchronise with monitor
+			// draw as soon as requested
+			vsync: false,
+
 			// how many panels should be cloned
 			// if this is set to true, we will use
 			// the panelsVisible option for this
