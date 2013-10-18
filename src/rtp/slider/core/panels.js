@@ -344,13 +344,20 @@
 	// @@@ plugin: updatedPanelsDim @@@
 
 
-	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	// @@@ plugin: loading @@@
+	prototype.plugin('loading', function ()
 	{
 
 		// read styles for both axes
 		readPanelsStyles.call(this, 0);
 		readPanelsStyles.call(this, 1);
+
+	}, - 99);
+	// @@@ EO plugin: loading @@@
+
+	// @@@ plugin: ready @@@
+	prototype.plugin('ready', function ()
+	{
 
 		// read the dimensions
 		this.updatePanelsDim();
