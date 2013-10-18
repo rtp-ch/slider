@@ -67,10 +67,42 @@
 		// normalize drag/scroll variable
 		var vertical = this.conf.vertical,
 		    swipe = vertical ? finger.y : finger.x,
-		    scroll = vertical ? finger.x : finger.y;
+		    scroll = vertical ? finger.x : finger.y,
+		    swipeOff = vertical ? evt.dy : evt.dx,
+		    scrollOff = vertical ? evt.dx : evt.dy;
 
 		// call swipe start handler with coordinates
-		this.trigger('swipeMove', swipe, scroll, data);
+		this.trigger('swipeMove', swipe, scroll, data, swipeOff, scrollOff);
+
+		if(!data.swipeDrag)
+		{
+				evt.stopPropagation();
+				return;
+		}
+
+		if(!this.conf.carousel)
+		{
+			// console.log(this.viewport.get(0).id, swipe, data.position, this.position);
+			if (data.position === this.position && (this.position == 0 || this.position == this.smax))
+			{
+				// data.swipeStartDrag = swipe;
+				// data.swipeStartScroll = scroll;
+				// delete data.swipeFirstDrag;
+			}
+			else
+			{
+				// console.log('stop');
+				evt.stopPropagation();
+			}
+		}
+		else
+		{
+			evt.stopPropagation();
+		}
+
+
+		// remember last position
+		data.position = this.position;
 
 	}
 	// @@@ EO private fn: move_handler @@@
@@ -130,7 +162,7 @@
 			{
 				if (evt.gesture.fingers == 0)
 				{
-					evt.stopPropagation();
+					// evt.stopPropagation();
 				}
 				if (evt.gesture.fingers == 1)
 				{

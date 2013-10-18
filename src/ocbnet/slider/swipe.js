@@ -65,12 +65,6 @@
 		// add defaults
 		extend({
 
-			// frames per second
-			// draw rate while swiping
-			fps: 25,
-			// synchronise draw with the
-			// actual live swipe movement
-			swipeVsync: false,
 			// pixel offset before fixing direction
 			// from then on we either scroll or swipe
 			swipeThreshold : 5
@@ -102,6 +96,8 @@
 		data.swipeStartDrag = data.swipeX = x;
 		data.swipeStartScroll = data.swipeY = y;
 
+		data.dragOff = 0;
+
 		// remember start position
 		data.swipeStartPosition = this.position;
 
@@ -130,21 +126,18 @@
 	prototype.plugin('swipeDraw', function (data)
 	{
 
-		var x = data.swipeX,
-		    y = data.swipeY;
+		var offset = this.getOffsetByPosition(this.position) + data.dragOff;
 
-		var offset = data.swipeStartDrag - x;
+		this.setPosition(this.getPositionByOffset(offset));
 
-		data.swipeStartDrag = x;
-
-		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) + offset))
+		data.dragOff = 0;
 
 	})
 	// @@@ EO plugin: swipeDraw @@@
 
 
 	// @@@ plugin: swipeMove @@@
-	prototype.plugin('swipeMove', function (x, y, data)
+	prototype.plugin('swipeMove', function (x, y, data, dx, dy)
 	{
 
 		this.swiping = true;
@@ -155,6 +148,8 @@
 
 		// store current swipe position
 		data.swipeX = x; data.swipeY = y;
+
+		data.dragOff += dx;
 
 		// try to determine the prominent axis for this swipe movement
 		if (data.swipeDrag == false && data.swipeScroll == false)
@@ -180,31 +175,10 @@
 		// push the coordinates with timestamp to our data array
 		moves.push([x, y, (new Date()).getTime()]);
 
-		// try to determine the prominent axis for this swipe movement
-		if (data.swipeDrag == false && data.swipeScroll == false)
-		{
-			// threshold to determine/fix direction
-			var threshold = this.conf.swipeThreshold;
-			// check if there was an initial minimum amount of movement in some direction
-			if (Math.abs(data.swipeStartDrag - x) > threshold) { data.swipeDrag = true; }
-			else if (Math.abs(data.swipeStartScroll - y) > threshold) { data.swipeScroll = true; }
-		}
-
 		// abort this event if not dragging
 		if (!data.swipeDrag) return true;
 
-		// check for config option
-		if (this.conf.vsync)
-		{
-			// synchronize action with monitor
-			this.trigger('swipeDraw', data);
-		}
-		else
-		{
-			// defer draw to achieve the wished frame rate (approx)
-			this.defer(1000 / this.conf.fps, 'swipeDraw', data);
-
-		}
+		this.trigger('swipeDraw', data);
 
 		// return false if dragging
 		return ! data.swipeDrag;
@@ -225,7 +199,7 @@
 		var moves = data.swipeMoves;
 
 		// first call swipe move to do some work
-		this.trigger('swipeMove', x, y, data);
+		this.trigger('swipeMove', x, y, data, 0, 0);
 
 		// clear swipe draw timer
 		this.undefer('swipeDraw');
@@ -278,6 +252,8 @@
 
 		var swipeDrag = data.swipeDrag;
 
+		// data.dragOff = 0;
+		// data.scrollOff = 0;
 		delete data.swipeDrag;
 		delete data.swipeScroll;
 		data.swipeMoves = [];

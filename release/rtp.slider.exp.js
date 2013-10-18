@@ -210,6 +210,9 @@ RTP.Multievent = function (cb)
 	if (!callDefered) callDefered = window.setTimeout;
 	if (!clearDefered) clearDefered = window.clearTimeout;
 
+	// remember default functions
+	var defCallDefered = callDefered;
+	var defClearDefered = clearDefered;
 
 	// static local function
 	// call function on all widgets
@@ -366,6 +369,14 @@ RTP.Multievent = function (cb)
 		{
 			case 'fps': fps = value; break;
 			case 'vsync': vsync = value; break;
+			case 'default':
+				callDefered = defCallDefered;
+				clearDefered = defClearDefered;
+			break;
+			case 'fallback':
+				callDefered = window.setTimeout;
+				clearDefered = window.clearTimeout;
+			break;
 		}
 
 		// reassign the resizer function
@@ -404,6 +415,26 @@ RTP.Multievent = function (cb)
 
 	}
 	// EO Manager.schedule
+
+
+	// EO Manager.defer
+	Manager.defer = function (fn, delay)
+	{
+		// delay is optional
+		if (typeof delay == 'undefined')
+		{ delay = 1000 / fps; }
+		// add scheduled function
+		return callDefered(fn, delay);
+	}
+	// EO Manager.defer
+
+	// EO Manager.undefer
+	Manager.undefer = function (scheduled)
+	{
+		// clear scheduled function
+		return clearDefered(scheduled);
+	}
+	// EO Manager.undefer
 
 
 	// static global function
@@ -540,6 +571,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 {
 
 	// static array
+	var fingers = {};
 	var gestures = [];
 
 	// static counter
@@ -621,41 +653,52 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// does nothing for unknown finger
 			gestures[g].fingerUp(evt);
 		}
+		// finger may be deleted
+		if (fingers[evt.id])
+		{
+			// update shared finger
+			fingers[evt.id].x = evt.x;
+			fingers[evt.id].y = evt.y;
+		}
 	};
 	// @@@ EO: fingerup @@@
 
 	// @@@ move all fingers on surface @@@
+	// emulate event chain for all gestures
 	OCBNET.Gestures.fingermove = function (evt)
 	{
+		// get all gestures for finger
+		var gestures = surface[evt.id];
 		// process all registered gestures
-		var g = gestures.length; while (g--)
+		for(var g = 0, l = gestures.length; g < l; g++)
 		{
-				// call move for this finger
+			// call move for this finger
 			gestures[g].fingerMove(evt);
+			// exit loop if propagation stopped
+			if (evt.isPropagationStopped()) break;
 		}
+		// update shared finger
+		fingers[evt.id].x = evt.x;
+		fingers[evt.id].y = evt.y;
 	};
 
 
 	// @@@ move all fingers on surface @@@
 	OCBNET.Gestures.fingersmove = function (evt)
 	{
-		// process all registered gestures
-		var g = gestures.length; while (g--)
+		// now process all finger ids
+		for (var id in surface)
 		{
-			// now process all finger ids
-			for (var id in gestures[g].finger)
+			// create new fingermove event object
+			var event = jQuery.Event('fingermove',
 			{
-				// create new fingermove event object
-				var event = jQuery.Event('fingermove',
-				{
-					id : id,
-					x : evt.x,
-					y : evt.y,
-					originalEvent: evt
-				});
-				// call move for each finger
-				gestures[g].fingerMove(event);
-			}
+				id : id,
+				x : evt.x,
+				y : evt.y,
+				originalEvent: evt
+			});
+			// call move for each finger
+			OCBNET.Gestures.fingermove(event);
 		}
 	};
 	// @@@ EO move all fingers on surface @@@
@@ -713,12 +756,18 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// for optimizer
 			var gesture = this;
 
-			// create a new finger (take values from event)
+			// create a local finger for this gesture
+			// you decide when to update properties
 			var finger = new OCBNET.Gestures.Finger(evt);
+
+			// create a new finger shared across all instances
+			if (typeof fingers[evt.id] == 'undefined')
+			{ fingers[evt.id] = new OCBNET.Gestures.Finger(evt); }
 
 			// create a new finger down event
 			var event = new jQuery.Event('handstart',
 			{
+				dx: 0, dy: 0,
 				finger: finger,
 				gesture: gesture,
 				originalEvent: evt
@@ -750,30 +799,27 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				gesture.rotation = 0; gesture.distance = 0;
 
 				// increase counter
-				this.fingers ++;
+				gesture.fingers ++;
 
 				// remember maximum fingers on gesture
-				if (this.maximum < this.fingers)
-				{ this.maximum = this.fingers; }
+				if (gesture.maximum < gesture.fingers)
+				{ gesture.maximum = gesture.fingers; }
 
 				// add finger to ordered list
-				this.ordered.push(finger.id);
+				gesture.ordered.push(finger.id);
 
 				// attach finger to gesture
-				this.finger[finger.id] = finger;
+				gesture.finger[finger.id] = finger;
 
-				// attach finger to surface
-				surface[finger.id] = finger;
+				// create surface array
+				if (!surface[finger.id])
+				{ surface[finger.id] = []; }
 
-				// calculate status of this gesture
-				this.start = {
-					center : this.getCenter(),
-					rotation : this.getRotation(),
-					distance : this.getDistance()
-				}
+				// push finger to surface
+				surface[finger.id].push(gesture);
 
 				// create and init a copy for move
-				this.move = jQuery.extend({}, this.start);
+				gesture.move = jQuery.extend({}, gesture.start);
 
 			}
 			// EO if not used
@@ -800,6 +846,10 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				finger.x = evt.x;
 				finger.y = evt.y;
 
+				// calculate shared delta move
+				var dx = fingers[id].x - evt.x,
+				    dy = fingers[id].y - evt.y;
+
 				// calculations
 				gesture.move = {
 					center : gesture.getCenter(),
@@ -822,16 +872,20 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				var deltaX = Math.abs(gesture.offset.x),
 				    deltaY = Math.abs(gesture.offset.y);
 
+				// handler options
+				var options =
+				{
+					dx: dx, dy: dy,
+					finger: finger,
+					gesture: gesture,
+					originalEvent: evt
+				}
+
 				// trigger hand move event
 				// event does not bubbles up
 				jQuery(gesture.el).triggerHandler
 				(
-					new jQuery.Event('handmove',
-					{
-						finger: finger,
-						gesture: gesture,
-						originalEvent: evt
-					})
+					new jQuery.Event('handmove', options)
 				);
 
 				// check if there is a swipe movement
@@ -858,12 +912,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 					// event does not bubbles up
 					jQuery(gesture.el).triggerHandler
 					(
-						new jQuery.Event('handswipe',
-						{
-							finger: finger,
-							gesture: gesture,
-							originalEvent: evt
-						})
+						new jQuery.Event('handswipe', options)
 					);
 				}
 				// EO if swiping
@@ -875,12 +924,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 					// event does not bubbles up
 					jQuery(gesture.el).triggerHandler
 					(
-						new jQuery.Event('handtransform',
-						{
-							finger: finger,
-							gesture: gesture,
-							originalEvent: evt
-						})
+						new jQuery.Event('handtransform', options)
 					);
 				}
 				// EO if multifinger gesture
@@ -911,6 +955,10 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				finger.x = evt.x;
 				finger.y = evt.y;
 
+				// calculate shared delta move
+				var dx = fingers[id].x - evt.x,
+				    dy = fingers[id].y - evt.y;
+
 				// calculations
 				gesture.stop = {
 					center : gesture.getCenter(),
@@ -932,6 +980,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				// create a new finger down event
 				var event = new jQuery.Event('handstop',
 				{
+					dx: dx, dy: dy,
 					finger: finger,
 					gesture: gesture
 				});
@@ -959,10 +1008,18 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				gesture.ordered.splice(idx, 1);
 
 				// remove the finger from the gesture
-				delete gesture.finger[finger.id];
+				delete gesture.finger[id];
 
-				// remove finger from surface
-				delete surface[finger.id];
+				// remove from surface (find index and remove via splice)
+				var idx = jQuery.inArray(gesture, surface[id]);
+				if (idx != -1) surface[id].splice( idx, 1 );
+
+				// remove statucs if array is empty
+				if (surface[id].length == 0)
+				{ 
+					delete fingers[id];
+					delete surface[id];
+				}
 
 			}
 			// EO if used
@@ -1656,11 +1713,11 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	jQuery.event.special['mouseup'] = special;
 	jQuery.event.special['mouseout'] = special;
 	jQuery.event.special['mouseover'] = special;
-	// jQuery.event.special['mousemove'] = special;
-	// jQuery.event.special['mousedown'] = special;
+	jQuery.event.special['mousemove'] = special;
+	jQuery.event.special['mousedown'] = special;
 	jQuery.event.special['touchend'] = special;
-	// jQuery.event.special['touchmove'] = special;
-	// jQuery.event.special['touchstart'] = special;
+	jQuery.event.special['touchmove'] = special;
+	jQuery.event.special['touchstart'] = special;
 	jQuery.event.special['touchcancel'] = special;
 
 
@@ -1744,6 +1801,14 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// mainly used for the layout sizers, but
 			// also defines how many panels are cloned
 			panelsVisible: 1,
+
+			// frames per second to draw
+			// defer all position updates
+			// leave the UA some idle loops
+			fps: 5,
+			// synchronise with monitor
+			// draw as soon as requested
+			vsync: false,
 
 			// how many panels should be cloned
 			// if this is set to true, we will use
@@ -2391,8 +2456,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			self.trigger.apply(self, args)
 		}
 
-		// create the defered call via timeout with zero delay
-		this.defered[type] = window.setTimeout(fn, delay);
+		// create the defered call via timeout with given delay
+		this.defered[type] = OCBNET.Layout.defer(fn, delay);
 
 	}
 	// @@@ EO method: defer @@@
@@ -2404,7 +2469,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	{
 
 		// clear the registered timeout
-		window.clearTimeout(this.defered[type]);
+		OCBNET.Layout.undefer(this.defered[type]);
 
 		// reset so we can register again
 		this.defered[type] = false;
@@ -3573,14 +3638,32 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// store normalized position
 		this.position = position;
 
-		// just reset the current position
-		this.setOffsetByPosition(this.position);
+		// sync to monitor?
+		if (this.conf.vsync)
+		{
+			// synchronize action with monitor
+			this.trigger('changedPosition', position, previous);
+		}
+		else
+		{
+			// defer draw to achieve the wished frame rate (approx)
+			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
 
-		// trigger the changedPosition event
-		this.trigger('changedPosition', position, previous);
+		}
 
 	}
 	// @@@ EO method: setPosition @@@
+
+
+	// @@@ plugin: layout @@@
+	prototype.plugin('changedPosition', function ()
+	{
+
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
+	});
+	// @@@ EO plugin: layout @@@
 
 
 	// @@@ method: setOffsetByPosition @@@
@@ -3617,23 +3700,6 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 			}
 			// EO if conf.fillViewport
-
-			// shrink the viewport on both ends
-			// the check here does not seem to be needed
-			// enable it anyway and if there is a bug, find
-			// out why this check should not be here
-			else if (conf.shrinkViewport)
-			{
-
-				// make sure we only show one slide at the end
-				if (position > this.smax + 1 - this.smin - panelsVisible)
-				{ panelsVisible = this.smax + 1 - position; }
-				// make sure we only show one slide at the start
-				else if (position < this.smin - 1 + panelsVisible)
-				{ panelsVisible = this.smin + 1 + position; }
-
-			}
-			// EO if conf.shrinkViewport
 
 		}
 		// EO if not conf.carousel
@@ -4348,7 +4414,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
+	prototype.plugin('adjustViewport', alignOppInViewport, 99999);
+	prototype.plugin('changedPosition', alignOppInViewport, 99999);
 
 
 // EO extend class prototype
@@ -5694,12 +5761,6 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// add defaults
 		extend({
 
-			// frames per second
-			// draw rate while swiping
-			fps: 25,
-			// synchronise draw with the
-			// actual live swipe movement
-			swipeVsync: false,
 			// pixel offset before fixing direction
 			// from then on we either scroll or swipe
 			swipeThreshold : 5
@@ -5731,6 +5792,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		data.swipeStartDrag = data.swipeX = x;
 		data.swipeStartScroll = data.swipeY = y;
 
+		data.dragOff = 0;
+
 		// remember start position
 		data.swipeStartPosition = this.position;
 
@@ -5759,21 +5822,18 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	prototype.plugin('swipeDraw', function (data)
 	{
 
-		var x = data.swipeX,
-		    y = data.swipeY;
+		var offset = this.getOffsetByPosition(this.position) + data.dragOff;
 
-		var offset = data.swipeStartDrag - x;
+		this.setPosition(this.getPositionByOffset(offset));
 
-		data.swipeStartDrag = x;
-
-		return this.setPosition(this.getPositionByOffset(this.getOffsetByPosition(this.position) + offset))
+		data.dragOff = 0;
 
 	})
 	// @@@ EO plugin: swipeDraw @@@
 
 
 	// @@@ plugin: swipeMove @@@
-	prototype.plugin('swipeMove', function (x, y, data)
+	prototype.plugin('swipeMove', function (x, y, data, dx, dy)
 	{
 
 		this.swiping = true;
@@ -5784,6 +5844,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		// store current swipe position
 		data.swipeX = x; data.swipeY = y;
+
+		data.dragOff += dx;
 
 		// try to determine the prominent axis for this swipe movement
 		if (data.swipeDrag == false && data.swipeScroll == false)
@@ -5809,31 +5871,10 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// push the coordinates with timestamp to our data array
 		moves.push([x, y, (new Date()).getTime()]);
 
-		// try to determine the prominent axis for this swipe movement
-		if (data.swipeDrag == false && data.swipeScroll == false)
-		{
-			// threshold to determine/fix direction
-			var threshold = this.conf.swipeThreshold;
-			// check if there was an initial minimum amount of movement in some direction
-			if (Math.abs(data.swipeStartDrag - x) > threshold) { data.swipeDrag = true; }
-			else if (Math.abs(data.swipeStartScroll - y) > threshold) { data.swipeScroll = true; }
-		}
-
 		// abort this event if not dragging
 		if (!data.swipeDrag) return true;
 
-		// check for config option
-		if (this.conf.vsync)
-		{
-			// synchronize action with monitor
-			this.trigger('swipeDraw', data);
-		}
-		else
-		{
-			// defer draw to achieve the wished frame rate (approx)
-			this.defer(1000 / this.conf.fps, 'swipeDraw', data);
-
-		}
+		this.trigger('swipeDraw', data);
 
 		// return false if dragging
 		return ! data.swipeDrag;
@@ -5854,7 +5895,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		var moves = data.swipeMoves;
 
 		// first call swipe move to do some work
-		this.trigger('swipeMove', x, y, data);
+		this.trigger('swipeMove', x, y, data, 0, 0);
 
 		// clear swipe draw timer
 		this.undefer('swipeDraw');
@@ -5907,6 +5948,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		var swipeDrag = data.swipeDrag;
 
+		// data.dragOff = 0;
+		// data.scrollOff = 0;
 		delete data.swipeDrag;
 		delete data.swipeScroll;
 		data.swipeMoves = [];
@@ -5997,10 +6040,42 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// normalize drag/scroll variable
 		var vertical = this.conf.vertical,
 		    swipe = vertical ? finger.y : finger.x,
-		    scroll = vertical ? finger.x : finger.y;
+		    scroll = vertical ? finger.x : finger.y,
+		    swipeOff = vertical ? evt.dy : evt.dx,
+		    scrollOff = vertical ? evt.dx : evt.dy;
 
 		// call swipe start handler with coordinates
-		this.trigger('swipeMove', swipe, scroll, data);
+		this.trigger('swipeMove', swipe, scroll, data, swipeOff, scrollOff);
+
+		if(!data.swipeDrag)
+		{
+				evt.stopPropagation();
+				return;
+		}
+
+		if(!this.conf.carousel)
+		{
+			// console.log(this.viewport.get(0).id, swipe, data.position, this.position);
+			if (data.position === this.position && (this.position == 0 || this.position == this.smax))
+			{
+				// data.swipeStartDrag = swipe;
+				// data.swipeStartScroll = scroll;
+				// delete data.swipeFirstDrag;
+			}
+			else
+			{
+				// console.log('stop');
+				evt.stopPropagation();
+			}
+		}
+		else
+		{
+			evt.stopPropagation();
+		}
+
+
+		// remember last position
+		data.position = this.position;
 
 	}
 	// @@@ EO private fn: move_handler @@@
@@ -6060,7 +6135,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			{
 				if (evt.gesture.fingers == 0)
 				{
-					evt.stopPropagation();
+					// evt.stopPropagation();
 				}
 				if (evt.gesture.fingers == 1)
 				{

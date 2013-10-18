@@ -210,6 +210,9 @@ RTP.Multievent = function (cb)
 	if (!callDefered) callDefered = window.setTimeout;
 	if (!clearDefered) clearDefered = window.clearTimeout;
 
+	// remember default functions
+	var defCallDefered = callDefered;
+	var defClearDefered = clearDefered;
 
 	// static local function
 	// call function on all widgets
@@ -366,6 +369,14 @@ RTP.Multievent = function (cb)
 		{
 			case 'fps': fps = value; break;
 			case 'vsync': vsync = value; break;
+			case 'default':
+				callDefered = defCallDefered;
+				clearDefered = defClearDefered;
+			break;
+			case 'fallback':
+				callDefered = window.setTimeout;
+				clearDefered = window.clearTimeout;
+			break;
 		}
 
 		// reassign the resizer function
@@ -404,6 +415,26 @@ RTP.Multievent = function (cb)
 
 	}
 	// EO Manager.schedule
+
+
+	// EO Manager.defer
+	Manager.defer = function (fn, delay)
+	{
+		// delay is optional
+		if (typeof delay == 'undefined')
+		{ delay = 1000 / fps; }
+		// add scheduled function
+		return callDefered(fn, delay);
+	}
+	// EO Manager.defer
+
+	// EO Manager.undefer
+	Manager.undefer = function (scheduled)
+	{
+		// clear scheduled function
+		return clearDefered(scheduled);
+	}
+	// EO Manager.undefer
 
 
 	// static global function
@@ -599,6 +630,14 @@ RTP.Multievent = function (cb)
 			// mainly used for the layout sizers, but
 			// also defines how many panels are cloned
 			panelsVisible: 1,
+
+			// frames per second to draw
+			// defer all position updates
+			// leave the UA some idle loops
+			fps: 5,
+			// synchronise with monitor
+			// draw as soon as requested
+			vsync: false,
 
 			// how many panels should be cloned
 			// if this is set to true, we will use
@@ -1246,8 +1285,8 @@ RTP.Multievent = function (cb)
 			self.trigger.apply(self, args)
 		}
 
-		// create the defered call via timeout with zero delay
-		this.defered[type] = window.setTimeout(fn, delay);
+		// create the defered call via timeout with given delay
+		this.defered[type] = OCBNET.Layout.defer(fn, delay);
 
 	}
 	// @@@ EO method: defer @@@
@@ -1259,7 +1298,7 @@ RTP.Multievent = function (cb)
 	{
 
 		// clear the registered timeout
-		window.clearTimeout(this.defered[type]);
+		OCBNET.Layout.undefer(this.defered[type]);
 
 		// reset so we can register again
 		this.defered[type] = false;
@@ -2428,14 +2467,32 @@ RTP.Multievent = function (cb)
 		// store normalized position
 		this.position = position;
 
-		// just reset the current position
-		this.setOffsetByPosition(this.position);
+		// sync to monitor?
+		if (this.conf.vsync)
+		{
+			// synchronize action with monitor
+			this.trigger('changedPosition', position, previous);
+		}
+		else
+		{
+			// defer draw to achieve the wished frame rate (approx)
+			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
 
-		// trigger the changedPosition event
-		this.trigger('changedPosition', position, previous);
+		}
 
 	}
 	// @@@ EO method: setPosition @@@
+
+
+	// @@@ plugin: layout @@@
+	prototype.plugin('changedPosition', function ()
+	{
+
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
+	});
+	// @@@ EO plugin: layout @@@
 
 
 	// @@@ method: setOffsetByPosition @@@
@@ -2472,23 +2529,6 @@ RTP.Multievent = function (cb)
 
 			}
 			// EO if conf.fillViewport
-
-			// shrink the viewport on both ends
-			// the check here does not seem to be needed
-			// enable it anyway and if there is a bug, find
-			// out why this check should not be here
-			else if (conf.shrinkViewport)
-			{
-
-				// make sure we only show one slide at the end
-				if (position > this.smax + 1 - this.smin - panelsVisible)
-				{ panelsVisible = this.smax + 1 - position; }
-				// make sure we only show one slide at the start
-				else if (position < this.smin - 1 + panelsVisible)
-				{ panelsVisible = this.smin + 1 + position; }
-
-			}
-			// EO if conf.shrinkViewport
 
 		}
 		// EO if not conf.carousel
@@ -3203,7 +3243,8 @@ RTP.Multievent = function (cb)
 
 
 	// run late after the viewport opposition has been changed/updated
-	prototype.plugin('updatedViewportOpp', alignOppInViewport, 999);
+	prototype.plugin('adjustViewport', alignOppInViewport, 99999);
+	prototype.plugin('changedPosition', alignOppInViewport, 99999);
 
 
 // EO extend class prototype

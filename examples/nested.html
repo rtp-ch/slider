@@ -1,100 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RTP Slider Example</title>
+	<title>RTP Slider Example</title>
 
-    <link rel="stylesheet" href="styles.css">
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"></script>
-    <script>webmerge = { webroot : '..' }</script>
-    <script src="../release/rtp.slider.exp.js"></script>
+	<link rel="stylesheet" href="styles.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"></script>
+	<script>webmerge = { webroot : '..' }</script>
+	<script src="../release/rtp.slider.exp.js"></script>
 
-    <script type="text/javascript">
-        jQuery(function () {
-            var root =
-            jQuery('DIV.rtp-slider-outer')
-              .rtpSlider({
-              	klass: { panel: 'rtp-slider-pnl' },
-              	carousel:      false,
-                navDots:       true,
-                navToolbar:    true,
-                mouseSwipe:    false,
-                gestureSwipe:  true
-              })
-              .data('rtp-slider');
-        		var b =
-            jQuery('DIV.rtp-slider-viewport-b')
-              .rtpSlider({
-              	parent: root,
-              	klass: { panel: 'rtp-slider-panel-b' },
-              	panelsVisible: 1.2,
-              	fillViewport: true,
-              	carousel:      false,
-                navDots:       true,
-                navToolbar:    true,
-                mouseSwipe:    false,
-                gestureSwipe:  true
-              })
-              .data('rtp-slider');
-        		var a =
-            jQuery('DIV.rtp-slider-viewport-a')
-              .rtpSlider({
-              	parent: root,
-              	klass: { panel: 'rtp-slider-panel-a' },
-              	panelsVisible: 1.2,
-              	fillViewport: true,
-              	carousel:      false,
-                navDots:       true,
-                navToolbar:    true,
-                mouseSwipe:    false,
-                gestureSwipe:  true
-              })
-              .data('rtp-slider');
-        });
-    </script>
-    <style>
+	<script type="text/javascript">
 
-    	DIV.rtp-slider-viewport-a ~ .rtp-nav-dots,
-    	DIV.rtp-slider-viewport-b ~ .rtp-nav-dots,
-    	DIV.rtp-slider-viewport-a ~ .rtp-nav-dots ~ .rtp-toolbar,
-    	DIV.rtp-slider-viewport-b ~ .rtp-nav-dots ~ .rtp-toolbar
-    	{
-    		top: 10px;
-    		bottom: auto;
-    	}
-    </style>
+		// configure layout manager
+		OCBNET.Layout.config('fps', 25);
+		OCBNET.Layout.config('vsync', false);
+		OCBNET.Layout.config('timeout');
+		OCBNET.Layout.config('default');
+
+		jQuery(function () {
+			var root =
+			jQuery('DIV.rtp-slider-outer')
+			  .rtpSlider({
+			  	klass: { panel: 'rtp-slider-pnl' },
+			  	carousel:	  false,
+				navDots:	   true,
+				navToolbar:	true,
+				mouseSwipe:	false,
+				gestureSwipe:  true
+			  })
+			  .data('rtp-slider');
+				var b =
+			jQuery('DIV.rtp-slider-viewport-b')
+			  .rtpSlider({
+			  	parent: root,
+			  	klass: { panel: 'rtp-slider-panel-b' },
+			  	panelsVisible: 1.0,
+			  	fillViewport: true,
+			  	carousel:	  false,
+				navDots:	   true,
+				navToolbar:	true,
+				mouseSwipe:	false,
+				gestureSwipe:  true
+			  })
+			  .data('rtp-slider');
+				var a =
+			jQuery('DIV.rtp-slider-viewport-a')
+			  .rtpSlider({
+			  	parent: root,
+			  	klass: { panel: 'rtp-slider-panel-a' },
+			  	panelsVisible: 1.0,
+			  	fillViewport: true,
+			  	carousel:	  false,
+				navDots:	   true,
+				navToolbar:	true,
+				mouseSwipe:	false,
+				gestureSwipe:  true
+			  })
+			  .data('rtp-slider');
+		});
+	</script>
+	<style>
+
+		DIV.rtp-slider-viewport-a ~ .rtp-nav-dots,
+		DIV.rtp-slider-viewport-b ~ .rtp-nav-dots,
+		DIV.rtp-slider-viewport-a ~ .rtp-nav-dots ~ .rtp-toolbar,
+		DIV.rtp-slider-viewport-b ~ .rtp-nav-dots ~ .rtp-toolbar
+		{
+			top: 10px;
+			bottom: auto;
+		}
+	</style>
 </head>
 <body>
 
-    <div class="rtp-slider-outer" id="root">
-        <div class="rtp-slider-pnl">
-				    <div class="rtp-slider-viewport-a" id="A">
-				        <div class="rtp-slider-panel-a rtp-slider-panel">
-				            <img src="pics/pic-01-big.jpg" alt="Pic 01"/>
-				        </div>
-				        <div class="rtp-slider-panel-a rtp-slider-panel">
-				            <img src="pics/pic-02-big.jpg" alt="Pic 02"/>
-				        </div>
-				        <div class="rtp-slider-panel-a rtp-slider-panel">
-				            <img src="pics/pic-03-big.jpg" alt="Pic 03"/>
-				        </div>
-				    </div>
-        </div>
-        <div class="rtp-slider-pnl">
-			    <div class="rtp-slider-viewport-b" id="B">
-			        <div class="rtp-slider-panel-b rtp-slider-panel">
-			            <img src="pics/pic-01-big.jpg" alt="Pic 01"/>
-			        </div>
-			        <div class="rtp-slider-panel-b rtp-slider-panel">
-			            <img src="pics/pic-02-big.jpg" alt="Pic 02"/>
-			        </div>
-			        <div class="rtp-slider-panel-b rtp-slider-panel">
-			            <img src="pics/pic-03-big.jpg" alt="Pic 03"/>
-			        </div>
-			    </div>
-        </div>
-    </div>
+	<div class="rtp-slider-outer" id="root">
+		<div class="rtp-slider-pnl">
+			<div class="rtp-slider-viewport-a" id="A">
+				<div class="rtp-slider-panel-a rtp-slider-panel">
+					<img src="pics/pic-02-big.jpg" alt="Pic 02"/>
+				</div>
+				<div class="rtp-slider-panel-a rtp-slider-panel">
+					<img src="pics/pic-01-big.jpg" alt="Pic 01"/>
+				</div>
+				<div class="rtp-slider-panel-a rtp-slider-panel">
+					<img src="pics/pic-03-big.jpg" alt="Pic 03"/>
+				</div>
+			</div>
+		</div>
+		<div class="rtp-slider-pnl">
+			<div class="rtp-slider-viewport-b" id="B">
+				<div class="rtp-slider-panel-b rtp-slider-panel">
+					<img src="pics/pic-01-big.jpg" alt="Pic 01"/>
+				</div>
+				<div class="rtp-slider-panel-b rtp-slider-panel">
+					<img src="pics/pic-03-big.jpg" alt="Pic 03"/>
+				</div>
+				<div class="rtp-slider-panel-b rtp-slider-panel">
+					<img src="pics/pic-02-big.jpg" alt="Pic 02"/>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
