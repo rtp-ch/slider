@@ -246,8 +246,8 @@
 			self.trigger.apply(self, args)
 		}
 
-		// create the defered call via timeout with zero delay
-		this.defered[type] = window.setTimeout(fn, delay);
+		// create the defered call via timeout with given delay
+		this.defered[type] = OCBNET.Layout.defer(fn, delay);
 
 	}
 	// @@@ EO method: defer @@@
@@ -259,7 +259,7 @@
 	{
 
 		// clear the registered timeout
-		window.clearTimeout(this.defered[type]);
+		OCBNET.Layout.undefer(this.defered[type]);
 
 		// reset so we can register again
 		this.defered[type] = false;
