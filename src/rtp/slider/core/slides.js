@@ -119,7 +119,7 @@
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	prototype.plugin('loading', function ()
 	{
 
 		// initialize slidepanels
