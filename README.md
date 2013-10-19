@@ -27,6 +27,23 @@ You may also use a CDN (Content Delivery Network) to load the libraries directly
 &lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js&quot;&gt;&lt;/script&gt;
 </pre>
 
+### Basic usage
+
+<pre>
+
+  // initialize and get slider instance
+  var slider = jQuery('DIV.rtp-slider')
+  // initialize the slider
+  .rtpSlider({
+
+    config : value,
+    ... : ...
+
+  })
+  // get instance from data
+  .data('rtpSlider');
+
+</pre>
 
 ### Configuration
 
