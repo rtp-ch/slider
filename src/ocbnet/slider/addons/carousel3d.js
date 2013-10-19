@@ -159,7 +159,7 @@
 		this.setOffsetByPosition = setOffsetByPosition;
 
 		// setup the 3d carousel on layout event
-		prototype.plugin('layout', layout, - 9);
+		prototype.plugin('adjustViewport', layout, - 99);
 
 
 	});
