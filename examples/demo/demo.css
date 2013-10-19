@@ -16,7 +16,7 @@
 	width: 240px;
 	height: 100%;
 	border: 0px;
-	border-right: 2px solid black;
+	border-right: 2px solid #D9D9D9;
 	position: absolute;
 	left: 0px; top: 0px;
 	bottom: 0px; right: 240px;

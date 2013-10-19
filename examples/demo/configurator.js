@@ -106,6 +106,21 @@ jQuery(function()
 	}
 
 	jQuery('INPUT.refresh').click(refresh);
+	jQuery('FORM').bind('submit', function (evt)
+	{
+		try { if (self.calledby) {
+			self.calledby.document.location.search
+				= '?' + $( this ).serialize();
+			evt.preventDefault();
+			evt.stopPropagation();
+		} } catch (e) {}
+		try { if (self.parent.slider) {
+			self.parent.document.location.search
+				= '?' + $( this ).serialize();
+			evt.preventDefault();
+			evt.stopPropagation();
+		} } catch (e) {}
+	});
 
 	var attachedParent = jQuery('DIV.attached-parent');
 	var attachedSlider = jQuery('DIV.attached-slider');
@@ -114,10 +129,11 @@ jQuery(function()
 	{
 
 		try { if (self.calledby) self.calledby.popup = self; } catch (e) {}
+		try { if (self.calledby.closed) delete self.calledby; } catch (e) {}
 
 		try {
 			if (self.calledby) attachedParent.css('background', 'green');
-			else if (self.parent) attachedParent.css('background', 'blue');
+			else if (self.parent) attachedParent.css('background', 'teal');
 			else attachedParent.css('background', 'orange');
 		} catch (e) { attachedParent.css('background', 'red'); }
 
@@ -125,7 +141,7 @@ jQuery(function()
 			if (self.calledby && self.calledby.slider)
 			{ attachedSlider.css('background', 'green'); }
 			else if (self.parent && self.parent.slider)
-			{ attachedSlider.css('background', 'blue'); }
+			{ attachedSlider.css('background', 'teal'); }
 			else { attachedSlider.css('background', 'orange'); }
 		} catch (e) { attachedSlider.css('background', 'red'); }
 
