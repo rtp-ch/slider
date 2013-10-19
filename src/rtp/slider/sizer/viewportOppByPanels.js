@@ -62,8 +62,8 @@
 		}
 
 		// development assertions
-		if (exposure.length == 0) debugger;
-		if (this.pd[1].length == 0) debugger;
+		if (exposure.length == 0) eval('debugger');
+		if (this.pd[1].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)

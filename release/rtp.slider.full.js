@@ -4550,8 +4550,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		var dim = 0, exposure = this.se;
 
 		// development assertions
-		if (exposure.length == 0) debugger;
-		if (this.pd[0].length == 0) debugger;
+		if (exposure.length == 0) eval('debugger');
+		if (this.pd[0].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)
@@ -4643,8 +4643,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		}
 
 		// development assertions
-		if (exposure.length == 0) debugger;
-		if (this.pd[1].length == 0) debugger;
+		if (exposure.length == 0) eval('debugger');
+		if (this.pd[1].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
