@@ -113,7 +113,7 @@ function configurator ()
 	if (!self.popup || self.popup.closed)
 	{
 		// options for the popup window (modal dialog)
-		var options = 'location=0, status=0, scrollbars=1, width=280, height=560';
+		var options = 'location=0, status=0, scrollbars=1, width=220, height=560';
 		// open a new popup window (connect and update afterwards)
 		self.popup = window.open ('configurator.html', 'configurator', options);
 	}

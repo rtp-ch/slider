@@ -9,17 +9,17 @@
 	position: absolute;
 	overflow: hidden;
 	left: 0px; top: 0px;
-	bottom: 0px; right: 240px;
+	bottom: 0px; right: 220px;
 }
 #nav IFRAME
 {
-	width: 240px;
+	width: 220px;
 	height: 100%;
 	border: 0px;
 	border-right: 2px solid #D9D9D9;
 	position: absolute;
 	left: 0px; top: 0px;
-	bottom: 0px; right: 240px;
+	bottom: 0px; right: 220px;
 }
 
 #content
@@ -28,8 +28,8 @@
 }
 
 .inlined #nav { display: block; }
-.inlined #content { padding-left: 240px; }
-.inlined .toolbar { padding-left: 240px; }
+.inlined #content { padding-left: 220px; }
+.inlined .toolbar { padding-left: 220px; }
 
 .rtp-slider
 {
