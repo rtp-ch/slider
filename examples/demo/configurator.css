@@ -54,12 +54,14 @@ DIV.block
 LABEL, SPAN
 {
 	font-size: 12px;
+	line-height: 18px;
 	font-family: verdana;
 }
 
 INPUT, SELECT, OPTION
 {
-	font-size: 11px;
+	font-size: 10px;
+	line-height: 14px;
 	font-family: arial;
 }
 
@@ -83,9 +85,41 @@ LABEL SELECT
 	display: block;
 }
 
-LABEL.text SPAN
+LABEL
+{
+	margin-bottom: 1px;
+}
+
+SPAN.label
+{
+	vertical-align: top;
+}
+
+LABEL.text SPAN.label
 {
 	width: 170px;
+	float: left;
+	vertical-align: middle;
+}
+
+LABEL.text INPUT
+{
+	width: 26px;
+	float: right;
+	margin: 0px 0px;
+	padding: 1px 2px;
+	line-height: 10px;
+	border: 1px solid #CCC;
+	vertical-align: middle;
+}
+
+LABEL SELECT
+{
+	margin: 0px 0px;
+	padding: 0px 0px;
+	line-height: 12px;
+	vertical-align: middle;
+	border: 1px solid #CCC;
 }
 
 LABEL.checkbox SPAN
@@ -101,7 +135,7 @@ LABEL.checkbox SPAN
 {
 	display: block;
 	margin-top: 6px;
-	padding-left: 6px;
+	padding-left: 8px;
 }
 
 #swipe LABEL SELECT,
@@ -117,7 +151,7 @@ LABEL.checkbox SPAN
 #autoVpOpp LABEL.text SPAN,
 #autoslide LABEL.text SPAN
 {
-	width: 164px;
+	width: 162px;
 }
 
 #swipe LABEL.checkbox SPAN,
