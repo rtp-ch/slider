@@ -11,7 +11,10 @@
 	<link rel="stylesheet" href="configurator.css">
 
 	<script type="text/javascript" src="URI.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>
+		var proto = document.location.protocol.match(/^file/i) ? 'http:' : '';
+		document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"><\/script>');
+	</script>
 	<script type="text/javascript" src="options.js"></script>
 	<script type="text/javascript" src="configurator.js"></script>
 
