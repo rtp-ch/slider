@@ -18,8 +18,8 @@
 	'use strict';
 
 
-	// @@@ private fn: panelsDimByViewportRead @@@
-	function panelsDimByViewportRead ()
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -28,17 +28,16 @@
 		// process all slides to set dimension
 		var i = this.slides.length; while (i--)
 		{
-
 			// set size to the calculated value
 			this.setSlideDim(i, this.getSlideDimFromVp(i));
-
 		}
 
-	}
-	// @@@ EO private fn: panelsDimByViewportRead @@@
+	})
+	// @@@ EO plugin: changedViewport @@@
 
-	// @@@ private fn: panelsDimByViewportUpdate @@@
-	function panelsDimByViewportUpdate ()
+
+	// @@@ plugin: adjustViewport @@@
+	prototype.plugin('adjustViewport', function ()
 	{
 
 		// trigger the changed panels dim hook
@@ -56,8 +55,8 @@
 			this.updatePanelsOpp();
 		}
 
-	}
-	// @@@ EO private fn: panelsDimByViewportUpdate @@@
+	});
+	// @@@ EO plugin: adjustViewport @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -65,21 +64,12 @@
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
-		// declare and normalize slide
-		// var panel = this.slide2panel(slide),
-		//     slide = this.panel2slide(panel);
-
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
 		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
-
-
-	// hook into changed viewport event to adjust inner panels
-	prototype.plugin('changedViewport', panelsDimByViewportRead);
-	prototype.plugin('adjustViewport', panelsDimByViewportUpdate);
 
 
 // EO extend class prototype

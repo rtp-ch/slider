@@ -35,7 +35,7 @@
 	// @@@ plugin: init @@@
 	prototype.plugin('init', function ()
 	{
-		
+
 		// closure object
 		var slider = this;
 

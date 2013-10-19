@@ -16,8 +16,8 @@
 	'use strict';
 
 
-	// @@@ private fn: panelsOppByViewportRead @@@
-	function panelsOppByViewportRead ()
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -32,12 +32,12 @@
 
 		}
 
-	}
-	// @@@ EO private fn: panelsOppByViewportRead @@@
+	});
+	// @@@ EO plugin: changedViewport @@@
 
 
-	// @@@ private fn: panelsOppByViewportUpdate @@@
-	function panelsOppByViewportUpdate ()
+	// @@@ plugin: adjustViewport @@@
+	prototype.plugin('adjustViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -55,11 +55,13 @@
 		      this.conf.sizerDim == 'viewportByPanels'
 		)
 		{
+			// re-read the size from panels
+			// maybe settings don't work?
 			this.updatePanelsDim();
 		}
 
-	}
-	// @@@ EO private fn: panelsOppByViewportUpdate @@@
+	});
+	// @@@ EO plugin: adjustViewport @@@
 
 
 	// @@@ method: getSlideOppFromVp @@@
@@ -67,21 +69,12 @@
 	prototype.getSlideOppFromVp = function (slide)
 	{
 
-		// declare and normalize slide
-		// var panel = this.slide2panel(slide),
-		//     slide = this.panel2slide(panel);
-
 		// extend to the full opposition
 		// todo: implement a more complex method
 		return parseFloat(this.vp_y, 10)
 
 	}
 	// @@@ EO method: getSlideOppFromVp @@@
-
-
-	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsOppByViewportRead);
-	prototype.plugin('adjustViewport', panelsOppByViewportUpdate);
 
 
 // EO extend class prototype
