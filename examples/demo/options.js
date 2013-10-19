@@ -18,6 +18,8 @@ var floats = [
 	'tileCols',
 	'tileRowsAtOnce',
 	'tileColsAtOnce',
+	'tileDimOrigin',
+	'tileOppOrigin',
 	'autoslideDelay',
 	'autoslideAction',
 	'autoslideFirstDelay',
