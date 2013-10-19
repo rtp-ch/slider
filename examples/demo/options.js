@@ -32,6 +32,7 @@ var selects = [
 var checkboxes = [
 	'swipe',
 	'tiles',
+	'inline',
 	'touchSwipe',
 	'mouseSwipe',
 	'gestureSwipe',

@@ -1,6 +1,39 @@
+#body
+{
+	/* position: relative; */
+}
+#nav
+{
+	width: 242px;
+	display: none;
+	position: absolute;
+	overflow: hidden;
+	left: 0px; top: 0px;
+	bottom: 0px; right: 240px;
+}
+#nav IFRAME
+{
+	width: 240px;
+	height: 100%;
+	border: 0px;
+	border-right: 2px solid black;
+	position: absolute;
+	left: 0px; top: 0px;
+	bottom: 0px; right: 240px;
+}
+
+#content
+{
+	padding-left: 0px;
+}
+
+.inlined #nav { display: block; }
+.inlined #content { padding-left: 240px; }
+.inlined .toolbar { padding-left: 240px; }
+
 .rtp-slider
 {
-	margin: 0 100px;
+	margin: 0 40px;
 }
 
 .rtp-slider-viewport
@@ -225,13 +258,14 @@ label
 	font-size: 14px;
 }
 
-#toolbar
+.toolbar
 {
 	margin: 10px 0px;
 	text-align: center;
 }
 
-#toolbar A
+.toolbar,
+.toolbar A
 {
 	font-size: 14px;
 	font-family: verdana;

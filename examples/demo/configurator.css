@@ -2,6 +2,18 @@ DIV[id]
 {
 }
 
+
+#top-submit .attached-parent,
+#top-submit .attached-slider,
+#bottom-submit .attached-parent,
+#bottom-submit .attached-slider
+{
+	width: 10px;
+	height: 10px;
+	background: #999900;
+	display: inline-block;
+}
+
 #configurator
 {
 	padding-top: 35px;

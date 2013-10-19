@@ -11,6 +11,10 @@ function conf (str)
 {
 	if (typeof str == 'number') return str;
 	if (typeof str == 'undefined') return null;
+	if (str === null) return null;
+	if (str === true) return true;
+	if (str === false) return false;
+	if (typeof str == 'object') return conf(str[0]);
 	if (str.match(/^\s*null\s*$/i)) return null;
 	if (str.match(/^\s*true\s*$/i)) return true;
 	if (str.match(/^\s*false\s*$/i)) return false;
@@ -24,6 +28,7 @@ function floated (str)
 	if (str === null) return 0;
 	if (str === true) return true;
 	if (str === false) return false;
+	if (typeof str == 'object') return floated(str[0]);
 	if (str.match(/^\s*null\s*$/i)) return 0;
 	if (str.match(/^\s*true\s*$/i)) return true;
 	if (str.match(/^\s*false\s*$/i)) return false;
@@ -72,9 +77,30 @@ jQuery(function()
 	slider = jQuery('DIV.rtp-slider-viewport')
 	         .rtpSlider(config).data('rtpSlider');
 
-});
+	// store global reference
+	self.slider = slider;
 
-var confwin;
+	// name our own window
+	self.name = "rtpsliderdemo";
+
+	// show inline form
+	if (config['inline']) inlining ();
+
+
+	window.setInterval(function()
+	{
+
+		// store global reference
+		self.slider = slider;
+
+		// name our own window
+		self.name = "rtpsliderdemo";
+
+		if (self.popup) self.popup.calledby = self;
+
+	}, 500);
+
+});
 
 function setConfigurator (init)
 {
@@ -84,21 +110,42 @@ function setConfigurator (init)
 function configurator ()
 {
 
-	// name our own window
-	self.name = "rtpslider";
-
-	if (!confwin || confwin.closed)
+	if (!self.popup || self.popup.closed)
 	{
 		// options for the popup window (modal dialog)
 		var options = 'location=0, status=0, scrollbars=1, width=280, height=560';
 		// open a new popup window (connect and update afterwards)
-		confwin = window.open ('configurator.html', 'configurator', options);
+		self.popup = window.open ('configurator.html', 'configurator', options);
 	}
 
-	if (confwin.init)
+	// reference who opened you
+	self.popup.calledby = self;
+
+	if (self.popup.init)
 	{
-		confwin.init(slider);
-		confwin.focus();
+		// create connection
+		self.slider = slider;
+
+		self.popup.init(slider);
+		self.popup.focus();
 	}
+
+}
+
+function inlining ()
+{
+
+	jQuery('BODY').toggleClass('inlined');
+
+	jQuery('#nav IFRAME').contents().find('INPUT[name="inline"]')
+	.prop('checked', jQuery('BODY').hasClass('inlined'))
+	if (self.popup)
+	{
+		jQuery(self.popup.document).find('INPUT[name="inline"]')
+		.prop('checked', jQuery('BODY').hasClass('inlined'))
+	}
+
+	OCBNET.Layout();
+
 
 }

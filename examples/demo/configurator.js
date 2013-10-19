@@ -81,8 +81,17 @@ jQuery(function()
 				if ( self.opener.setConfigurator )
 				{ self.opener.setConfigurator(init); }
 				else { alert('wrong opener connected'); }
+				jQuery('INPUT[name="inline"]').prop('checked', jQuery('BODY', self.opener.document).hasClass('inlined'))
 			} catch (e) { alert('wrong opener connected'); }
-		} else { alert('no opener connected'); }
+		}
+		else if (self.parent)
+		{
+			init(self.parent.slider)
+
+			jQuery('INPUT[name="inline"]').prop('checked', jQuery('BODY', self.parent.document).hasClass('inlined'))
+
+		}
+		else { alert('no opener connected'); }
 
 		var i = blocks.length; while (i--)
 		{
@@ -97,6 +106,61 @@ jQuery(function()
 	}
 
 	jQuery('INPUT.refresh').click(refresh);
+
+	window.setInterval(function()
+	{
+
+		try
+		{
+			if (self.calledby)
+			{
+				self.calledby.popup = self;
+			}
+		}
+		catch (e)
+		{}
+
+		try
+		{
+			if (self.calledby)
+			{
+				jQuery('DIV.attached-parent').css('background', 'green');
+			}
+			else if (self.parent)
+			{
+				jQuery('DIV.attached-parent').css('background', 'blue');
+			}
+			else
+			{
+				jQuery('DIV.attached-parent').css('background', 'red');
+			}
+		}
+		catch (e)
+		{
+			jQuery('DIV.attached-parent').css('background', 'red');
+		}
+
+		try
+		{
+			if (self.calledby && self.calledby.slider)
+			{
+				jQuery('DIV.attached-slider').css('background', 'green');
+			}
+			else if (self.parent && self.parent.slider)
+			{
+				jQuery('DIV.attached-slider').css('background', 'blue');
+			}
+			else
+			{
+				jQuery('DIV.attached-slider').css('background', 'red');
+			}
+		}
+		catch (e)
+		{
+			jQuery('DIV.attached-slider').css('background', 'red');
+		}
+
+	}, 500);
 
 	refresh();
 

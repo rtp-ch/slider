@@ -21,11 +21,13 @@
 
 	<div id="configurator">
 
-		<form action="demo.html" method="get" target="rtpslider">
+		<form action="demo.html" method="get" target="rtpsliderdemo">
 
 			<div id="top-submit">
-				<input type="submit" value="Update Slider">
-				<input type="button" class="refresh" value="Reload Config">
+				<input type="submit" value="Update">
+				<input type="button" class="refresh" value="Reload">
+				<div class="attached-parent" title="parent window"></div>
+				<div class="attached-slider" title="slider instance"></div>
 			</div>
 
 			<div class="block">
@@ -235,11 +237,18 @@
 					</label>
 				</div>
 
+				<label class="checkbox">
+					<input type="checkbox" name="inline" value="1" />
+					<span class="label">Inline Options Panel</span>
+				</label>
 			</div>
 
 			<div id="bottom-submit">
-				<input type="submit" value="Update Slider">
-				<input type="button" class="refresh" value="Reload Config">
+				<div class="attached"></div>
+				<input type="submit" value="Update">
+				<input type="button" class="refresh" value="Reload">
+				<div class="attached-parent" title="parent window"></div>
+				<div class="attached-slider" title="slider instance"></div>
 			</div>
 
 		</form>
