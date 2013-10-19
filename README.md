@@ -298,5 +298,6 @@ either version 3 of the License, or (at your option) any later version.
  - http://slider.rtp.ocbnet.ch/slider/examples/nested.html
  - http://slider.rtp.ocbnet.ch/slider/examples/tiles.html (alpha)
  - http://slider.rtp.ocbnet.ch/slider/examples/carousel3d.html (alpha)
+ - http://slider.rtp.ocbnet.ch/slider/examples/demo (experimental)
 
 Use the mouse or touch device to swipe through the panels!

@@ -1,0 +1,86 @@
+#autoslide, #swipe, #autoVpOpp, #tiles
+{
+	display: block;
+}
+
+#configurator
+{
+	padding-top: 35px;
+	padding-bottom: 35px;
+}
+
+#top-submit,
+#bottom-submit
+{
+	left: 0px;
+	right: 0px;
+	padding: 10px;
+	position: fixed;
+	background: #F9F9F9;
+	text-align: left;
+}
+
+#top-submit
+{
+	top: 0px;
+}
+
+#bottom-submit
+{
+	bottom: 0px;
+
+}
+
+DIV.block
+{
+	padding: 5px 0px;
+}
+
+LABEL, SPAN
+{
+	font-size: 12px;
+	font-family: verdana;
+}
+
+INPUT, SELECT, OPTION
+{
+	font-size: 11px;
+	font-family: arial;
+}
+
+LABEL
+{
+	display: block;
+	overflow: hidden;
+}
+
+LABEL SPAN
+{
+	float: left;
+	width: 70px;
+	display: block;
+}
+
+LABEL SELECT
+{
+	float: left;
+	width: 130px;
+	display: block;
+}
+
+LABEL.text SPAN
+{
+	width: 160px;
+}
+
+LABEL.checkbox SPAN
+{
+	float: left;
+	width: 150px;
+}
+
+LABEL.checkbox INPUT
+{
+	width: 20px;
+	float: left;
+}
