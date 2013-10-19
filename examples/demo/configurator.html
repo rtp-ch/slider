@@ -29,8 +29,8 @@
 			<div id="top-submit">
 				<input type="submit" value="Update">
 				<input type="button" class="refresh" value="Reload">
-				<div class="attached-parent" title="parent window"></div>
-				<div class="attached-slider" title="slider instance"></div>
+				<div class="attached-parent" title="Parent window"></div>
+				<div class="attached-slider" title="Slider instance"></div>
 			</div>
 
 			<div class="block">
@@ -39,23 +39,23 @@
 					<span class="label">Align</span>
 					<input type="text" value="0.5" name="align" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Align panel to position">
 					<span class="label">alignPanelDim</span>
 					<input type="text" value="0.5" name="alignPanelDim" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Align panel in viewport">
 					<span class="label">alignPanelOpp</span>
 					<input type="text" value="0.5" name="alignPanelOpp" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Align panel to viewport">
 					<span class="label">alignViewport</span>
 					<input type="text" value="0.5" name="alignViewport" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Slides shown in viewport">
 					<span class="label">Slides Visible</span>
 					<input type="text" value="1" name="panelsVisible" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Initial slide to show">
 					<span class="label">First Slide</span>
 					<input type="text" value="0" name="slideFirst" size="2" />
 				</label>
@@ -65,7 +65,7 @@
 
 				<label class="checkbox" for="nothing">
 					<input type="checkbox" name="vsync" value="1" />
-					<span class="label">vsync (or fps)</span>
+					<span class="label" title="Fallback for requestAnimationFrame">vsync (or fps)</span>
 					<input type="text" value="25" name="fps" size="2" title="fps" />
 				</label>
 
@@ -92,11 +92,11 @@
 			</div>
 			<div class="block">
 
-				<label class="text">
+				<label class="text" title="Slide get into viewport">
 					<span class="label">autoVpOppDeadZone</span>
 					<input type="text" value="0.2" name="autoVpOppDeadZone" size="2" />
 				</label>
-				<label class="text">
+				<label class="text" title="Slide get out of viewport">
 					<span class="label">autoVpOppLifeZone</span>
 					<input type="text" value="0.8" name="autoVpOppLifeZone" size="2" />
 				</label>
@@ -104,11 +104,11 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="Enable vertical mode">
 					<input type="checkbox" name="vertical" value="1" />
 					<span class="label">Vertical</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="Enable endless carousel">
 					<input type="checkbox" name="carousel" value="1" />
 					<span class="label">Carousel</span>
 				</label>
@@ -116,23 +116,23 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="Insert navigation dots">
 					<input type="checkbox" name="navDots" value="1" />
 					<span class="label">Nav Dots</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="Insert navigation arrows">
 					<input type="checkbox" name="navArrows" value="1" />
 					<span class="label">Nav Arrows</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="Insert navigation toolbar">
 					<input type="checkbox" name="navToolbar" value="1" />
 					<span class="label">Nav Toolbar</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="Insert autoslide wait proressbar">
 					<input type="checkbox" name="progressBar" value="1" />
 					<span class="label">Progress Bar</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="Enable keyboard navigation">
 					<input type="checkbox" name="navKeyboard" value="1" />
 					<span class="label">Key Navigation</span>
 				</label>
@@ -140,21 +140,21 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="Enable swiping">
 					<input type="checkbox" name="swipe" value="1" />
 					<span class="label">Swipe</span>
 				</label>
 
 				<div id="swipe">
-					<label class="checkbox">
+					<label class="checkbox" title="Native touch (deprecated)">
 						<input type="checkbox" name="touchSwipe" value="1" disabled="true" />
 						<span class="label">Touch Swipe</span>
 					</label>
-					<label class="checkbox">
+					<label class="checkbox" title="Native mouse (deprecated)">
 						<input type="checkbox" name="mouseSwipe" value="1" disabled="true" />
 						<span class="label">Mouse Swipe</span>
 					</label>
-					<label class="checkbox">
+					<label class="checkbox" title="Generic for mouse/touch and pointer">
 						<input type="checkbox" name="gestureSwipe" value="1" />
 						<span class="label">Gesture Swipe</span>
 					</label>
@@ -202,11 +202,11 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="SizerDim: panelsByViewport">
 					<input type="checkbox" name="fillViewport" value="1" />
 					<span class="label">Fill Viewport</span>
 				</label>
-				<label class="checkbox">
+				<label class="checkbox" title="SizerDim: viewportByPanels">
 					<input type="checkbox" name="shrinkViewport" value="1" />
 					<span class="label">Shrink Viewport</span>
 				</label>
@@ -229,11 +229,11 @@
 						<input type="text" name="tileRows" value="1" size="2" />
 					</label>
 					<label class="text">
-						<span class="label" title="min 1">Animate Cols at once</span>
+						<span class="label" title="Min 1">Animate Cols at once</span>
 						<input type="text" name="tileColsAtOnce" value="1" size="2" />
 					</label>
 					<label class="text">
-						<span class="label" title="min 1">Animate Rows at once</span>
+						<span class="label" title="Min 1">Animate Rows at once</span>
 						<input type="text" name="tileRowsAtOnce" value="1" size="2" />
 					</label>
 					<label class="text">
@@ -264,8 +264,8 @@
 				<div class="attached"></div>
 				<input type="submit" value="Update">
 				<input type="button" class="refresh" value="Reload">
-				<div class="attached-parent" title="parent window"></div>
-				<div class="attached-slider" title="slider instance"></div>
+				<div class="attached-parent" title="Parent window"></div>
+				<div class="attached-slider" title="Slider instance"></div>
 			</div>
 
 		</form>
