@@ -179,18 +179,13 @@ Do layout and other updates as soon as we receive the corresponding events.
 
 Enable the gesture library for swiping.
 
-<pre>mouseSwipe: bool (default: false) (deprecated)</pre>
+<pre>mouseSwipe: bool (default: false) (deprecated/broken)</pre>
 
 Enable the mouse for swiping.
 
-<pre>touchSwipe: bool (default: false) (deprecated)</pre>
+<pre>touchSwipe: bool (default: false) (deprecated/broken)</pre>
 
 Enable touch devices for swiping.
-
-<pre>swipeVsync: bool (default: false)</pre>
-
-Update the user interface as soon as the swipe event is triggered. If disabled we will
-defer the updates and try to achieve as many frames per second as defined in fps.
 
 <pre>swipeThreshold: integer (default: 5)</pre>
 
@@ -283,11 +278,11 @@ either version 3 of the License, or (at your option) any later version.
 
 ### Examples
 
- - http://slider.rtp.ocbnet.ch/slider/examples/swipe.html
- - http://slider.rtp.ocbnet.ch/slider/examples/addons.html
- - http://slider.rtp.ocbnet.ch/slider/examples/nested.html
- - http://slider.rtp.ocbnet.ch/slider/examples/tiles.html (alpha)
- - http://slider.rtp.ocbnet.ch/slider/examples/carousel3d.html (alpha)
- - http://slider.rtp.ocbnet.ch/slider/examples/demo (experimental)
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/swipe.html
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/addons.html
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/nested.html
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/tiles.html (alpha)
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/carousel3d.html (alpha)
+ - http://rawgithub.com/rtp-ch/slider/develop/examples/demo/demo.html (experimental)
 
 Use the mouse or touch device to swipe through the panels!
