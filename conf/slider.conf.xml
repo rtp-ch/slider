@@ -6,7 +6,7 @@
 	<!-- default configuration -->
 	<config>
 
-		<!-- where is you htdocs root directory -->
+		<!-- where is your htdocs root directory -->
 		<!-- this is needed to create absolute urls -->
 		<!-- default is relative to the config file -->
 		<webroot>{CONF}/..</webroot>
@@ -19,9 +19,6 @@
 		<headtmpl></headtmpl>
 
 		<!-- disable crc file -->
-		<prepare>1</prepare>
-
-		<!-- disable crc file -->
 		<crc-file>0</crc-file>
 
 		<!-- disable comments -->
@@ -31,7 +28,7 @@
 	</config>
 
 	<!-- prepare operations -->
-	<prepare id="prepare" step="prepare" disabled="false" >
+	<prepare step="prepare" disabled="false" >
 
 		<!-- create neccessary paths -->
 		<mkdir path="release" />
@@ -39,7 +36,7 @@
 	</prepare>
 
 	<!-- optimize operations (id needed to overwrite) -->
-	<optimize id="optimize" step="optimize" disabled="false">
+	<optimize step="optimize" disabled="false">
 		<!-- clean/fix text files -->
 		<txt disabled="false">
 			<!-- clean all js and css files -->
@@ -66,190 +63,189 @@
 		</png>
 	</optimize>
 
-	<!-- main merge operations -->
-	<merge id="light" disabled="false">
+	<!-- config closure -->
+	<block>
 
-		<js id="core" step="core" >
+		<!-- only import - disable actions -->
+		<config><action>0</action></config>
 
-			<!-- include specific header file -->
-			<prepend path="conf/header.min.js" />
+		<!-- include more external configurations (for submodules) -->
+		<import src="{CONF}/../src/lib/gestures/conf/gestures.conf.xml" />
 
-			<!-- include common header file -->
-			<prepend path="src/header.js" />
-
-			<!-- include library javascript files -->
-			<input path="src/rtp/common/multievent.js" />
-
-			<!-- include layout library files -->
-			<input path="src/lib/layout/layout.src.js" />
-
-			<!-- include core javascript files -->
-			<input path="src/rtp/slider.js" />
-			<input path="src/rtp/slider/core/hooks.js" />
-			<input path="src/rtp/slider/core/slides.js" />
-			<input path="src/rtp/slider/core/panels.js" />
-			<input path="src/rtp/slider/core/viewport.js" />
-			<input path="src/rtp/slider/core/container.js" />
-			<input path="src/rtp/slider/core/visibility.js" />
-			<input path="src/rtp/slider/core/position.js" />
-			<input path="src/rtp/slider/core/animation.js" />
-
-			<!-- include core sizer javascript files -->
-			<input path="src/rtp/slider/sizer.js" />
-			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
-			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
-			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
-
-			<!-- generate different output versions -->
-			<output path="release/rtp.slider.light.js" target="join" />
-			<output path="release/rtp.slider.light.dev.js" target="dev" />
-			<output path="release/rtp.slider.light.min.js" target="compile" />
-
-		</js>
-
-	</merge>
+	</block>
 
 	<!-- main merge operations -->
-	<merge id="full" disabled="false">
+	<js id="slider-light" step="light" >
 
-		<js id="full" step="full" >
+		<!-- include specific header file -->
+		<prepend path="conf/header.min.js" />
 
-			<!-- include specific header file -->
-			<prepend path="conf/header.full.js" />
+		<!-- include common header file -->
+		<prepend path="src/header.js" />
 
-			<!-- include common header file -->
-			<prepend path="src/header.js" />
+		<!-- include library javascript files -->
+		<input path="src/rtp/common/multievent.js" />
 
-			<!-- include library javascript files -->
-			<input path="src/rtp/common/multievent.js" />
+		<!-- include layout library files -->
+		<input path="src/lib/layout/layout.src.js" />
 
-			<!-- include layout library files -->
-			<input path="src/lib/layout/layout.src.js" />
+		<!-- include core javascript files -->
+		<input path="src/rtp/slider.js" />
+		<input path="src/rtp/slider/core/hooks.js" />
+		<input path="src/rtp/slider/core/slides.js" />
+		<input path="src/rtp/slider/core/panels.js" />
+		<input path="src/rtp/slider/core/viewport.js" />
+		<input path="src/rtp/slider/core/container.js" />
+		<input path="src/rtp/slider/core/visibility.js" />
+		<input path="src/rtp/slider/core/position.js" />
+		<input path="src/rtp/slider/core/animation.js" />
 
-			<!-- include core javascript files -->
-			<input path="src/rtp/slider.js" />
-			<input path="src/rtp/slider/core/hooks.js" />
-			<input path="src/rtp/slider/core/slides.js" />
-			<input path="src/rtp/slider/core/panels.js" />
-			<input path="src/rtp/slider/core/viewport.js" />
-			<input path="src/rtp/slider/core/container.js" />
-			<input path="src/rtp/slider/core/visibility.js" />
-			<input path="src/rtp/slider/core/position.js" />
-			<input path="src/rtp/slider/core/animation.js" />
+		<!-- include core sizer javascript files -->
+		<input path="src/rtp/slider/sizer.js" />
+		<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
+		<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
+		<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
 
-			<!-- include core sizer javascript files -->
-			<input path="src/rtp/slider/sizer.js" />
-			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
-			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
-			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
+		<!-- generate different output versions -->
+		<output path="release/rtp.slider.light.js" target="join" />
+		<output path="release/rtp.slider.light.dev.js" target="dev" />
+		<output path="release/rtp.slider.light.min.js" target="compile" />
 
-			<!-- include default addons javascript files -->
-			<input path="src/rtp/slider/addons/nav-dots.js" />
-			<input path="src/rtp/slider/addons/nav-arrows.js" />
-			<input path="src/rtp/slider/addons/nav-keyboard.js" />
-			<input path="src/rtp/slider/addons/classes.js" />
-			<input path="src/rtp/slider/addons/autoslide.js" />
-			<input path="src/rtp/slider/addons/panel-infobox.js" />
-
-			<!-- include default swipe javascript files -->
-			<input path="src/ocbnet/slider/swipe.js" />
-			<input path="src/ocbnet/slider/swipe/mouse.js" />
-			<input path="src/ocbnet/slider/swipe/touch.js" />
-
-			<!-- include default extented javascript files -->
-			<input path="src/ocbnet/slider/addons/toolbar.js" />
-			<input path="src/ocbnet/slider/addons/tabindex.js" />
-			<input path="src/ocbnet/slider/addons/visibility.js" />
-			<input path="src/ocbnet/slider/addons/progressbar.js" />
-
-			<!-- generate different output versions -->
-			<output path="release/rtp.slider.full.js" target="join" />
-			<output path="release/rtp.slider.full.dev.js" target="dev" />
-			<output path="release/rtp.slider.full.min.js" target="compile" />
-
-		</js>
-
-	</merge>
+	</js>
 
 	<!-- main merge operations -->
-	<merge id="experimental" disabled="false">
+	<js id="slider-full" step="full" >
 
-		<js id="experimental" step="experimental" >
+		<!-- include specific header file -->
+		<prepend path="conf/header.full.js" />
 
-			<!-- include specific header file -->
-			<prepend path="conf/header.exp.js" />
+		<!-- include common header file -->
+		<prepend path="src/header.js" />
 
-			<!-- include common header file -->
-			<prepend path="src/header.js" />
+		<!-- include library javascript files -->
+		<input path="src/rtp/common/multievent.js" />
 
-			<!-- include library javascript files -->
-			<input path="src/rtp/common/multievent.js" />
+		<!-- include layout library files -->
+		<input path="src/lib/layout/layout.src.js" />
 
-			<!-- include layout library files -->
-			<input path="src/lib/layout/layout.src.js" />
+		<!-- include gesture javascript files -->
+		<input id="gestures-full" />
 
-			<!-- include gesture javascript files -->
-			<input path="src/lib/gestures/src/ocbnet/gestures.js" />
-			<input path="src/lib/gestures/src/ocbnet/gestures/mouse.js" />
-			<input path="src/lib/gestures/src/ocbnet/gestures/touch.js" />
-			<input path="src/lib/gestures/src/ocbnet/gestures/pointer.js" />
+		<!-- include core javascript files -->
+		<input path="src/rtp/slider.js" />
+		<input path="src/rtp/slider/core/hooks.js" />
+		<input path="src/rtp/slider/core/slides.js" />
+		<input path="src/rtp/slider/core/panels.js" />
+		<input path="src/rtp/slider/core/viewport.js" />
+		<input path="src/rtp/slider/core/container.js" />
+		<input path="src/rtp/slider/core/visibility.js" />
+		<input path="src/rtp/slider/core/position.js" />
+		<input path="src/rtp/slider/core/animation.js" />
 
-			<!-- include event trab javascript files -->
-			<input path="src/lib/gestures/src/ocbnet/jquery/event-trap.js" />
+		<!-- include core sizer javascript files -->
+		<input path="src/rtp/slider/sizer.js" />
+		<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
+		<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
+		<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
 
-			<!-- include core javascript files -->
-			<input path="src/rtp/slider.js" />
-			<input path="src/rtp/slider/core/hooks.js" />
-			<input path="src/rtp/slider/core/slides.js" />
-			<input path="src/rtp/slider/core/panels.js" />
-			<input path="src/rtp/slider/core/viewport.js" />
-			<input path="src/rtp/slider/core/container.js" />
-			<input path="src/rtp/slider/core/visibility.js" />
-			<input path="src/rtp/slider/core/position.js" />
-			<input path="src/rtp/slider/core/animation.js" />
+		<!-- include default addons javascript files -->
+		<input path="src/rtp/slider/addons/nav-dots.js" />
+		<input path="src/rtp/slider/addons/nav-arrows.js" />
+		<input path="src/rtp/slider/addons/nav-keyboard.js" />
+		<input path="src/rtp/slider/addons/classes.js" />
+		<input path="src/rtp/slider/addons/autoslide.js" />
+		<input path="src/rtp/slider/addons/panel-infobox.js" />
 
-			<!-- include core sizer javascript files -->
-			<input path="src/rtp/slider/sizer.js" />
-			<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
-			<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
-			<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
-			<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
+		<!-- include default swipe javascript files -->
+		<input path="src/ocbnet/slider/swipe.js" />
+		<input path="src/ocbnet/slider/swipe/gesture.js" />
+		<!-- <input path="src/ocbnet/slider/swipe/mouse.js" /> -->
+		<!-- <input path="src/ocbnet/slider/swipe/touch.js" /> -->
 
-			<!-- include default addons javascript files -->
-			<input path="src/rtp/slider/addons/nav-dots.js" />
-			<input path="src/rtp/slider/addons/nav-arrows.js" />
-			<input path="src/rtp/slider/addons/nav-keyboard.js" />
-			<input path="src/rtp/slider/addons/classes.js" />
-			<input path="src/rtp/slider/addons/autoslide.js" />
-			<input path="src/rtp/slider/addons/panel-infobox.js" />
+		<!-- include default extented javascript files -->
+		<input path="src/ocbnet/slider/addons/toolbar.js" />
+		<input path="src/ocbnet/slider/addons/tabindex.js" />
+		<input path="src/ocbnet/slider/addons/visibility.js" />
+		<input path="src/ocbnet/slider/addons/progressbar.js" />
 
-			<!-- include default swipe javascript files -->
-			<input path="src/ocbnet/slider/swipe.js" />
-			<input path="src/ocbnet/slider/swipe/gesture.js" />
+		<!-- generate different output versions -->
+		<output path="release/rtp.slider.full.js" target="join" />
+		<output path="release/rtp.slider.full.dev.js" target="dev" />
+		<output path="release/rtp.slider.full.min.js" target="compile" />
 
-			<!-- include default extented javascript files -->
-			<input path="src/ocbnet/slider/addons/toolbar.js" />
-			<input path="src/ocbnet/slider/addons/tabindex.js" />
-			<input path="src/ocbnet/slider/addons/visibility.js" />
-			<input path="src/ocbnet/slider/addons/progressbar.js" />
+	</js>
 
-			<!-- include default experimental javascript files -->
-			<input path="src/lib/csshooks.js" />
-			<input path="src/ocbnet/slider/addons/tiles.js" />
-			<input path="src/ocbnet/slider/addons/carousel3d.js" />
+	<!-- main merge operations -->
+	<js id="slider-experimental" step="experimental" >
 
-			<!-- generate different output versions -->
-			<output path="release/rtp.slider.exp.js" target="join" />
-			<output path="release/rtp.slider.exp.dev.js" target="dev" />
-			<output path="release/rtp.slider.exp.min.js" target="compile" />
+		<!-- include specific header file -->
+		<prepend path="conf/header.exp.js" />
 
-		</js>
+		<!-- include common header file -->
+		<prepend path="src/header.js" />
 
-	</merge>
+		<!-- include library javascript files -->
+		<input path="src/rtp/common/multievent.js" />
+
+		<!-- include layout library files -->
+		<input path="src/lib/layout/layout.src.js" />
+
+		<!-- include gesture javascript files -->
+		<input id="gestures-experimental" />
+
+		<!-- include core javascript files -->
+		<input path="src/rtp/slider.js" />
+		<input path="src/rtp/slider/core/hooks.js" />
+		<input path="src/rtp/slider/core/slides.js" />
+		<input path="src/rtp/slider/core/panels.js" />
+		<input path="src/rtp/slider/core/viewport.js" />
+		<input path="src/rtp/slider/core/container.js" />
+		<input path="src/rtp/slider/core/visibility.js" />
+		<input path="src/rtp/slider/core/position.js" />
+		<input path="src/rtp/slider/core/animation.js" />
+
+		<!-- include core sizer javascript files -->
+		<input path="src/rtp/slider/sizer.js" />
+		<input path="src/rtp/slider/sizer/alignOppInViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsDimByViewport.js" />
+		<input path="src/rtp/slider/sizer/panelsOppByViewport.js" />
+		<input path="src/rtp/slider/sizer/viewportDimByPanels.js" />
+		<input path="src/rtp/slider/sizer/viewportOppByPanels.js" />
+
+		<!-- include default addons javascript files -->
+		<input path="src/rtp/slider/addons/nav-dots.js" />
+		<input path="src/rtp/slider/addons/nav-arrows.js" />
+		<input path="src/rtp/slider/addons/nav-keyboard.js" />
+		<input path="src/rtp/slider/addons/classes.js" />
+		<input path="src/rtp/slider/addons/autoslide.js" />
+		<input path="src/rtp/slider/addons/panel-infobox.js" />
+
+		<!-- include default swipe javascript files -->
+		<input path="src/ocbnet/slider/swipe.js" />
+		<input path="src/ocbnet/slider/swipe/gesture.js" />
+		<!-- <input path="src/ocbnet/slider/swipe/mouse.js" /> -->
+		<!-- <input path="src/ocbnet/slider/swipe/touch.js" /> -->
+
+		<!-- include default extented javascript files -->
+		<input path="src/ocbnet/slider/addons/toolbar.js" />
+		<input path="src/ocbnet/slider/addons/tabindex.js" />
+		<input path="src/ocbnet/slider/addons/visibility.js" />
+		<input path="src/ocbnet/slider/addons/progressbar.js" />
+
+		<!-- include default experimental javascript files -->
+		<input path="src/lib/csshooks.js" />
+		<input path="src/ocbnet/slider/addons/tiles.js" />
+		<input path="src/ocbnet/slider/addons/carousel3d.js" />
+
+		<!-- generate different output versions -->
+		<output path="release/rtp.slider.exp.js" target="join" />
+		<output path="release/rtp.slider.exp.dev.js" target="dev" />
+		<output path="release/rtp.slider.exp.min.js" target="compile" />
+
+	</js>
 
 </xml>
