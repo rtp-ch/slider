@@ -12,9 +12,13 @@ function init (slider)
 
 	if (typeof slider == 'undefined') return;
 
-	var config = slider.conf;
+	// create a copy of the slider config
+	var config = jQuery.extend(true, {}, slider.conf);
 
-	// console.log('loaded ', config)
+	// resolve shared values (reset if they have no influence)
+	if (config['alignPanelDim'] == config['align']) config['alignPanelDim'] = false;
+	if (config['alignPanelOpp'] == config['align']) config['alignPanelOpp'] = false;
+	if (config['alignViewport'] == config['align']) config['alignViewport'] = false;
 
 	var i = blocks.length; while (i--)
 	{
