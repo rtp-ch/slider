@@ -2969,7 +2969,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// @@@ plugin: init @@@
 	prototype.plugin('init', function ()
 	{
-		
+
 		// closure object
 		var slider = this;
 
@@ -4367,8 +4367,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	'use strict';
 
 
-	// @@@ private fn: panelsDimByViewportRead @@@
-	function panelsDimByViewportRead ()
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -4377,17 +4377,16 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// process all slides to set dimension
 		var i = this.slides.length; while (i--)
 		{
-
 			// set size to the calculated value
 			this.setSlideDim(i, this.getSlideDimFromVp(i));
-
 		}
 
-	}
-	// @@@ EO private fn: panelsDimByViewportRead @@@
+	})
+	// @@@ EO plugin: changedViewport @@@
 
-	// @@@ private fn: panelsDimByViewportUpdate @@@
-	function panelsDimByViewportUpdate ()
+
+	// @@@ plugin: adjustViewport @@@
+	prototype.plugin('adjustViewport', function ()
 	{
 
 		// trigger the changed panels dim hook
@@ -4405,8 +4404,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			this.updatePanelsOpp();
 		}
 
-	}
-	// @@@ EO private fn: panelsDimByViewportUpdate @@@
+	});
+	// @@@ EO plugin: adjustViewport @@@
 
 
 	// @@@ method: getSlideDimFromVp @@@
@@ -4414,21 +4413,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
-		// declare and normalize slide
-		// var panel = this.slide2panel(slide),
-		//     slide = this.panel2slide(panel);
-
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
 		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
-
-
-	// hook into changed viewport event to adjust inner panels
-	prototype.plugin('changedViewport', panelsDimByViewportRead);
-	prototype.plugin('adjustViewport', panelsDimByViewportUpdate);
 
 
 // EO extend class prototype
@@ -4451,8 +4441,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	'use strict';
 
 
-	// @@@ private fn: panelsOppByViewportRead @@@
-	function panelsOppByViewportRead ()
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -4467,12 +4457,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 		}
 
-	}
-	// @@@ EO private fn: panelsOppByViewportRead @@@
+	});
+	// @@@ EO plugin: changedViewport @@@
 
 
-	// @@@ private fn: panelsOppByViewportUpdate @@@
-	function panelsOppByViewportUpdate ()
+	// @@@ plugin: adjustViewport @@@
+	prototype.plugin('adjustViewport', function ()
 	{
 
 		// abort if this feature is not enabled
@@ -4490,11 +4480,13 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		      this.conf.sizerDim == 'viewportByPanels'
 		)
 		{
+			// re-read the size from panels
+			// maybe settings don't work?
 			this.updatePanelsDim();
 		}
 
-	}
-	// @@@ EO private fn: panelsOppByViewportUpdate @@@
+	});
+	// @@@ EO plugin: adjustViewport @@@
 
 
 	// @@@ method: getSlideOppFromVp @@@
@@ -4502,21 +4494,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	prototype.getSlideOppFromVp = function (slide)
 	{
 
-		// declare and normalize slide
-		// var panel = this.slide2panel(slide),
-		//     slide = this.panel2slide(panel);
-
 		// extend to the full opposition
 		// todo: implement a more complex method
 		return parseFloat(this.vp_y, 10)
 
 	}
 	// @@@ EO method: getSlideOppFromVp @@@
-
-
-	// hook into various change events to adjust panels
-	prototype.plugin('changedViewport', panelsOppByViewportRead);
-	prototype.plugin('adjustViewport', panelsOppByViewportUpdate);
 
 
 // EO extend class prototype
@@ -4537,6 +4520,21 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 {
 
 	'use strict';
+
+
+	// @@@ plugin: updatedPanelsDim @@@
+	prototype.plugin('updatedPanelsDim', function ()
+	{
+
+		// abort if feature is enabled
+		// only read viewport if not set by panels
+		if (this.conf.sizerDim == 'viewportByPanels') return;
+
+		// read the viewport dim
+		this.readViewportDim();
+
+	})
+	// @@@ EO plugin: updatedPanelsDim @@@
 
 
 	// @@@ private fn: viewportDimByPanels @@@
@@ -4613,6 +4611,21 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 	});
 	// @@@ EO plugin: config @@@
+
+
+	// @@@ plugin: updatedPanelsOpp @@@
+	prototype.plugin('updatedPanelsOpp', function ()
+	{
+
+		// abort if feature is enabled
+		// only read viewport if not set by panels
+		if (this.conf.sizerOpp == 'viewportByPanels') return;
+
+		// read the viewport opp
+		this.readViewportOpp();
+
+	})
+	// @@@ EO plugin: updatedPanelsOpp @@@
 
 
 	// @@@ private fn: viewportOppByPanels @@@
