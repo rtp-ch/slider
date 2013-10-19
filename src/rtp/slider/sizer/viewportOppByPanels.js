@@ -34,6 +34,21 @@
 	// @@@ EO plugin: config @@@
 
 
+	// @@@ plugin: updatedPanelsOpp @@@
+	prototype.plugin('updatedPanelsOpp', function ()
+	{
+
+		// abort if feature is enabled
+		// only read viewport if not set by panels
+		if (this.conf.sizerOpp == 'viewportByPanels') return;
+
+		// read the viewport opp
+		this.readViewportOpp();
+
+	})
+	// @@@ EO plugin: updatedPanelsOpp @@@
+
+
 	// @@@ private fn: viewportOppByPanels @@@
 	function viewportOppByPanels ()
 	{
