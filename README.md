@@ -45,6 +45,14 @@ You may also use a CDN (Content Delivery Network) to load the libraries directly
 
 </pre>
 
+### Playground
+
+You may use the demo example to play around with various config options. It's not yet 100% finished,
+but should give you a good overview of what this slider is capable of:
+
+- http://rawgithub.com/rtp-ch/slider/develop/examples/demo/demo.html
+
+
 ### Configuration
 
 <pre>sizerDim: option (default: false)</pre>
