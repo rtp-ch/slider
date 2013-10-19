@@ -5,7 +5,7 @@ var blocks = [
 	'autoslide'
 ];
 
-var texts = [
+var floats = [
 	'align',
 	'alignPanelDim',
 	'alignPanelOpp',
@@ -30,8 +30,6 @@ var selects = [
 ];
 
 var checkboxes = [
-	'fluidPanelsDim',
-	'fluidPanelsOpp',
 	'swipe',
 	'tiles',
 	'touchSwipe',

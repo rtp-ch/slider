@@ -1,6 +1,5 @@
-#autoslide, #swipe, #autoVpOpp, #tiles
+DIV[id]
 {
-	display: block;
 }
 
 #configurator
@@ -64,13 +63,13 @@ LABEL SPAN
 LABEL SELECT
 {
 	float: left;
-	width: 130px;
+	width: 136px;
 	display: block;
 }
 
 LABEL.text SPAN
 {
-	width: 160px;
+	width: 170px;
 }
 
 LABEL.checkbox SPAN
@@ -78,6 +77,41 @@ LABEL.checkbox SPAN
 	float: left;
 	width: 150px;
 }
+
+#swipe,
+#tiles,
+#autoVpOpp,
+#autoslide
+{
+	display: block;
+	margin-top: 6px;
+	padding-left: 6px;
+}
+
+#swipe LABEL SELECT,
+#tiles LABEL SELECT,
+#autoVpOpp LABEL SELECT,
+#autoslide LABEL SELECT
+{
+	width: 140px;
+}
+
+#swipe LABEL.text SPAN,
+#tiles LABEL.text SPAN,
+#autoVpOpp LABEL.text SPAN,
+#autoslide LABEL.text SPAN
+{
+	width: 164px;
+}
+
+#swipe LABEL.checkbox SPAN,
+#tiles LABEL.checkbox SPAN,
+#autoVpOpp LABEL.checkbox SPAN,
+#autoslide LABEL.checkbox SPAN
+{
+	width: 140px;
+}
+
 
 LABEL.checkbox INPUT
 {

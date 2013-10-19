@@ -40,23 +40,14 @@
 	prototype.plugin('adjustViewport', function ()
 	{
 
-		// abort if this feature is not enabled
-		if (this.conf.sizerOpp != 'panelsByViewport') return;
-
-		// trigger the changed panels opp hook
-		this.trigger('updatedPanelsOpp');
-
-		// read the new panel dims from UA
-		// updates the ps[0] and pd[0] arrays
-		// this is only needed if the dim is fluid
-		// which means it can change when opp changes
-		if (
-		      this.conf.fluidPanelsDim ||
-		      this.conf.sizerDim == 'viewportByPanels'
-		)
+		// distribute viewport dim to slides
+		if (this.conf.sizerOpp == 'panelsByViewport')
 		{
-			// re-read the size from panels
-			// maybe settings don't work?
+			// trigger the changed panels dim hook
+			this.trigger('updatedPanelsOpp');
+			// now update the panel opposition
+			// read in the new dimensions and
+			// dispatch updatedPanelsOpp event
 			this.updatePanelsDim();
 		}
 

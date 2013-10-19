@@ -45,9 +45,9 @@ jQuery(function()
 		if (id in query) config[id] = conf(query[id]) ? true : false;
 	}
 
-	for (var i in texts)
+	for (var i in floats)
 	{
-		var id = texts[i];
+		var id = floats[i];
 		if (id in query) config[id] = parseFloat(conf(query[id]));
 	}
 

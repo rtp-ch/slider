@@ -344,29 +344,29 @@
 		slider.panels = container.find('>.' + klass.panel);
 
 		// to which side should we float the panels / container
-		// TODO: this seems to be an undocumented feature?
+		// we normally always need to float the panels, also
+		// for vertical stacking (just clear the float again)
 		var floating = conf.offsetReverse ? 'right' : 'left';
 
-		if (conf.vertical) floating = 'none';
-
+		// for experimental carousel 3d module
 		var overflow = conf.carousel3d ? 'visible' : 'hidden';
+
+		// setup css for every panel
+		var css = slider.conf.setFloat ?
+			{ 'float' : floating } : {};
 
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		slider.panels
-			.css({
-				'float' : floating
-			})
-			.add(slider.viewport)
-			.css({
-				'overflow' : overflow
-			})
-			.add(slider.container)
-			.css({
-				'zoom' : 1,
-				'position' : 'relative'
-			})
+		slider.panels.css(css)
+		// add viewport to collection
+		.add(slider.viewport)
+		// set on viewport and panels
+		.css({ 'overflow' : overflow })
+		// add container to collection
+		.add(slider.container)
+		// set on container, viewport and panels
+		.css({ 'position' : 'relative', 'zoom' : 1 })
 
 		// setup floats for the container
 		if (!conf.vertical)

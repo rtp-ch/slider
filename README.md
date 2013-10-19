@@ -42,16 +42,6 @@ How should the slider opposition be layouted / sized (height for horizontal and 
 Valid options are 'panelsByViewport' or 'viewportByPanels'. We will either adjust the panels to a
 fluid viewport or set the viewport to the size of the actual panel.
 
-<pre>fluidPanelsDim: bool (default: false)</pre>
-
-When set we will re-read the panel dimensions when the panel oppositions has changed. This is only usefull
-if the panels have a forced aspect ratio (i.e. due to an image inside it).
-
-<pre>fluidPanelsOpp: bool (default: false)</pre>
-
-When set we will re-read the panel oppositions when the panel dimensions has changed. This is only usefull
-if the panels have a forced aspect ratio (i.e. due to an image inside it).
-
 <pre>setFloat: bool (default: true)</pre>
 
 Set panels to float if vertical is not enabled.

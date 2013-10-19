@@ -202,6 +202,49 @@
 	}
 	// @@@ EO method: readViewportOpp @@@
 
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport so we can use it to layout panels
+		if (this.conf.sizerDim == 'panelsByViewport') this.readViewportDim();
+		if (this.conf.sizerOpp == 'panelsByViewport') this.readViewportOpp();
+
+	}, -9999);
+	// @@@ EO plugin: changedViewport @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport after everything else is done
+		if (this.conf.sizerDim == 'none') this.readViewportDim();
+		if (this.conf.sizerOpp == 'none') this.readViewportOpp();
+
+	}, 9999);
+	// @@@ EO plugin: changedViewport @@@
+
+
+	// @@@ plugin: updatedPanelsOpp @@@
+	prototype.plugin('updatedPanelsOpp', function ()
+	{
+
+		// read viewport after panels have changed
+		if (this.conf.sizerOpp == 'none') this.readViewportOpp();
+
+	})
+	// @@@ EO plugin: updatedPanelsOpp @@@
+
+
+	// @@@ plugin: updatedPanelsDim @@@
+	prototype.plugin('updatedPanelsDim', function ()
+	{
+
+		// read viewport after panels have changed
+		if (this.conf.sizerDim == 'none') this.readViewportDim();
+
+	})
+	// @@@ EO plugin: updatedPanelsDim @@@
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

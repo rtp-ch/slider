@@ -26,12 +26,7 @@
 			// and the code must not try to set that itself
 			// valid: panelsByViewport or viewportByPanels
 			sizerDim: 'panelsByViewport',
-			sizerOpp: 'viewportByPanels',
-
-			// indicate if some panel dimension are fluid
-			// TODO: find out how this exactly interacts ...
-			fluidPanelsOpp: true, // this.conf.vertical ? true : false,
-			fluidPanelsDim: false // this.conf.vertical ? false : true
+			sizerOpp: 'viewportByPanels'
 
 		});
 

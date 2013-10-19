@@ -899,29 +899,29 @@ RTP.Multievent = function (cb)
 		slider.panels = container.find('>.' + klass.panel);
 
 		// to which side should we float the panels / container
-		// TODO: this seems to be an undocumented feature?
+		// we normally always need to float the panels, also
+		// for vertical stacking (just clear the float again)
 		var floating = conf.offsetReverse ? 'right' : 'left';
 
-		if (conf.vertical) floating = 'none';
-
+		// for experimental carousel 3d module
 		var overflow = conf.carousel3d ? 'visible' : 'hidden';
+
+		// setup css for every panel
+		var css = slider.conf.setFloat ?
+			{ 'float' : floating } : {};
 
 		// set some css to fix some issues
 		// if you do not want this you have
 		// to remove these styles on ready event
-		slider.panels
-			.css({
-				'float' : floating
-			})
-			.add(slider.viewport)
-			.css({
-				'overflow' : overflow
-			})
-			.add(slider.container)
-			.css({
-				'zoom' : 1,
-				'position' : 'relative'
-			})
+		slider.panels.css(css)
+		// add viewport to collection
+		.add(slider.viewport)
+		// set on viewport and panels
+		.css({ 'overflow' : overflow })
+		// add container to collection
+		.add(slider.container)
+		// set on container, viewport and panels
+		.css({ 'position' : 'relative', 'zoom' : 1 })
 
 		// setup floats for the container
 		if (!conf.vertical)
@@ -1695,12 +1695,6 @@ RTP.Multievent = function (cb)
 		// trigger hook for updated panels
 		this.trigger('updatedPanelsDim');
 
-		// read the new panel opps from UA
-		// updates the ps[1] and pd[1] arrays
-		// this is only needed if the opp is fluid
-		// which means it can change when dim changes
-		// if (this.conf.fluidPanelsOpp) this.updatePanelsOpp();
-
 	};
 	// @@@ EO method: updatePanelsDim @@@
 
@@ -1714,12 +1708,6 @@ RTP.Multievent = function (cb)
 
 		// trigger hook for updated panels
 		this.trigger('updatedPanelsOpp');
-
-		// read the new panel dims from UA
-		// updates the ps[0] and pd[0] arrays
-		// this is only needed if the dim is fluid
-		// which means it can change when opp changes
-		// if (this.conf.fluidPanelsDim) this.updatePanelsDim();
 
 	};
 	// @@@ EO method: updatePanelsOpp @@@
@@ -1825,11 +1813,74 @@ RTP.Multievent = function (cb)
 	{
 
 		// read the dimensions
+		// once before on ready
 		this.updatePanelsDim();
 		this.updatePanelsOpp();
 
 	}, - 99);
 	// @@@ EO plugin: ready @@@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// @@@ method: readPanelsDim @@@
+	prototype.readPanelsDim = function ()
+	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerDim == 'panelsByViewport') eval('debugger');
+
+		// get sizes for drag axis
+		readPanelsSize.call(this, 0);
+
+	}
+	// @@@ EO method: readPanelsDim @@@
+
+	// @@@ method: readPanelsOpp @@@
+	prototype.readPanelsOpp = function ()
+	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerOpp == 'panelsByViewport') eval('debugger');
+
+		// get sizes for scroll axis
+		readPanelsSize.call(this, 1);
+
+	}
+	// @@@ EO method: readPanelsOpp @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport so we can use it to layout panels
+		if (this.conf.sizerDim == 'viewportByPanels') this.readPanelsDim();
+		if (this.conf.sizerOpp == 'viewportByPanels') this.readPanelsOpp();
+
+	}, -9999);
+	// @@@ EO plugin: changedViewport @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport opp after adjustment
+		if (this.conf.sizerDim == 'none') this.readPanelsDim();
+		if (this.conf.sizerOpp == 'none') this.readPanelsOpp();
+
+	}, 9999);
+	// @@@ EO plugin: changedViewport @@@
 
 
 // EO extend class prototype
@@ -2038,6 +2089,49 @@ RTP.Multievent = function (cb)
 	}
 	// @@@ EO method: readViewportOpp @@@
 
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport so we can use it to layout panels
+		if (this.conf.sizerDim == 'panelsByViewport') this.readViewportDim();
+		if (this.conf.sizerOpp == 'panelsByViewport') this.readViewportOpp();
+
+	}, -9999);
+	// @@@ EO plugin: changedViewport @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport after everything else is done
+		if (this.conf.sizerDim == 'none') this.readViewportDim();
+		if (this.conf.sizerOpp == 'none') this.readViewportOpp();
+
+	}, 9999);
+	// @@@ EO plugin: changedViewport @@@
+
+
+	// @@@ plugin: updatedPanelsOpp @@@
+	prototype.plugin('updatedPanelsOpp', function ()
+	{
+
+		// read viewport after panels have changed
+		if (this.conf.sizerOpp == 'none') this.readViewportOpp();
+
+	})
+	// @@@ EO plugin: updatedPanelsOpp @@@
+
+
+	// @@@ plugin: updatedPanelsDim @@@
+	prototype.plugin('updatedPanelsDim', function ()
+	{
+
+		// read viewport after panels have changed
+		if (this.conf.sizerDim == 'none') this.readViewportDim();
+
+	})
+	// @@@ EO plugin: updatedPanelsDim @@@
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);;
@@ -3055,12 +3149,7 @@ RTP.Multievent = function (cb)
 			// and the code must not try to set that itself
 			// valid: panelsByViewport or viewportByPanels
 			sizerDim: 'panelsByViewport',
-			sizerOpp: 'viewportByPanels',
-
-			// indicate if some panel dimension are fluid
-			// TODO: find out how this exactly interacts ...
-			fluidPanelsOpp: true, // this.conf.vertical ? true : false,
-			fluidPanelsDim: false // this.conf.vertical ? false : true
+			sizerOpp: 'viewportByPanels'
 
 		});
 
@@ -3273,14 +3362,15 @@ RTP.Multievent = function (cb)
 	prototype.plugin('changedViewport', function ()
 	{
 
-		// abort if this feature is not enabled
-		if (this.conf.sizerDim != 'panelsByViewport') return;
-
-		// process all slides to set dimension
-		var i = this.slides.length; while (i--)
+		// distribute viewport dim to slides
+		if (this.conf.sizerDim == 'panelsByViewport')
 		{
-			// set size to the calculated value
-			this.setSlideDim(i, this.getSlideDimFromVp(i));
+			// process all slides to set dimension
+			var i = this.slides.length; while (i--)
+			{
+				// set size to the calculated value
+				this.setSlideDim(i, this.getSlideDimFromVp(i));
+			}
 		}
 
 	})
@@ -3291,18 +3381,14 @@ RTP.Multievent = function (cb)
 	prototype.plugin('adjustViewport', function ()
 	{
 
-		// trigger the changed panels dim hook
-		this.trigger('updatedPanelsDim');
-
-		// read the new panel opps from UA
-		// updates the ps[1] and pd[1] arrays
-		// this is only needed if the opp is fluid
-		// which means it can change when dim changes
-		if (
-		      this.conf.fluidPanelsOpp ||
-		      this.conf.sizerOpp == 'viewportByPanels'
-		)
+		// distribute viewport dim to slides
+		if (this.conf.sizerDim == 'panelsByViewport')
 		{
+			// trigger the changed panels dim hook
+			this.trigger('updatedPanelsDim');
+			// now update the panel opposition
+			// read in the new dimensions and
+			// dispatch updatedPanelsOpp event
 			this.updatePanelsOpp();
 		}
 
@@ -3367,23 +3453,14 @@ RTP.Multievent = function (cb)
 	prototype.plugin('adjustViewport', function ()
 	{
 
-		// abort if this feature is not enabled
-		if (this.conf.sizerOpp != 'panelsByViewport') return;
-
-		// trigger the changed panels opp hook
-		this.trigger('updatedPanelsOpp');
-
-		// read the new panel dims from UA
-		// updates the ps[0] and pd[0] arrays
-		// this is only needed if the dim is fluid
-		// which means it can change when opp changes
-		if (
-		      this.conf.fluidPanelsDim ||
-		      this.conf.sizerDim == 'viewportByPanels'
-		)
+		// distribute viewport dim to slides
+		if (this.conf.sizerOpp == 'panelsByViewport')
 		{
-			// re-read the size from panels
-			// maybe settings don't work?
+			// trigger the changed panels dim hook
+			this.trigger('updatedPanelsOpp');
+			// now update the panel opposition
+			// read in the new dimensions and
+			// dispatch updatedPanelsOpp event
 			this.updatePanelsDim();
 		}
 
@@ -3422,21 +3499,6 @@ RTP.Multievent = function (cb)
 {
 
 	'use strict';
-
-
-	// @@@ plugin: updatedPanelsDim @@@
-	prototype.plugin('updatedPanelsDim', function ()
-	{
-
-		// abort if feature is enabled
-		// only read viewport if not set by panels
-		if (this.conf.sizerDim == 'viewportByPanels') return;
-
-		// read the viewport dim
-		this.readViewportDim();
-
-	})
-	// @@@ EO plugin: updatedPanelsDim @@@
 
 
 	// @@@ private fn: viewportDimByPanels @@@
@@ -3514,20 +3576,6 @@ RTP.Multievent = function (cb)
 	});
 	// @@@ EO plugin: config @@@
 
-
-	// @@@ plugin: updatedPanelsOpp @@@
-	prototype.plugin('updatedPanelsOpp', function ()
-	{
-
-		// abort if feature is enabled
-		// only read viewport if not set by panels
-		if (this.conf.sizerOpp == 'viewportByPanels') return;
-
-		// read the viewport opp
-		this.readViewportOpp();
-
-	})
-	// @@@ EO plugin: updatedPanelsOpp @@@
 
 
 	// @@@ private fn: viewportOppByPanels @@@

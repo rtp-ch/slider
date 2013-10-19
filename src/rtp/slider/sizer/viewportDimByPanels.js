@@ -16,21 +16,6 @@
 	'use strict';
 
 
-	// @@@ plugin: updatedPanelsDim @@@
-	prototype.plugin('updatedPanelsDim', function ()
-	{
-
-		// abort if feature is enabled
-		// only read viewport if not set by panels
-		if (this.conf.sizerDim == 'viewportByPanels') return;
-
-		// read the viewport dim
-		this.readViewportDim();
-
-	})
-	// @@@ EO plugin: updatedPanelsDim @@@
-
-
 	// @@@ private fn: viewportDimByPanels @@@
 	function viewportDimByPanels ()
 	{

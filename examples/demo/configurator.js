@@ -28,11 +28,12 @@ function init (slider)
 		}
 	}
 
-	var i = texts.length; while (i--)
+	var i = floats.length; while (i--)
 	{
 		jQuery('#configurator')
-			.find('INPUT[name=' + texts[i] + ']')
-			.val(config[texts[i]])
+			.find('INPUT[name=' + floats[i] + ']')
+			// .val(isNaN(config[floats[i]]) ? '' : config[floats[i]])
+			.val(config[floats[i]])
 	}
 
 	var i = selects.length; while (i--)
@@ -55,19 +56,12 @@ function init (slider)
 jQuery(function()
 {
 
-	jQuery('#configurator FORM').attr(
-		'action', self.opener.document.location
-	);
-
-	var i = blocks.length; while (i--)
+	try
 	{
-		if (jQuery('#' + blocks[i]).length)
-		{
-			if (jQuery('INPUT[name=' + blocks[i] + ']').get(0).checked)
-			{ jQuery('#' + blocks[i]).show(); }
-			else { jQuery('#' + blocks[i]).hide(); }
-		}
-	}
+		jQuery('#configurator FORM').attr(
+			'action', self.opener.document.location
+		);
+	} catch (e) {}
 
 	jQuery('#configurator')
 		.find('INPUT[type=checkbox]')
@@ -78,9 +72,33 @@ jQuery(function()
 			else { jQuery('#' + this.name).slideUp(); }
 		});
 
-	// call parent method (calls our init method)
-	if (self.opener && self.opener.setConfigurator)
-	{ self.opener.setConfigurator(init); }
+	// refresh function
+	function refresh ()
+	{
+
+		if ( self.opener ) {
+			try {
+				if ( self.opener.setConfigurator )
+				{ self.opener.setConfigurator(init); }
+				else { alert('wrong opener connected'); }
+			} catch (e) { alert('wrong opener connected'); }
+		} else { alert('no opener connected'); }
+
+		var i = blocks.length; while (i--)
+		{
+			if (jQuery('#' + blocks[i]).length)
+			{
+				if (jQuery('INPUT[name=' + blocks[i] + ']').get(0).checked)
+				{ jQuery('#' + blocks[i]).show(); }
+				else { jQuery('#' + blocks[i]).hide(); }
+			}
+		}
+
+	}
+
+	jQuery('INPUT.refresh').click(refresh);
+
+	refresh();
 
 });
 // EO on init

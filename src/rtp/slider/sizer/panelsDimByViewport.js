@@ -22,14 +22,15 @@
 	prototype.plugin('changedViewport', function ()
 	{
 
-		// abort if this feature is not enabled
-		if (this.conf.sizerDim != 'panelsByViewport') return;
-
-		// process all slides to set dimension
-		var i = this.slides.length; while (i--)
+		// distribute viewport dim to slides
+		if (this.conf.sizerDim == 'panelsByViewport')
 		{
-			// set size to the calculated value
-			this.setSlideDim(i, this.getSlideDimFromVp(i));
+			// process all slides to set dimension
+			var i = this.slides.length; while (i--)
+			{
+				// set size to the calculated value
+				this.setSlideDim(i, this.getSlideDimFromVp(i));
+			}
 		}
 
 	})
@@ -40,18 +41,14 @@
 	prototype.plugin('adjustViewport', function ()
 	{
 
-		// trigger the changed panels dim hook
-		this.trigger('updatedPanelsDim');
-
-		// read the new panel opps from UA
-		// updates the ps[1] and pd[1] arrays
-		// this is only needed if the opp is fluid
-		// which means it can change when dim changes
-		if (
-		      this.conf.fluidPanelsOpp ||
-		      this.conf.sizerOpp == 'viewportByPanels'
-		)
+		// distribute viewport dim to slides
+		if (this.conf.sizerDim == 'panelsByViewport')
 		{
+			// trigger the changed panels dim hook
+			this.trigger('updatedPanelsDim');
+			// now update the panel opposition
+			// read in the new dimensions and
+			// dispatch updatedPanelsOpp event
 			this.updatePanelsOpp();
 		}
 

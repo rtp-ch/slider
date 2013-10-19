@@ -230,12 +230,6 @@
 		// trigger hook for updated panels
 		this.trigger('updatedPanelsDim');
 
-		// read the new panel opps from UA
-		// updates the ps[1] and pd[1] arrays
-		// this is only needed if the opp is fluid
-		// which means it can change when dim changes
-		// if (this.conf.fluidPanelsOpp) this.updatePanelsOpp();
-
 	};
 	// @@@ EO method: updatePanelsDim @@@
 
@@ -249,12 +243,6 @@
 
 		// trigger hook for updated panels
 		this.trigger('updatedPanelsOpp');
-
-		// read the new panel dims from UA
-		// updates the ps[0] and pd[0] arrays
-		// this is only needed if the dim is fluid
-		// which means it can change when opp changes
-		// if (this.conf.fluidPanelsDim) this.updatePanelsDim();
 
 	};
 	// @@@ EO method: updatePanelsOpp @@@
@@ -360,11 +348,74 @@
 	{
 
 		// read the dimensions
+		// once before on ready
 		this.updatePanelsDim();
 		this.updatePanelsOpp();
 
 	}, - 99);
 	// @@@ EO plugin: ready @@@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// @@@ method: readPanelsDim @@@
+	prototype.readPanelsDim = function ()
+	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerDim == 'panelsByViewport') eval('debugger');
+
+		// get sizes for drag axis
+		readPanelsSize.call(this, 0);
+
+	}
+	// @@@ EO method: readPanelsDim @@@
+
+	// @@@ method: readPanelsOpp @@@
+	prototype.readPanelsOpp = function ()
+	{
+
+		// check if we are allowed to read from ua
+		if (this.conf.sizerOpp == 'panelsByViewport') eval('debugger');
+
+		// get sizes for scroll axis
+		readPanelsSize.call(this, 1);
+
+	}
+	// @@@ EO method: readPanelsOpp @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport so we can use it to layout panels
+		if (this.conf.sizerDim == 'viewportByPanels') this.readPanelsDim();
+		if (this.conf.sizerOpp == 'viewportByPanels') this.readPanelsOpp();
+
+	}, -9999);
+	// @@@ EO plugin: changedViewport @@@
+
+	// @@@ plugin: changedViewport @@@
+	prototype.plugin('changedViewport', function ()
+	{
+
+		// read viewport opp after adjustment
+		if (this.conf.sizerDim == 'none') this.readPanelsDim();
+		if (this.conf.sizerOpp == 'none') this.readPanelsOpp();
+
+	}, 9999);
+	// @@@ EO plugin: changedViewport @@@
 
 
 // EO extend class prototype
