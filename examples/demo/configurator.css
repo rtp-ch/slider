@@ -2,6 +2,10 @@ DIV[id]
 {
 }
 
+.attached-parent
+{
+	margin-left: 10px;
+}
 
 #top-submit .attached-parent,
 #top-submit .attached-slider,

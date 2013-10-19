@@ -107,58 +107,27 @@ jQuery(function()
 
 	jQuery('INPUT.refresh').click(refresh);
 
+	var attachedParent = jQuery('DIV.attached-parent');
+	var attachedSlider = jQuery('DIV.attached-slider');
+
 	window.setInterval(function()
 	{
 
-		try
-		{
-			if (self.calledby)
-			{
-				self.calledby.popup = self;
-			}
-		}
-		catch (e)
-		{}
+		try { if (self.calledby) self.calledby.popup = self; } catch (e) {}
 
-		try
-		{
-			if (self.calledby)
-			{
-				jQuery('DIV.attached-parent').css('background', 'green');
-			}
-			else if (self.parent)
-			{
-				jQuery('DIV.attached-parent').css('background', 'blue');
-			}
-			else
-			{
-				jQuery('DIV.attached-parent').css('background', 'red');
-			}
-		}
-		catch (e)
-		{
-			jQuery('DIV.attached-parent').css('background', 'red');
-		}
+		try {
+			if (self.calledby) attachedParent.css('background', 'green');
+			else if (self.parent) attachedParent.css('background', 'blue');
+			else attachedParent.css('background', 'orange');
+		} catch (e) { attachedParent.css('background', 'red'); }
 
-		try
-		{
+		try {
 			if (self.calledby && self.calledby.slider)
-			{
-				jQuery('DIV.attached-slider').css('background', 'green');
-			}
+			{ attachedSlider.css('background', 'green'); }
 			else if (self.parent && self.parent.slider)
-			{
-				jQuery('DIV.attached-slider').css('background', 'blue');
-			}
-			else
-			{
-				jQuery('DIV.attached-slider').css('background', 'red');
-			}
-		}
-		catch (e)
-		{
-			jQuery('DIV.attached-slider').css('background', 'red');
-		}
+			{ attachedSlider.css('background', 'blue'); }
+			else { attachedSlider.css('background', 'orange'); }
+		} catch (e) { attachedSlider.css('background', 'red'); }
 
 	}, 500);
 
