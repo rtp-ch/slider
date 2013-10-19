@@ -23,12 +23,12 @@
 		// abort if feature is not enabled
 		if (this.conf.sizerDim != 'viewportByPanels') return;
 
+		// calculate dimension from exposure
+		var dim = 0, exposure = this.se;
+
 		// development assertions
 		if (exposure.length == 0) debugger;
 		if (this.pd[0].length == 0) debugger;
-
-		// calculate dimension from exposure
-		var dim = 0, exposure = this.se;
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)
