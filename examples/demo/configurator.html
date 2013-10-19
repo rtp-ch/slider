@@ -62,7 +62,7 @@
 
 				<label class="checkbox" for="nothing">
 					<input type="checkbox" name="vsync" value="1" />
-					<span class="label">vsync or fps</span>
+					<span class="label">vsync (or fps)</span>
 					<input type="text" value="25" name="fps" size="2" title="fps" />
 				</label>
 
@@ -89,21 +89,14 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
-					<input type="checkbox" name="autoVpOpp" value="1" />
-					<span class="label">autoVpOpp</span>
+				<label class="text">
+					<span class="label">autoVpOppDeadZone</span>
+					<input type="text" value="0.2" name="autoVpOppDeadZone" size="2" />
 				</label>
-
-				<div id="autoVpOpp">
-					<label class="text">
-						<span class="label">autoVpOppDeadZone</span>
-						<input type="text" value="0.2" name="autoVpOppDeadZone" size="2" />
-					</label>
-					<label class="text">
-						<span class="label">autoVpOppLifeZone</span>
-						<input type="text" value="0.8" name="autoVpOppLifeZone" size="2" />
-					</label>
-				</div>
+				<label class="text">
+					<span class="label">autoVpOppLifeZone</span>
+					<input type="text" value="0.8" name="autoVpOppLifeZone" size="2" />
+				</label>
 
 			</div>
 			<div class="block">
@@ -214,10 +207,6 @@
 					<input type="checkbox" name="shrinkViewport" value="1" />
 					<span class="label">Shrink Viewport</span>
 				</label>
-				<label class="checkbox">
-					<input type="checkbox" name="carousel3d" value="1" />
-					<span class="label">Carousel 3D</span>
-				</label>
 
 			</div>
 			<div class="block">
@@ -253,6 +242,11 @@
 						<input type="text" name="tileOppOrigin" value="1" size="2" />
 					</label>
 				</div>
+
+				<label class="checkbox">
+					<input type="checkbox" name="carousel3d" value="1" />
+					<span class="label">Carousel 3D</span>
+				</label>
 
 			</div>
 			<div class="block">

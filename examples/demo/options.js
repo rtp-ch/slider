@@ -1,7 +1,6 @@
 var blocks = [
 	'swipe',
 	'tiles',
-	'autoVpOpp',
 	'autoslide'
 ];
 
@@ -44,7 +43,6 @@ var checkboxes = [
 	'carousel',
 	'carousel3d',
 	'vertical',
-	'autoVpOpp',
 	'autoslide',
 	'navDots',
 	'navArrows',
