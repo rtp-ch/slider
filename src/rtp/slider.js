@@ -79,7 +79,7 @@
 			// frames per second to draw
 			// defer all position updates
 			// leave the UA some idle loops
-			fps: 5,
+			fps: 25,
 			// synchronise with monitor
 			// draw as soon as requested
 			vsync: false,
