@@ -106,7 +106,8 @@ LABEL.text SPAN.label
 	vertical-align: middle;
 }
 
-LABEL.text INPUT
+LABEL.text INPUT,
+LABEL.checkbox INPUT[type="text"]
 {
 	width: 26px;
 	float: right;

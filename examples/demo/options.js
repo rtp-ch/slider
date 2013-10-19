@@ -6,6 +6,7 @@ var blocks = [
 ];
 
 var floats = [
+	'fps',
 	'align',
 	'alignPanelDim',
 	'alignPanelOpp',
@@ -32,6 +33,7 @@ var selects = [
 ];
 
 var checkboxes = [
+	'vsync',
 	'swipe',
 	'tiles',
 	'inline',
