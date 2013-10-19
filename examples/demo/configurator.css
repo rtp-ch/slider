@@ -107,6 +107,12 @@ LABEL.text SPAN.label
 }
 
 LABEL.text INPUT,
+LABEL.checkbox INPUT
+{
+	text-align: center;
+}
+
+LABEL.text INPUT,
 LABEL.checkbox INPUT[type="text"]
 {
 	width: 26px;
