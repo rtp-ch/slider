@@ -4,12 +4,12 @@
 }
 #nav
 {
+	top: 0px;
+	bottom: 0px;
+	left: -220px;
 	width: 220px;
-	display: none;
 	position: fixed;
 	overflow: hidden;
-	left: 0px; top: 0px;
-	bottom: 0px; right: 220px;
 }
 #nav IFRAME
 {
@@ -27,7 +27,11 @@
 	padding-left: 0px;
 }
 
-.inlined #nav { display: block; }
+#nav { transition: left 1s ease; }
+#content { transition: padding-left 1s ease; }
+.toolbar { transition: padding-left 1s ease; }
+
+.inlined #nav { left: 0px; }
 .inlined #content { padding-left: 220px; }
 .inlined .toolbar { padding-left: 220px; }
 

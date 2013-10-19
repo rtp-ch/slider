@@ -7,6 +7,8 @@
 
 */
 
+var transition;
+
 function conf (str)
 {
 	if (typeof str == 'number') return str;
@@ -40,6 +42,22 @@ jQuery(function()
 
 	// take some arguments from the query string
 	var query = URI.parseQuery(document.location.search);
+
+	jQuery('BODY').on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function()
+	{
+
+		OCBNET.Layout();
+
+	});
+
+	jQuery('BODY').on("transitionstart", function()
+	{
+
+		OCBNET.Layout.undefer(transition);
+
+		OCBNET.Layout();
+
+	});
 
 	var config = {
 
@@ -145,7 +163,12 @@ function inlining ()
 		.prop('checked', jQuery('BODY').hasClass('inlined'))
 	}
 
-	OCBNET.Layout();
-
+	var updating;
+	updating = function ()
+	{
+		OCBNET.Layout();
+		transition = OCBNET.Layout.defer(updating);
+	}
+	updating();
 
 }
