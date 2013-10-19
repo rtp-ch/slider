@@ -17,6 +17,19 @@ function conf (str)
 	return str;
 }
 
+function floated (str)
+{
+	if (typeof str == 'number') return parseFloat(str);
+	if (typeof str == 'undefined') return 0;
+	if (str === null) return 0;
+	if (str === true) return true;
+	if (str === false) return false;
+	if (str.match(/^\s*null\s*$/i)) return 0;
+	if (str.match(/^\s*true\s*$/i)) return true;
+	if (str.match(/^\s*false\s*$/i)) return false;
+	return parseFloat(str);
+}
+
 jQuery(function()
 {
 
@@ -25,15 +38,13 @@ jQuery(function()
 
 	var config = {
 
+		setFloat: true,
 		curClass: false,
 
 		// text/html for the previous link
 		navArrowPrevText: '<img src="img/left.gif" alt="left">',
 		// text/html for the next link
 		navArrowNextText: '<img src="img/right.gif" alt="left">',
-
-		setFloat: true,
-		autoVpOpp : true,
 
 		hooks: { 'ready': function() { } }
 
@@ -48,7 +59,7 @@ jQuery(function()
 	for (var i in floats)
 	{
 		var id = floats[i];
-		if (id in query) config[id] = parseFloat(conf(query[id]));
+		if (id in query) config[id] = floated(conf(query[id]));
 	}
 
 	for (var i in selects)
