@@ -10,8 +10,7 @@
 function init (slider)
 {
 
-	if (typeof slider == 'undefined')
-	{ throw('slider not connected'); }
+	if (typeof slider == 'undefined') return;
 
 	var config = slider.conf;
 
