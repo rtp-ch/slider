@@ -61,8 +61,6 @@ jQuery(function()
 	slider = jQuery('DIV.rtp-slider-viewport')
 	         .rtpSlider(config).data('rtpSlider');
 
-	console.log(slider.conf.sizerOpp);
-
 });
 
 var confwin;

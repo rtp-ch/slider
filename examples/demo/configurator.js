@@ -15,7 +15,7 @@ function init (slider)
 
 	var config = slider.conf;
 
-	console.log('loaded ', config)
+	// console.log('loaded ', config)
 
 	var i = blocks.length; while (i--)
 	{
