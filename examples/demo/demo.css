@@ -4,22 +4,22 @@
 }
 #nav
 {
-	width: 210px;
+	width: 220px;
 	display: none;
 	position: fixed;
 	overflow: hidden;
 	left: 0px; top: 0px;
-	bottom: 0px; right: 210px;
+	bottom: 0px; right: 220px;
 }
 #nav IFRAME
 {
-	width: 208px;
+	width: 218px;
 	height: 100%;
 	border: 0px;
 	border-right: 2px solid #D9D9D9;
 	position: absolute;
 	left: 0px; top: 0px;
-	bottom: 0px; right: 210px;
+	bottom: 0px; right: 220px;
 }
 
 #content
@@ -28,8 +28,8 @@
 }
 
 .inlined #nav { display: block; }
-.inlined #content { padding-left: 210px; }
-.inlined .toolbar { padding-left: 210px; }
+.inlined #content { padding-left: 220px; }
+.inlined .toolbar { padding-left: 220px; }
 
 .rtp-slider
 {
