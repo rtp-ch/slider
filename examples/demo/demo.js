@@ -91,6 +91,14 @@ jQuery(function()
 		if (id in query) config[id] = conf(query[id]);
 	}
 
+	var node = jQuery('DIV.rtp-slider-viewport');
+
+	if (floated(query['clone']))
+	{
+		clone = node.clone()
+		node.after(clone);
+	}
+
 	// initialize the slider
 	slider = jQuery('DIV.rtp-slider-viewport')
 	         .rtpSlider(config).data('rtpSlider');

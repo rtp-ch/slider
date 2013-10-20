@@ -32,6 +32,7 @@ var selects = [
 ];
 
 var checkboxes = [
+	'clone',
 	'vsync',
 	'swipe',
 	'tiles',
