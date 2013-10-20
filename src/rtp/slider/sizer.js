@@ -46,18 +46,17 @@
 
 		// check if viewport has changed
 		// otherwise do nothing to safe cpu
-		if (
-			Math.abs(this.vp_x_lck - this.vp_x) > 0.0001 ||
-			Math.abs(this.vp_y_lck - this.vp_y) > 0.0001 ||
-			data.force
-		)
-		{
-
-			// update and adjust all ui elements
-			this.trigger('changedViewport', data);
-
-		}
+		// if (
+		// 	Math.abs(this.vp_x_lck - this.vp_x) > 0.0001 ||
+		// 	Math.abs(this.vp_y_lck - this.vp_y) > 0.0001 ||
+		// 	data.force
+		// )
+		// {
+		// }
 		// EO if dimension changed
+
+		// update and adjust all ui elements
+		this.trigger('changedViewport', data);
 
 	}
 	// @@@ EO method: preLayout @@@
