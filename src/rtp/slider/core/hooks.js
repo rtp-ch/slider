@@ -175,7 +175,7 @@
 		if (!this.conf.hooks)
 		{ this.conf.hooks = {}; }
 
-	});
+	}, - 999999);
 	// @@@ EO plugin: config @@@
 
 
@@ -184,9 +184,9 @@
 	{
 
 		// prepare ready state
-		this.isReady = null;
+		this.isReady = false;
 
-	});
+	}, + 999999);
 	// @@@ EO plugin: init @@@
 
 
@@ -197,10 +197,18 @@
 		// now set ready state
 		this.isReady = true;
 
+	}, - 999999);
+	// @@@ EO plugin: ready @@@
+
+
+	// @@@ plugin: ready @@@
+	prototype.plugin('ready', function()
+	{
+
 		// call start hook defered
 		this.trigger('start');
 
-	}, 99999);
+	}, + 999999);
 	// @@@ EO plugin: ready @@@
 
 

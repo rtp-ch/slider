@@ -39,6 +39,9 @@
 	function viewportOppByPanels ()
 	{
 
+		// protect beeing called too early
+		if (this.isReady !== true) return;
+
 		// abort if feature is not enabled
 		if (this.conf.sizerOpp != 'viewportByPanels') return;
 

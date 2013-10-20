@@ -21,15 +21,17 @@
 	{
 
 		// abort if this feature is not enabled
-		if (this.conf.sizerOpp != 'panelsByViewport') return;
-
-		// process all slides to set opposition
-		var i = this.slides.length; while (i--)
+		if (this.conf.sizerOpp == 'panelsByViewport')
 		{
 
-			// set size to full viewport opp
-			this.setSlideOpp(i, this.getSlideOppFromVp(i));
+			// process all slides to set opposition
+			var i = this.slides.length; while (i--)
+			{
 
+				// set size to full viewport opp
+				this.setSlideOpp(i, this.getSlideOppFromVp(i));
+
+			}
 		}
 
 	});

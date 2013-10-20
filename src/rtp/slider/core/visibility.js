@@ -117,6 +117,9 @@
 	function updateSlideVisibility ()
 	{
 
+		// protect beeing called too early
+		if (this.isReady !== true) return;
+
 		// get values from the current internal status
 		var panel = this.ct_off;
 

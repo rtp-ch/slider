@@ -62,6 +62,9 @@
 	prototype.setOffsetByPosition = function (position)
 	{
 
+		// protect beeing called too early
+		if (this.isReady !== true) return;
+
 		// store current normalized position
 		this.position = this.slide2slide(position);
 
