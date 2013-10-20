@@ -103,6 +103,12 @@ jQuery(function()
 	slider = jQuery('DIV.rtp-slider-viewport')
 	         .rtpSlider(config).data('rtpSlider');
 
+	if (clone)
+	{
+		clone.data('rtpSlider')
+		.setPosition(slider.position + 1);
+	}
+
 	// store global reference
 	self.slider = slider;
 
@@ -177,6 +183,6 @@ function inlining ()
 		OCBNET.Layout();
 		transition = OCBNET.Layout.defer(updating);
 	}
-	updating();
+	transition = OCBNET.Layout.defer(updating);
 
 }
