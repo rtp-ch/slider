@@ -193,18 +193,21 @@ RTP.Multievent = function (cb)
 	// use requestAnimationFrame to defer functions
 	// this seems to work quite well, so include it
 	var setDefered = window.requestAnimationFrame,
-	    clearDefered = window.cancelRequestAnimationFrame;
+	    clearDefered = window.cancelAnimationFrame ||
+	                   window.cancelRequestAnimationFrame;
+
 	// search for requestAnimationFrame by vendor
 	var vendors = ['ms', 'moz', 'webkit', 'o'];
 	// loop vendors until the request animation frame function is found
 	for(var x = 0; x < vendors.length && !setDefered; ++x)
 	{
 		setDefered = window[vendors[x]+'RequestAnimationFrame'];
-		clearDefered = window[vendors[x]+'CancelRequestAnimationFrame'];
+		clearDefered = window[vendors[x]+'CancelAnimationFrame'] ||
+		               window[vendors[x]+'CancelRequestAnimationFrame'];
 	}
 
-	// create function to take out delay argument
-	if (setDefered) var callDefered = function (cb) { setDefered(cb); };
+	// create function to take out delay argument (returns identifier)
+	if (setDefered) var callDefered = function (cb) { return setDefered(cb); };
 
 	// use timeouts as a fallback
 	if (!callDefered) callDefered = window.setTimeout;
@@ -2312,7 +2315,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		if (!this.conf.hooks)
 		{ this.conf.hooks = {}; }
 
-	});
+	}, - 999999);
 	// @@@ EO plugin: config @@@
 
 
@@ -2321,9 +2324,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	{
 
 		// prepare ready state
-		this.isReady = null;
+		this.isReady = false;
 
-	});
+	}, + 999999);
 	// @@@ EO plugin: init @@@
 
 
@@ -2334,10 +2337,18 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// now set ready state
 		this.isReady = true;
 
+	}, - 999999);
+	// @@@ EO plugin: ready @@@
+
+
+	// @@@ plugin: ready @@@
+	prototype.plugin('ready', function()
+	{
+
 		// call start hook defered
 		this.trigger('start');
 
-	}, 99999);
+	}, + 999999);
 	// @@@ EO plugin: ready @@@
 
 
@@ -3532,6 +3543,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	function updateSlideVisibility ()
 	{
 
+		// protect beeing called too early
+		if (this.isReady !== true) return;
+
 		// get values from the current internal status
 		var panel = this.ct_off;
 
@@ -3690,6 +3704,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// @@@ method: setOffsetByPosition @@@
 	prototype.setOffsetByPosition = function (position)
 	{
+
+		// protect beeing called too early
+		if (this.isReady !== true) return;
 
 		// store current normalized position
 		this.position = this.slide2slide(position);
@@ -4532,15 +4549,17 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	{
 
 		// abort if this feature is not enabled
-		if (this.conf.sizerOpp != 'panelsByViewport') return;
-
-		// process all slides to set opposition
-		var i = this.slides.length; while (i--)
+		if (this.conf.sizerOpp == 'panelsByViewport')
 		{
 
-			// set size to full viewport opp
-			this.setSlideOpp(i, this.getSlideOppFromVp(i));
+			// process all slides to set opposition
+			var i = this.slides.length; while (i--)
+			{
 
+				// set size to full viewport opp
+				this.setSlideOpp(i, this.getSlideOppFromVp(i));
+
+			}
 		}
 
 	});
@@ -4602,6 +4621,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// @@@ private fn: viewportDimByPanels @@@
 	function viewportDimByPanels ()
 	{
+
+		// protect beeing called too early
+		if (this.isReady !== true) return;
 
 		// abort if feature is not enabled
 		if (this.conf.sizerDim != 'viewportByPanels') return;
@@ -4679,6 +4701,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	// @@@ private fn: viewportOppByPanels @@@
 	function viewportOppByPanels ()
 	{
+
+		// protect beeing called too early
+		if (this.isReady !== true) return;
 
 		// abort if feature is not enabled
 		if (this.conf.sizerOpp != 'viewportByPanels') return;
