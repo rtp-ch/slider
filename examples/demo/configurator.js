@@ -7,8 +7,24 @@
 
 */
 
+
 function init (slider)
 {
+
+	function conf (str)
+	{
+		if (typeof str == 'number') return str;
+		if (typeof str == 'undefined') return null;
+		if (str === null) return null;
+		if (str === true) return true;
+		if (str === false) return false;
+		if (str === 'undefined') return false;
+		if (typeof str == 'object') return conf(str[0]);
+		if (str.match(/^\s*null\s*$/i)) return null;
+		if (str.match(/^\s*true\s*$/i)) return true;
+		if (str.match(/^\s*false\s*$/i)) return false;
+		return str;
+	}
 
 	if (typeof slider == 'undefined') return;
 
@@ -36,7 +52,7 @@ function init (slider)
 		jQuery('#configurator')
 			.find('INPUT[name=' + floats[i] + ']')
 			// .val(isNaN(config[floats[i]]) ? '' : config[floats[i]])
-			.val(config[floats[i]])
+			.val(conf(config[floats[i]]))
 	}
 
 	var i = selects.length; while (i--)
@@ -50,7 +66,7 @@ function init (slider)
 	{
 		jQuery('#configurator')
 			.find('INPUT[name=' + checkboxes[i] + ']')
-			.get(0).checked = config[checkboxes[i]];
+			.get(0).checked = conf(config[checkboxes[i]]);
 	}
 
 }
@@ -111,15 +127,18 @@ jQuery(function()
 	jQuery('INPUT.refresh').click(refresh);
 	jQuery('FORM').bind('submit', function (evt)
 	{
+		var moreinfo = '';
+		jQuery('INPUT[type=checkbox]', this).each(function()
+		{ if (!this.checked) { moreinfo += '&' + this.name + '=0'; } });
 		try { if (self.calledby) {
-			self.calledby.document.location.search
-				= '?' + $( this ).serialize();
+			self.calledby.document.location.search =
+				'?' + $( this ).serialize() + moreinfo;
 			evt.preventDefault();
 			evt.stopPropagation();
 		} } catch (e) {}
 		try { if (self.parent.slider) {
-			self.parent.document.location.search
-				= '?' + $( this ).serialize();
+			self.parent.document.location.search =
+				'?' + $( this ).serialize() + moreinfo;
 			evt.preventDefault();
 			evt.stopPropagation();
 		} } catch (e) {}

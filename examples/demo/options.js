@@ -48,6 +48,7 @@ var checkboxes = [
 	'navArrows',
 	'navToolbar',
 	'navKeyboard',
+	'panelInfoBox',
 	'fillViewport',
 	'shrinkViewport',
 	'autoslidePauseOnHover',

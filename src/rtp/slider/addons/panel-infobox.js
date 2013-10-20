@@ -16,12 +16,32 @@
 	'use strict';
 
 
+	// @@@ plugin: config @@@
+	prototype.plugin('config', function (extend)
+	{
+
+		// add defaults
+		extend({
+
+			// enable plugin
+			panelInfoBox: true
+
+		});
+		// EO extend config
+
+	});
+	// @@@ EO plugin: config @@@
+
+
 	// @@@ private fn: toggleInfoBox @@@
 	function toggleInfoBox (opacity, duration, position)
 	{
 
 		// create closure
 		var slider = this;
+
+		// check if feature is enabled
+		if (!this.conf.panelInfoBox) return;
 
 		// check if queue is empty
 		// if (slider.queue.length == 0)
@@ -74,6 +94,9 @@
 	prototype.plugin('swipeMove', function(x, y, data)
 	{
 
+		// check if feature is enabled
+		if (!this.conf.panelInfoBox) return;
+
 		// check if the position actually has changed
 		if (this.position == data.swipeStartPosition) return;
 
@@ -88,6 +111,9 @@
 	// @@@ plugin: abortAnimation @@@
 	prototype.plugin('abortAnimation', function()
 	{
+
+		// check if feature is enabled
+		if (!this.conf.panelInfoBox) return;
 
 		// abort the info box animations (if running)
 		jQuery('DIV.info', this.panels).stop(true, true);
@@ -106,6 +132,9 @@
 	// @@@ plugin: ready @@@
 	prototype.plugin('ready', function()
 	{
+
+		// check if feature is enabled
+		if (!this.conf.panelInfoBox) return;
 
 		// first hide all infoboxes in all panels
 		jQuery('DIV.info', this.panels).css({

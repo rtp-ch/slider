@@ -132,6 +132,10 @@
 					<input type="checkbox" name="progressBar" value="1" />
 					<span class="label">Progress Bar</span>
 				</label>
+				<label class="checkbox" title="Enable panel info boxes">
+					<input type="checkbox" name="panelInfoBox" value="1" />
+					<span class="label">Panel info boxes</span>
+				</label>
 				<label class="checkbox" title="Enable keyboard navigation">
 					<input type="checkbox" name="navKeyboard" value="1" />
 					<span class="label">Key Navigation</span>
@@ -169,31 +173,31 @@
 				</label>
 
 				<div id="autoslide">
-					<label class="text">
+					<label class="text" title="Action to execute on autoslide step">
 						<span class="label">autoslideAction</span>
 						<input type="text" value="1" name="autoslideAction" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="Common delay between autoslide steps">
 						<span class="label">autoslideDelay</span>
 						<input type="text" value="1" name="autoslideDelay" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="Special delay on first load">
 						<span class="label">autoslideFirstDelay</span>
 						<input type="text" value="1" name="autoslideFirstDelay" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="Special delay after resuming">
 						<span class="label">autoslideResumeDelay</span>
 						<input type="text" value="1" name="autoslideResumeDelay" size="2" />
 					</label>
-					<label class="checkbox">
+					<label class="checkbox" title="Pause autoslide on hover">
 						<input type="checkbox" name="autoslidePauseOnHover" value="1" />
 						<span class="label">autoslidePauseOnHover</span>
 					</label>
-					<label class="checkbox">
+					<label class="checkbox" title="Stop autoslide on hover">
 						<input type="checkbox" name="autoslideStopOnHover" value="1" />
 						<span class="label">autoslideStopOnHover</span>
 					</label>
-					<label class="checkbox">
+					<label class="checkbox" title="Stop autoslide on any manual interaction">
 						<input type="checkbox" name="autoslideStopOnAction" value="1" />
 						<span class="label">autoslideStopOnAction</span>
 					</label>
@@ -214,39 +218,39 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="Enable experimental tiles animation">
 					<input type="checkbox" name="tiles" />
 					<span class="label">Tiles</span>
 				</label>
 
 				<div id="tiles">
-					<label class="text">
+					<label class="text" title="Generated tiles per col">
 						<span class="label">Tile Cols</span>
 						<input type="text" name="tileCols" value="1" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="Generated tiles per row">
 						<span class="label">Tile Rows</span>
 						<input type="text" name="tileRows" value="1" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="How many tiles should animate at once">
 						<span class="label" title="Min 1">Animate Cols at once</span>
 						<input type="text" name="tileColsAtOnce" value="1" size="2" />
 					</label>
-					<label class="text">
+					<label class="text" title="How many tiles should animate at once">
 						<span class="label" title="Min 1">Animate Rows at once</span>
 						<input type="text" name="tileRowsAtOnce" value="1" size="2" />
 					</label>
-					<label class="text">
-						<span class="label">Anchor for Dim Tiles</span>
+					<label class="text" title="Alignment between 0 and 1">
+						<span class="label">Align Dim Tiles</span>
 						<input type="text" name="tileDimOrigin" value="1" size="2" />
 					</label>
-					<label class="text">
-						<span class="label">Anchor for Opp Tiles</span>
+					<label class="text" title="Alignment between 0 and 1">
+						<span class="label">Align Opp Tiles</span>
 						<input type="text" name="tileOppOrigin" value="1" size="2" />
 					</label>
 				</div>
 
-				<label class="checkbox">
+				<label class="checkbox" title="Enable experimental 3d carousel">
 					<input type="checkbox" name="carousel3d" value="1" />
 					<span class="label">Carousel 3D</span>
 				</label>
@@ -254,7 +258,7 @@
 			</div>
 			<div class="block">
 
-				<label class="checkbox">
+				<label class="checkbox" title="Show wizard onload">
 					<input type="checkbox" name="inline" value="1" />
 					<span class="label">Inline Options Panel</span>
 				</label>

@@ -76,7 +76,7 @@ jQuery(function()
 	for (var i in checkboxes)
 	{
 		var id = checkboxes[i];
-		if (id in query) config[id] = conf(query[id]) ? true : false;
+		if (id in query) config[id] = floated(query[id]) ? true : false;
 	}
 
 	for (var i in floats)
