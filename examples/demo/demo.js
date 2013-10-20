@@ -7,6 +7,7 @@
 
 */
 
+var clone;
 var transition;
 
 function conf (str)
@@ -103,10 +104,13 @@ jQuery(function()
 	slider = jQuery('DIV.rtp-slider-viewport')
 	         .rtpSlider(config).data('rtpSlider');
 
+	slider.id = 'original';
+
 	if (clone)
 	{
 		clone.data('rtpSlider')
 		.setPosition(slider.position + 1);
+		clone.data('rtpSlider').id = "cloned";
 	}
 
 	// store global reference
