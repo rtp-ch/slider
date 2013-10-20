@@ -3252,16 +3252,19 @@ RTP.Multievent = function (cb)
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function()
+	prototype.plugin('start', function()
 	{
 
 		// add widget to layout manager
 		OCBNET.Layout.add(this);
 
+		// trigger changed viewport once
+		this.trigger('changedViewport');
+
 		// layout user interface
 		OCBNET.Layout(true);
 
-	}, 999);
+	}, 999999);
 	// @@@ EO plugin: ready @@@
 
 
