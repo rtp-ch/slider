@@ -43,14 +43,14 @@ RTP.Multievent = function (cb)
 /* @@@@@@@@@@ RTP CLASS @@@@@@@@@@ */
 
 // extend class prototype
-(function ()
+(function (prototype)
 {
 
 	// get function checker
 	var isFn = jQuery.isFunction;
 
 	// @@@ request a new prerequisite that must be satisfied @@@
-	this.prerequisite = function(arg)
+	prototype.prerequisite = function(arg)
 	{
 
 		var cb = isFn(arg) ? arg : null;
@@ -83,7 +83,7 @@ RTP.Multievent = function (cb)
 	};
 
 	// @@@ finish this multievent @@@
-	this.finish = function()
+	prototype.finish = function()
 	{
 
 		/* call this method when you add prerequisites dynamically */
@@ -103,4 +103,4 @@ RTP.Multievent = function (cb)
 	};
 
 // EO extend class prototype
-}).call(RTP.Multievent.prototype);
+})(RTP.Multievent.prototype);
