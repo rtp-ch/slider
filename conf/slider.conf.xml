@@ -194,6 +194,9 @@
 		<!-- include layout library files -->
 		<input path="src/lib/layout/layout.src.js" />
 
+		<!-- support for advanced css features -->
+		<input path="src/lib/csshooks.js" />
+
 		<!-- include gesture javascript files -->
 		<input id="gestures-experimental" />
 
@@ -237,7 +240,6 @@
 		<input path="src/ocbnet/slider/addons/progressbar.js" />
 
 		<!-- include default experimental javascript files -->
-		<input path="src/lib/csshooks.js" />
 		<input path="src/ocbnet/slider/addons/tiles.js" />
 		<input path="src/ocbnet/slider/addons/carousel3d.js" />
 

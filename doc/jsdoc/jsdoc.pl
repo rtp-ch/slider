@@ -252,7 +252,20 @@ $parser->{'caller'} = sub
 	};
 };
 
-# parse the main script scope
+# // EO extend class prototype;;/*  Copyright (c) Marcel Greter 2012 - rtp.ch - RTP jQuery Slider Sizer Functions  This is free software; you can redistribute it and/or modify it under the terms  of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),  either version 3 of the License, or (at your option) any later version.*/// extend class prototype(function (prototype, jQuery){
+
+# non greedy patterns seems not to work ??
+my $re_whites = qr/(?:\/\*[^\*]*?\*\/|\/\/[^\n]*\n|\s+)/s;
+# my $re_whites = qr/(?:(?:\/\*[.\n]*?\*\/)|\s+|\/\/[^\n]*\n)/;
+
+1 while $data =~ s/\}\s*\)\s*\(\s*RTP\.Slider\.prototype\s*,\s*jQuery\)(?:$re_whites|;)*?\(\s*function\s*\(\s*prototype\s*,\s*jQuery\s*\)\s*\{/;/s;
+$start_lines = $data =~ tr/\n//;
+
+$copy = $data;
+
+#$data .= '}';
+write_file('test.js', $data);
+	# parse the main script scope
 my $scope = parseBlock($parser, \ $data);
 
 # check everything is parsed correctly
@@ -271,6 +284,8 @@ foreach my $class (%{$parser->{'classes'}})
 
 
 use Template;
+no warnings 'once';
+$Template::Directive::WHILE_MAX = 19999;
 
   # some useful options (see below for full list)
   my $config = {
@@ -294,26 +309,26 @@ use Template;
 		foreach my $scope (values @{$class->{'scopes'}})
 		{
 			# $code->insert($scope->{'offset'}, '[scope ' . $scope->{'id'} . ']');
-			$code->insert($scope->{'offset'}, '<<a id="id-' . $scope->{'id'} . '"/>>');
+			$code->insert($scope->{'offset'}, '<<a id="id-' . $scope->{'id'} . '">><</a>>');
 		}
 
 		foreach my $function (values @{$class->{'functions'}})
 		{
 			# $code->insert($function->{'offset'}, '[function: '.$function->{'name'}.']');
-			$code->insert($function->{'offset'}, '<<a id="id-' . $function->{'id'} . '"/>>');
+			$code->insert($function->{'offset'}, '<<a id="id-' . $function->{'id'} . '">><</a>>');
 		}
 
 		foreach my $method (values %{$class->{'methods'}})
 		{
 			# $code->insert($method->{'offset'}, '[method: '.$method->{'name'}.' ('.$method->{'id'}.')]');
-			$code->insert($method->{'offset'}, '<<a id="id-' . $method->{'id'} . '"/>>');
+			$code->insert($method->{'offset'}, '<<a id="id-' . $method->{'id'} . '">><</a>>');
 		}
 		foreach my $plugins (values %{$class->{'plugins'}})
 		{
 			foreach my $plugin (@{$plugins})
 			{
 				# $code->insert($plugin->{'offset'}, '[plugin: '.$plugin->{'name'}.']');
-				$code->insert($plugin->{'offset'}, '<<a id="id-' . $plugin->{'id'} . '"/>>');
+				$code->insert($plugin->{'offset'}, '<<a id="id-' . $plugin->{'id'} . '">><</a>>');
 			}
 		}
 		foreach my $triggers (values %{$class->{'triggers'}})
@@ -324,7 +339,7 @@ use Template;
 				$code->insert($trigger->{'offset'}, '<</a>>') if $fn;
 				$code->insert($trigger->{'offset'}, '[event]') if $fn;
 				$code->insert($trigger->{'offset'}, '<<a href="#id-' . $fn->{'id'} . '">>') if $fn;
-				$code->insert($trigger->{'offset'}, '<<a id="id-' . $trigger->{'id'} . '"/>>');
+				$code->insert($trigger->{'offset'}, '<<a id="id-' . $trigger->{'id'} . '">><</a>>');
 			}
 		}
 		foreach my $callers (values %{$class->{'callers'}})
@@ -336,17 +351,24 @@ use Template;
 				$code->insert($callers->{'offset'}, '<</a>>') if $fn;
 				$code->insert($callers->{'offset'}, '[call]') if $fn;
 				$code->insert($callers->{'offset'}, '<<a href="#id-' . $fn->{'id'} . '">>') if $fn;
-				$code->insert($callers->{'offset'}, '<<a id="id-' . $callers->{'id'} . '"/>>');
+				$code->insert($callers->{'offset'}, '<<a id="id-' . $callers->{'id'} . '">><</a>>');
 			}
 		}
 	}
 
 	my $class = $parser->{'classes'}->{'RTP.Slider'};
 
+	my $rendered = $code->render;
+
+	$rendered =~ s/\n/<\/span><span>/g;
+	$rendered = '<span>' . $rendered . '</span>';
+	$rendered =~ s/\t/   /g;
+
   # define template variables for replacement
   my $vars = {
       class  => $class,
-      code => $code->render
+      code => $rendered,
+      lines => $start_lines
 #      var2  => \%hash,
 #      var3  => \@list,
 #      var4  => \&code,
@@ -357,6 +379,8 @@ use Template;
 my $rv = $template->process('tmpl.html', $vars, 'jsdoc.html')
       || die $template->error();
 
+print "jsdoc finished\n"; exit;
+
 foreach my $ns ('RTP.Slider')
 {
 
@@ -365,5 +389,4 @@ foreach my $ns ('RTP.Slider')
 	die $class;
 
 }
-
 

@@ -107,7 +107,7 @@ sub parseScope
 
 	my $string = '';
 
-	my ($parser, $data) = @_;
+	my ($parser, $data, $name) = @_;
 
 	# get rid of possible comments
 	$string .= parseComments($parser, $data);
@@ -229,7 +229,7 @@ sub parseStatement
 		$parser->{'offset'} += length($found);
 		$string .= parseParentheses($parser, $data);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data);
+		$string .= parseBlock($parser, $data, $name);
 		my $foo = $parser->{'offset'};
 		$parser->{'offset'} = $offset;
 		$parser->{'method'}->($parser, {}, $name);
@@ -246,7 +246,7 @@ sub parseStatement
 		$parser->{'offset'} += length($found);
 		$string .= parseParentheses($parser, $data);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data);
+		$string .= parseBlock($parser, $data, $name);
 		my $foo = $parser->{'offset'};
 		$parser->{'offset'} = $offset;
 		$parser->{'class'}->($parser, {}, $name, $var);
@@ -263,7 +263,7 @@ sub parseStatement
 		$parser->{'offset'} += length($found);
 		$string .= parseParentheses($parser, $data);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data);
+		$string .= parseBlock($parser, $data, $name);
 		my $delim = ${$data} =~ s/\A(\s*,\s*)// ? $1 : '';
 		$string .= $delim;
 		$parser->{'offset'} += length($delim);
@@ -303,7 +303,7 @@ sub parseStatement
 		$string .= parseComments($parser, $data);
 		$string .= parseParentheses($parser, $data);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data);
+		$string .= parseBlock($parser, $data, 'anon');
 		my $foo = $parser->{'offset'};
 		$parser->{'offset'} = $offset;
 		$parser->{'function'}->($parser, {}, $name);
@@ -324,7 +324,7 @@ sub parseStatement
 		$string .= parseComments($parser, $data);
 		$string .= parseParentheses($parser, $data);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data, 1);
+		$string .= parseBlock($parser, $data);
 		goto PARSESTATEMENT;
 	}
 	elsif (${$data} =~ s/\A(else|try)\b//)
@@ -332,7 +332,7 @@ sub parseStatement
 		$string .= $1;
 		$parser->{'offset'} += length($1);
 		$string .= parseComments($parser, $data);
-		$string .= parseBlock($parser, $data, 1);
+		$string .= parseBlock($parser, $data);
 		goto PARSESTATEMENT;
 	}
 	elsif (
@@ -455,7 +455,7 @@ sub parseBlock
 
 	my $string = '';
 
-	my ($parser, $data, $unscoped) = @_;
+	my ($parser, $data, $scoped) = @_;
 
 	die $parser->{'scope'} if ref $parser->{'scope'} ne "Scope";
 
@@ -464,11 +464,11 @@ sub parseBlock
 
 	if (${$data} =~ s/\A(\s*\{)//)
 	{
-		unless ($unscoped)
+		if ($scoped)
 		{
 			my $parent = $parser->{'scope'};
 
-			$parser->{'scope'} = new Scope($parser);
+			$parser->{'scope'} = new Scope($parser, $scoped);
 			$parser->{'scope'}->{'parent'} = $parent;
 			$parser->{'offset'} = $parser->{'offset'};
 			$parser->{'scoped'}->($parser, {});
@@ -479,7 +479,7 @@ sub parseBlock
 		if (${$data} =~ s/\A(\s*\})//) { $string .= $1; $parser->{'offset'} += length($1); }
 		else { die "expected right curly brace\n>>", substr(${$data}, 0, 70); }
 
-		unless ($unscoped)
+		if ($scoped)
 		{
 			$parser->{'parent'}->{'ended'} = $parser->{'offset'};
 			$parser->{'scope'} = $parser->{'scope'}->{'parent'};

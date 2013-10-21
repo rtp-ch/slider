@@ -315,3 +315,12 @@ either version 3 of the License, or (at your option) any later version.
  - http://rawgithub.com/rtp-ch/slider/develop/examples/demo/demo.html (experimental)
 
 Use the mouse or touch device to swipe through the panels!
+
+### Core developer docs
+
+I wrote a small script to parse the code and generate some api docs. This is
+at a very early stage, but may be of some interest to some people. It's not really
+about documenting the API. More to get an overview over the code, the event handlers
+and method invocation.
+
+  - http://rawgithub.com/mgreter/slider/master/doc/jsdoc/jsdoc.html

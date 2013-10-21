@@ -1,6 +1,8 @@
 <html>
 	<head>
 
+		<title>RTP.Slider.js - JSDOC</title>
+
 		<style>
 
 			BODY
@@ -8,21 +10,134 @@
 				font-size: 10px;
 				line-height: 14px;
 				font-family: verdana;
+				background-color: #FFFFFF;
+				vertical-align: middle;
 			}
 
+			H1
+			{
+				font-size: 16px;
+				line-height: 20px;
+			}
+			H2
+			{
+				font-size: 14px;
+				line-height: 16px;
+				margin: 16px 0px 8px;
+			}
+			H3
+			{
+				font-size: 12px;
+				line-height: 14px;
+				margin: 14px 0px 6px;
+			}
+			H4
+			{
+				font-size: 10px;
+				line-height: 14px;
+				margin: 8px 0px 4px;
+			}
+
+			UL
+			{
+				margin-top: 5px;
+				padding-top: 0px;
+				margin-bottom: 0px;
+				padding-bottom: 0px;
+			}
+			LI
+			{
+				margin-top: 2px;
+				padding-top: 0px;
+				margin-bottom: 0px;
+				padding-bottom: 0px;
+			}
+			UL UL { margin-top: 2px; }
+			UL UL { margin-bottom: 5px; }
+			UL UL LI { margin-top: 0px; }
+
+			.code
+			{
+				overflow: hidden;
+				position: relative;
+				font-family: -moz-fixed, monospace, courier, tahoma;
+			}
+
+			.source
+			{
+				margin-top: 25px;
+				border: 4px solid #C0C0C0;
+			}
+
+			.source H3
+			{
+				margin: 0px;
+				padding: 4px 4px;
+				border-bottom: 2px solid #C0C0C0;
+			}
+
+			.code PRE SPAN,
+			.code .lines SPAN
+			{
+				display: block;
+				height: 14px;
+			}
+
+
+
+			.code PRE SPAN:nth-child(odd)
+			{
+				background-color: #F9F9F9;
+			}
+
+			.code .lines SPAN:nth-child(odd)
+			{
+				background-color: #F3F3F3;
+			}
+
+			.code PRE,
+			.code .lines
+			{
+				margin: 0px;
+				padding: 5px 0px;
+				font-size: 10px;
+				overflow-x: auto;
+				line-height: 14px;
+			}
+			.code .lines
+			{
+				width: 40px;
+				text-align: right;
+				position: absolute;
+				top: 0px; left: 0px;
+				border-right: 2px solid #C0C0C0;
+				background-color: #FFFFFF;
+				overflow-y: hidden;
+				bottom: 0px;
+			}
+			.code PRE
+			{
+				padding-left: 42px;
+			}
+			.code PRE SPAN
+			{
+				padding: 0px 5px;
+			}
+			.code .lines SPAN
+			{
+				padding-right: 5px;
+			}
 		</style>
 
 	</head>
 	<body>
-		[%# USE Dumper; Dumper.dump(class); -%]
+
 		<h1>Class: $class.name</h1>
 		<h2>Methods</h2>
 		<ul>
-			[%- FOREACH method = class.methods.values.sort('name'); -%]
+			[%- FOREACH method = class.methods.values.nsort('offset'); -%]
 				<li>
-					[% "<a href=\"#id-$method.id\">"; %]
-					[% "$method.name" %]
-					[% "</a>"; %]
+					[% "<a href=\"#id-$method.id\">$method.name</a>"; %]
 					[% "(Ln $method.line, Col $method.col, Off $method.offset)\n"; %]
 				</li>
 			[%- END; -%]
@@ -36,10 +151,12 @@
 				<ul>
 					[%- FOREACH plugin = class.plugins.$event; -%]
 						<li>
-						[% "<a href=\"#id-$plugin.id\">"; %]
-						[% "$plugin.name ($plugin.prio)" %]
-						[% "</a>"; %]
+						[% "<a href=\"#id-$plugin.id\">$plugin.name ($plugin.prio)</a>"; %]
 						[% "(Ln $plugin.line, Col $plugin.col, Off $plugin.offset)\n"; %]
+						[% SET scope = plugin.scope.named; %]
+						[% IF scope %]
+							@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+						[% END %]
 						</li>
 					[%- END; -%]
 				</ul>
@@ -47,17 +164,47 @@
 				<ul>
 					[%- FOREACH trigger = class.triggers.$event; -%]
 						<li>
-						[% "<a href=\"#id-$trigger.id\">"; %]
-						[% "$trigger.name" %]
-						[% "</a>"; %]
+						[% "<a href=\"#id-$trigger.id\">$trigger.name</a>"; %]
 						[% "(Ln $trigger.line, Col $trigger.col, Off $trigger.offset)\n"; %]
+						[% SET scope = trigger.scope.named; %]
+						[% IF scope %]
+							@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+						[% END %]
 						</li>
 					[%- END; -%]
 				</ul>
 			</li>
 			[%- END; -%]
 		</ul>
-		<h2>Triggers</h2>
+		<h2>Method invocations</h2>
+		<ul>
+			[%- FOREACH callers = class.callers.keys.sort; -%]
+			[% SET fn = class.methods.$callers; %]
+			[% IF fn.line %]
+			<li>
+				[% "<a href=\"#id-$fn.id\">$fn.name</a>"; %]
+				[% "(Ln $fn.line, Col $fn.col, Off $fn.offset)\n"; %]
+				[% SET scope = fn.scope.named; %]
+				[% IF scope %]
+					@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+				[% END %]
+				<ul>
+					[%- FOREACH caller = class.callers.$callers; -%]
+						<li>
+						[% "<a href=\"#id-$caller.id\">$caller.name</a>"; %]
+						[% "(Ln $caller.line, Col $caller.col, Off $caller.offset)\n"; %]
+						[% SET scope = caller.scope.named; %]
+						[% IF scope %]
+							@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+						[% END %]
+						</li>
+					[%- END; -%]
+				</ul>
+			</li>
+			[%- END; -%]
+			[%- END; -%]
+		</ul>
+		<h2>Event Triggers</h2>
 		<ul>
 			[%- FOREACH triggers = class.triggers.keys.sort; -%]
 			<li>
@@ -65,48 +212,28 @@
 				<ul>
 					[%- FOREACH trigger = class.triggers.$triggers; -%]
 						<li>
-						[% "<a href=\"#id-$trigger.id\">"; %]
-						[% "$trigger.name" %]
-						[% "</a>"; %]
+						[% "<a href=\"#id-$trigger.id\">$trigger.name</a>"; %]
 						[% "(Ln $trigger.line, Col $trigger.col, Off $trigger.offset)\n"; %]
+						[% SET scope = trigger.scope.named; %]
+						[% IF scope %]
+							@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+						[% END %]
 						</li>
 					[%- END; -%]
 				</ul>
 			</li>
-			[%- END; -%]
-		</ul>
-		<h2>Callers</h2>
-		<ul>
-			[%- FOREACH callers = class.callers.keys.sort; -%]
-			[% SET fn = class.scope.findFunction(callers); %]
-			[% IF fn %]
-			<li>
-				[% "<a href=\"#id-$fn.id\">"; %]
-				[% "$fn.name" %]
-				[% "</a>"; %]
-				[% "(Ln $fn.line, Col $fn.col, Off $fn.offset)\n"; %]
-				<ul>
-					[%- FOREACH caller = class.callers.$callers; -%]
-						<li>
-						[% "<a href=\"#id-$caller.id\">"; %]
-						[% "$caller.name" %]
-						[% "</a>"; %]
-						[% "(Ln $caller.line, Col $caller.col, Off $caller.offset)\n"; %]
-						</li>
-					[%- END; -%]
-				</ul>
-			</li>
-			[%- END; -%]
 			[%- END; -%]
 		</ul>
 		<h2>Functions</h2>
 		<ul>
-			[%- FOREACH function = class.functions; -%]
+			[%- FOREACH function = class.functions.nsort('offset'); -%]
 				<li>
-					[% "<a href=\"#id-$function.id\">"; %]
-					[% "$function.name" %]
-					[% "</a>"; %]
+					[% "<a href=\"#id-$function.id\">$function.name</a>"; %]
 					[% "(Ln $function.line, Col $function.col, Off $function.offset)\n"; %]
+					[% SET scope = function.scope.named; %]
+					[% IF scope %]
+						@ [% "<a href=\"#id-$scope.id\">$scope.name</a>"; %]
+					[% END %]
 				</li>
 			[%- END; -%]
 		</ul>
@@ -114,27 +241,40 @@
 		<ul>
 			[%- FOREACH scope = class.scopes; -%]
 				<li>
-					[% "<a href=\"#id-$scope.id\">"; %]
-					[% "Scope $scope.id" %]
-					[% "</a>"; %]
+					[% "<a href=\"#id-$scope.id\">Scope $scope.id</a>"; %]
 					[% "(Ln $scope.line, Col $scope.col, Off $scope.offset)\n"; %]
+					[% SET parent = scope.scope.named; %]
+					[% IF parent %]
+						@ [% "<a href=\"#id-$parent.id\">$parent.name</a>"; %]
+					[% END %]
 				</li>
 			[%- END; -%]
 		</ul>
-		<h2>Others</h2>
-		<ul>
-			[%- FOREACH other = class.keys.sort; -%]
-				<li>
-				[% "$other"; %]
-				</li>
-			[%- END; -%]
-		</ul>
+		<!--
 
-		<h2>Code</h2>
-		<pre>
-			<li>
-			[% "$code"; %]
-			</li>
-		</pre>
+		<h2>Properties</h2>
+		<ul>
+			[%- FOREACH property = class.keys.sort; -%]
+				<li>
+				[% "$property"; %]
+				</li>
+			[%- END; -%]
+		</ul>
+		-->
+
+		<div class="source">
+			<h3>Source Code</h3>
+			<div class="code">
+				<div class="lines">
+					[% total = 0; %]
+					[% WHILE total <= lines %]
+						[% total = total + 1; %]
+						<span>[% total; %]</span>
+					[% END; %]
+				</div>
+				<pre>[% "$code"; %]</pre>
+			</div>
+		</div>
+
 	</body>
 </html>

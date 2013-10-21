@@ -8,11 +8,15 @@ my $id = 20000;
 sub new
 {
 
-	my ($pkg, $parser) = @_;
+	my ($pkg, $parser, $name) = @_;
+
+	if ($name && $name =~ m/\A[\'\"]/)
+	{ $name = substr($name, 1, -1); }
 
 	my $self =
 	{
 		'id' => $id ++,
+		'name' => $name,
 		'caller' => {},
 		'methods' => {},
 		'plugins' => {},
@@ -23,6 +27,36 @@ sub new
 	};
 
 	return bless $self, $pkg;
+
+}
+
+sub name
+{
+
+	my ($self) = @_;
+
+	if ( $self->{'name'} )
+	{ return $self->{'name'}; }
+
+	if ( $self->{'parent'} )
+	{ return $self->{'parent'}->name }
+
+	return undef
+
+}
+
+sub named
+{
+
+	my ($self) = @_;
+
+	if ( $self->{'name'} )
+	{ return $self; }
+
+	if ( $self->{'parent'} )
+	{ return $self->{'parent'}->name }
+
+	return undef
 
 }
 
@@ -39,7 +73,6 @@ sub scopeList
 	return  $list
 
 }
-
 sub findFunction
 {
 
