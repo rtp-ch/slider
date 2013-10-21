@@ -1,0 +1,140 @@
+<html>
+	<head>
+
+		<style>
+
+			BODY
+			{
+				font-size: 10px;
+				line-height: 14px;
+				font-family: verdana;
+			}
+
+		</style>
+
+	</head>
+	<body>
+		[%# USE Dumper; Dumper.dump(class); -%]
+		<h1>Class: $class.name</h1>
+		<h2>Methods</h2>
+		<ul>
+			[%- FOREACH method = class.methods.values.sort('name'); -%]
+				<li>
+					[% "<a href=\"#id-$method.id\">"; %]
+					[% "$method.name" %]
+					[% "</a>"; %]
+					[% "(Ln $method.line, Col $method.col, Off $method.offset)\n"; %]
+				</li>
+			[%- END; -%]
+		</ul>
+		<h2>Events</h2>
+		<ul>
+			[%- FOREACH event = class.plugins.keys.sort; -%]
+			<li>
+				<h3>[% "$event"; %]</h3>
+				<h4>Listeners</h4>
+				<ul>
+					[%- FOREACH plugin = class.plugins.$event; -%]
+						<li>
+						[% "<a href=\"#id-$plugin.id\">"; %]
+						[% "$plugin.name ($plugin.prio)" %]
+						[% "</a>"; %]
+						[% "(Ln $plugin.line, Col $plugin.col, Off $plugin.offset)\n"; %]
+						</li>
+					[%- END; -%]
+				</ul>
+				<h4>Triggers</h4>
+				<ul>
+					[%- FOREACH trigger = class.triggers.$event; -%]
+						<li>
+						[% "<a href=\"#id-$trigger.id\">"; %]
+						[% "$trigger.name" %]
+						[% "</a>"; %]
+						[% "(Ln $trigger.line, Col $trigger.col, Off $trigger.offset)\n"; %]
+						</li>
+					[%- END; -%]
+				</ul>
+			</li>
+			[%- END; -%]
+		</ul>
+		<h2>Triggers</h2>
+		<ul>
+			[%- FOREACH triggers = class.triggers.keys.sort; -%]
+			<li>
+				[% "$triggers"; %]
+				<ul>
+					[%- FOREACH trigger = class.triggers.$triggers; -%]
+						<li>
+						[% "<a href=\"#id-$trigger.id\">"; %]
+						[% "$trigger.name" %]
+						[% "</a>"; %]
+						[% "(Ln $trigger.line, Col $trigger.col, Off $trigger.offset)\n"; %]
+						</li>
+					[%- END; -%]
+				</ul>
+			</li>
+			[%- END; -%]
+		</ul>
+		<h2>Callers</h2>
+		<ul>
+			[%- FOREACH callers = class.callers.keys.sort; -%]
+			[% SET fn = class.scope.findFunction(callers); %]
+			[% IF fn %]
+			<li>
+				[% "<a href=\"#id-$fn.id\">"; %]
+				[% "$fn.name" %]
+				[% "</a>"; %]
+				[% "(Ln $fn.line, Col $fn.col, Off $fn.offset)\n"; %]
+				<ul>
+					[%- FOREACH caller = class.callers.$callers; -%]
+						<li>
+						[% "<a href=\"#id-$caller.id\">"; %]
+						[% "$caller.name" %]
+						[% "</a>"; %]
+						[% "(Ln $caller.line, Col $caller.col, Off $caller.offset)\n"; %]
+						</li>
+					[%- END; -%]
+				</ul>
+			</li>
+			[%- END; -%]
+			[%- END; -%]
+		</ul>
+		<h2>Functions</h2>
+		<ul>
+			[%- FOREACH function = class.functions; -%]
+				<li>
+					[% "<a href=\"#id-$function.id\">"; %]
+					[% "$function.name" %]
+					[% "</a>"; %]
+					[% "(Ln $function.line, Col $function.col, Off $function.offset)\n"; %]
+				</li>
+			[%- END; -%]
+		</ul>
+		<h2>Scopes</h2>
+		<ul>
+			[%- FOREACH scope = class.scopes; -%]
+				<li>
+					[% "<a href=\"#id-$scope.id\">"; %]
+					[% "Scope $scope.id" %]
+					[% "</a>"; %]
+					[% "(Ln $scope.line, Col $scope.col, Off $scope.offset)\n"; %]
+				</li>
+			[%- END; -%]
+		</ul>
+		<h2>Others</h2>
+		<ul>
+			[%- FOREACH other = class.keys.sort; -%]
+				<li>
+				[% "$other"; %]
+				</li>
+			[%- END; -%]
+		</ul>
+
+		<h2>Code</h2>
+		<pre>
+			<li>
+			[% "$code"; %]
+			</li>
+		</pre>
+	</body>
+</html>
