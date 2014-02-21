@@ -462,6 +462,10 @@ RTP.Multievent = function (cb)
 		// otherwise it's a root widget without parent
 		else { roots = roots.add(jQuery(widget)); }
 
+		// call start layout hook on widget
+		if (jQuery.isFunction(widget.startLayout))
+		{ widget.startLayout.call(widget); }
+
 		// jQueryfy input argument
 		widget = jQuery(widget);
 
@@ -474,6 +478,7 @@ RTP.Multievent = function (cb)
 
 		// make static array a global
 		// Manager.widgets = widgets;
+		// Manager.roots = roots;
 
 	};
 	// EO Manager.add
@@ -484,17 +489,23 @@ RTP.Multievent = function (cb)
 	Manager.del = function (widget)
 	{
 
+		// call stop layout hook on widget
+		if (jQuery.isFunction(widget.stopLayout))
+		{ widget.stopLayout.call(widget); }
+
 		// jQueryfy input argument
 		widget = jQuery(widget);
 
-		// remove instances from static array
+		// remove from static arrays
 		widgets = widgets.not(widget)
+		roots = roots.not(widget);
 
 		// remove the resize handler when there are no widgets left
 		if (widgets.length == 0) jQuery(window).unbind('resize', resizer);
 
 		// make static array a global
 		// Manager.widgets = widgets;
+		// Manager.roots = roots;
 
 	};
 	// EO Manager.del
