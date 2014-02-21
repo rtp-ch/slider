@@ -317,6 +317,8 @@
 
 		if (!this.conf.tiles) return;
 
+		position = this.position;
+
 		// get the integer via method
 		var int_pos = parseInt(position, 10),
 		    int_prv = parseInt(previous, 10),
