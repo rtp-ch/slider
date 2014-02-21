@@ -55,6 +55,8 @@ but should give you a good overview of what this slider is capable of:
 
 ### Configuration
 
+The configuration can be overwritten by data attributes on the slider element (ie. data-carousel="0").
+
 <pre>sizerDim: option (default: false)</pre>
 
 How should the slider dimension be layouted / sized (width for horizontal and height for vertical).

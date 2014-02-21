@@ -577,7 +577,7 @@ RTP.Multievent = function (cb)
 
 
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
-	RTP.Slider = function (el, conf)
+	RTP.Slider = function (el, options)
 	{
 
 		// create closure for
@@ -588,24 +588,29 @@ RTP.Multievent = function (cb)
 		if (slider.inited) { return; }
 		else { slider.inited = true; }
 
-		// store config on instance
-		slider.conf = conf;
+		// create new config by extending with data array
+		// data options take priority over instance options
+		var conf = jQuery.extend(true, {}, options, jQuery(el).data());
 
 		// connect parent layout widget
-		slider.layout = { parent: conf.parent };
+		slider.layout = { parent: options.parent };
 
 		// @@@ private fn: extend @@@
-		function extend (config)
+		function defaults (config)
 		{
 
-			// add more default configuration options (deep extend)
-			return slider.conf = conf = jQuery.extend(true, config, conf);
+			// create new config
+			slider.conf = {};
+
+			// add more (default) configuration options (deep extend)
+			// preserves the already set configuration (just set default)
+			return conf = jQuery.extend(true, slider.conf, config, conf);
 
 		}
 		// @@@ EO private fn: extend @@@
 
 		// add defaults
-		extend({
+		defaults({
 
 			// the panel alignment to the position
 			align: 'center',
@@ -658,7 +663,7 @@ RTP.Multievent = function (cb)
 			// this is possible by having an image inside
 			// which spans to 100% in both directions
 			// may gets overwritten by panelsByViewport sizer
-			panelFixedAxis: this.conf.vertical ? 'opp' : 'dim',
+			panelFixedAxis: conf.vertical ? 'opp' : 'dim',
 
 			// initialize some structures
 			// they can be used by plugins
@@ -693,7 +698,7 @@ RTP.Multievent = function (cb)
 
 		// execute all config hooks
 		// this will add more defaults
-		slider.trigger('config', extend);
+		slider.trigger('config', defaults);
 
 		// assign shortcuts to access nested config
 		jQuery(['text', 'tmpl', 'klass', 'selector'])
