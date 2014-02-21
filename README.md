@@ -287,13 +287,7 @@ add first and last button to the default configuration.
 ### Compile slider sources
 
 We use [webmerge](https://github.com/mgreter/webmerge) to create the release
-files. Webmerge is included as a module and compile scripts are avaiblable in
-the root directory. Plase goto directory "webmerge\scripts\google\closure" and
-install [google closure compiler](https://developers.google.com/closure/compiler/)
-(you may use the update script to do that). You may also need some additional perl
-modules. Plase see the [webmerge](https://github.com/mgreter/webmerge) page on
-how to resolve these dependencies. Once everything is set, you simply need to
-execute the compiler scripts.
+files. Once it is installed, you simply need to execute the compiler scripts.
 
 ### Licence
 
