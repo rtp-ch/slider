@@ -2362,7 +2362,7 @@ RTP.Multievent = function (cb)
 
 
 	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure(current, previous)
+	function updatePanelExposure()
 	{
 
 		// get values from the current internal status
@@ -2598,12 +2598,12 @@ RTP.Multievent = function (cb)
 		if (this.conf.vsync)
 		{
 			// synchronize action with monitor
-			this.trigger('changedPosition', position, previous);
+			this.trigger('changedPosition', previous);
 		}
 		else
 		{
 			// defer draw to achieve the wished frame rate (approx)
-			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
+			this.defer(1000 / this.conf.fps, 'changedPosition', previous);
 
 		}
 

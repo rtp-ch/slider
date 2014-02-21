@@ -15,7 +15,7 @@
 
 
 	// @@@ updateUI @@@
-	var updateUI = function(duration)
+	var updateUI = function()
 	{
 
 		// get the prev/next nodes

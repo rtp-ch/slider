@@ -282,6 +282,8 @@
 
 				this.cols[i][n].css({
 
+					'opacity' : part,
+
 					'width' : width * prog_w + 'px',
 					'height' : height * prog_h + 'px',
 
@@ -293,8 +295,10 @@
 
 				this.tiles[i][n].css({
 
-					 'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
-					 'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
+					'opacity' : part,
+
+					'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
+					'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
 
 				});
 
@@ -312,20 +316,18 @@
 	var first = true;
 
 	// @@@ plugin: changedPosition @@@
-	prototype.plugin('changedPosition', function (position, previous, original)
+	prototype.plugin('changedPosition', function (previous)
 	{
 
 		if (!this.conf.tiles) return;
 
-		position = this.position;
+		var position = this.position;
 
 		// get the integer via method
 		var int_pos = parseInt(position, 10),
 		    int_prv = parseInt(previous, 10),
-		    ceil_org = Math.ceil(original),
 		    ceil_pos = Math.ceil(position),
 		    ceil_prv = Math.ceil(previous),
-		    floor_org = Math.floor(original),
 		    floor_pos = Math.floor(position),
 		    floor_prv = Math.floor(previous);
 

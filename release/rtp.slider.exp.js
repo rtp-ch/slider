@@ -3623,7 +3623,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 
 	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure(current, previous)
+	function updatePanelExposure()
 	{
 
 		// get values from the current internal status
@@ -3859,12 +3859,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		if (this.conf.vsync)
 		{
 			// synchronize action with monitor
-			this.trigger('changedPosition', position, previous);
+			this.trigger('changedPosition', previous);
 		}
 		else
 		{
 			// defer draw to achieve the wished frame rate (approx)
-			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
+			this.defer(1000 / this.conf.fps, 'changedPosition', previous);
 
 		}
 
@@ -5220,7 +5220,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 
 	// @@@ updateUI @@@
-	var updateUI = function(duration)
+	var updateUI = function()
 	{
 
 		// get the prev/next nodes
@@ -7205,6 +7205,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 				this.cols[i][n].css({
 
+					'opacity' : part,
+
 					'width' : width * prog_w + 'px',
 					'height' : height * prog_h + 'px',
 
@@ -7216,8 +7218,10 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 				this.tiles[i][n].css({
 
-					 'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
-					 'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
+					'opacity' : part,
+
+					'marginTop' : (-1 * align_h * height * (1 - prog_h) - off_y) + 'px',
+					'marginLeft' : (-1 * align_w * width * (1 - prog_w) - off_x) + 'px'
 
 				});
 
@@ -7235,18 +7239,18 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	var first = true;
 
 	// @@@ plugin: changedPosition @@@
-	prototype.plugin('changedPosition', function (position, previous, original)
+	prototype.plugin('changedPosition', function (previous)
 	{
 
 		if (!this.conf.tiles) return;
 
+		var position = this.position;
+
 		// get the integer via method
 		var int_pos = parseInt(position, 10),
 		    int_prv = parseInt(previous, 10),
-		    ceil_org = Math.ceil(original),
 		    ceil_pos = Math.ceil(position),
 		    ceil_prv = Math.ceil(previous),
-		    floor_org = Math.floor(original),
 		    floor_pos = Math.floor(position),
 		    floor_prv = Math.floor(previous);
 

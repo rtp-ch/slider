@@ -15,7 +15,7 @@
 
 
 	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure(current, previous)
+	function updatePanelExposure()
 	{
 
 		// get values from the current internal status

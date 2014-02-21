@@ -34,12 +34,12 @@
 		if (this.conf.vsync)
 		{
 			// synchronize action with monitor
-			this.trigger('changedPosition', position, previous);
+			this.trigger('changedPosition', previous);
 		}
 		else
 		{
 			// defer draw to achieve the wished frame rate (approx)
-			this.defer(1000 / this.conf.fps, 'changedPosition', position, previous);
+			this.defer(1000 / this.conf.fps, 'changedPosition', previous);
 
 		}
 
