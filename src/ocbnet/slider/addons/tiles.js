@@ -67,6 +67,20 @@
 		// @@@ EO private fn: getOffsetCssStr @@@
 
 
+		this.setPosition = function(value)
+		{
+
+			if (!this.conf.tiles) return this.__proto__.setPosition.apply(this, arguments)
+			if (!this.animation || !this.animation.fader) return this.__proto__.setPosition.apply(this, arguments);
+
+			if (Math.floor(value) === parseInt(value))
+			{
+				return this.__proto__.setPosition.call(this, parseInt(value));
+			}
+
+
+		}
+
 		// @@@ overload method: getContainerOffset @@@
 		this.getContainerOffset = function(invert)
 		{
@@ -282,7 +296,7 @@
 
 				this.cols[i][n].css({
 
-					'opacity' : part,
+					// 'opacity' : part,
 
 					'width' : width * prog_w + 'px',
 					'height' : height * prog_h + 'px',
@@ -331,6 +345,16 @@
 		    floor_pos = Math.floor(position),
 		    floor_prv = Math.floor(previous);
 
+		if (this.animation && this.animation.fader)
+		{
+			if (this.animation.tiles) return;
+			this.animation.tiles = true;
+
+			floor_pos = this.animation.action - 1;
+			floor_prv = this.animation.action - 2;
+
+		}
+
 		if (first || floor_pos != floor_prv)
 		{
 
@@ -352,6 +376,8 @@
 					this.tiles[i][n].empty().append(panel.clone().css({ 'margin': '0' }));
 				}
 			}
+
+			// jQuery('IMG').fixFirefox795072();
 
 		};
 

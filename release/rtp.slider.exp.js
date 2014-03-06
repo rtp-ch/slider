@@ -1922,6 +1922,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// draw as soon as requested
 			vsync: false,
 
+			// we often want to have margin between
+			// the slides, but still want to fill the
+			// while viewport. Computation of this is
+			// tricky, so I've added this static option.
+			margin: 0,
+
 			// how many panels should be cloned
 			// if this is set to true, we will use
 			// the panelsVisible option for this
@@ -2112,11 +2118,11 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			              clonePanels === false ? 0 : parseInt(clonePanels + 0.5);
 
 			// distribute cloned panels after (right/bottom)
-			cloneAfter = cloneAfter === true ? Math.ceil(clonePanels * (0 + conf.alignViewport)) :
+			cloneAfter = cloneAfter === true ? Math.ceil(clonePanels * (1 - conf.alignViewport)) :
 			             cloneAfter === false ? 0 : isNaN(cloneAfter) ? 0 : cloneAfter;
 
 			// distribute cloned panels before (left/top)
-			cloneBefore = cloneBefore === true ? Math.ceil(clonePanels * (1 - conf.alignViewport)) :
+			cloneBefore = cloneBefore === true ? Math.ceil(clonePanels * (0 + conf.alignViewport)) :
 			              cloneBefore === false ? 0 : isNaN(cloneBefore) ? 0 : cloneBefore;
 
 			// accumulate all cloned panels
@@ -3924,6 +3930,9 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		}
 		// EO if not conf.carousel
 
+		// maybe do not update the actual container offset
+		if (this.animation && this.animation.fader) return;
+
 		// get the pixel offset for the given relative index
 		var px = this.getOffsetByPosition(position);
 
@@ -4092,7 +4101,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// easing duration per slide
 			easeDuration: 1200,
 			// easing function per step
-			easeFunction: 'easeInOutExpo'
+			easeFunction: 'linear'
 
 		});
 
@@ -4174,7 +4183,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			action: action,
 			easing: easing || this.conf.easeFunction,
 			duration: isNaN(duration) ? this.conf.easeDuration : duration,
-			step: function () { step.call(slider, this); },
+			step: function () { step.call(slider, this, arguments); },
 			complete: function ()
 			{
 				if(cb) cb.call(slider, this);
@@ -4245,6 +4254,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			if (diff > Math.abs(right_pos - position)) pos = right_pos;
 		}
 
+		this.animation = animation;
+
 		// start the jQuery animation that drives our animation
 		this.animating = jQuery(from).animate({ pos : pos }, animation);
 
@@ -4285,9 +4296,19 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// shift next animation step to do
 		var animation = this.queue.shift();
 
+		// handle special fader animation
+		if (animation.action.toString().match(/^f(\d+)/i))
+		{
+			animation.action = RegExp.$1;
+			animation.fader = this.conf.tiles && this.conf.fader;
+		}
+
+		// get the absolute position for this action
+		var pos = actionToPosition.call(this, animation.action);
+
 		// register resume function for lockers
-		// the lock method will take care
-		// to attach this function to the right context
+		// the lock method will take care to attach
+		// this function to the right context object
 		this.resume = function ()
 		{
 
@@ -4298,14 +4319,25 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			// preAnimation hook has completed
 			dequeue.call(this, animation);
 
+			if (animation.fader)
+			{
+
+				this.position = this.slide2panel(animation.action - 1);
+
+				this.trigger('changedPosition', -1);
+
+				jQuery('.rtp-slider-fader', this.el)
+				.css({
+					'opacity' : '1',
+					'display' : 'block'
+				})
+			}
+
 			// reset our resumer
 			this.resume = null;
 
 		}
 		// EO fn resume
-
-		// get the absolute position for this action
-		var pos = actionToPosition.call(this, animation.action);
 
 		// now trigger the preAnimation hook
 		// this might lock the animation which
@@ -4328,6 +4360,14 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// move slider to final position
 		this.setPosition(to.pos);
 
+		if (this.animation && this.animation.fader)
+		{
+			this.animation.fader = false;
+			this.trigger('changedPosition');
+		}
+
+		this.animation = {};
+
 		// register resume function for lockers
 		// the lock method will take care
 		// to attach this function to the right context
@@ -4347,6 +4387,13 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		};
 		// EO fn resume
 
+		// if (animation.fader) {}
+		var fader = jQuery('.rtp-slider-fader', this.el);
+		fader.css('display', 'none').css('opacity', '');
+
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
 		if (this.queue.length == 0)
 		{
 			// now trigger the postAnimation hook
@@ -4362,11 +4409,30 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 
 	// @@@ private fn: step @@@
-	var step = function (cur)
+	var step = function (cur, animation)
 	{
+
+		var foo = this.animation;
 
 		// move slider to position
 		this.setPosition(cur.pos);
+
+		if (foo.fader)
+		{
+
+			var end = animation[1].end,
+			    start = animation[1].start;
+
+			if (end == start) return;
+
+			var progress = (cur.pos - start) / (end - start);
+
+			var fader = jQuery('.rtp-slider-fader', this.el);
+
+			fader.show().find('.tile').css('opacity', progress);
+
+		}
+
 
 	};
 	// @@@ EO private fn: step @@@
@@ -4700,9 +4766,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
+		// correct virtual viewport to get rid of the margin
+		var virtual = this.vp_x + (this.conf.margin || 0);
+
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
-		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
+		return parseFloat(virtual / this.conf.panelsVisible, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@
@@ -5153,7 +5222,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 						.addClass([self.klass.navDot, i].join('-'))
 
 						// attach click handler to the nav dot
-						.click(function () { self.animate(i); })
+						.click(function () { self.animate('f' + i); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);
@@ -6990,6 +7059,20 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		// @@@ EO private fn: getOffsetCssStr @@@
 
 
+		this.setPosition = function(value)
+		{
+
+			if (!this.conf.tiles) return this.__proto__.setPosition.apply(this, arguments)
+			if (!this.animation || !this.animation.fader) return this.__proto__.setPosition.apply(this, arguments);
+
+			if (Math.floor(value) === parseInt(value))
+			{
+				return this.__proto__.setPosition.call(this, parseInt(value));
+			}
+
+
+		}
+
 		// @@@ overload method: getContainerOffset @@@
 		this.getContainerOffset = function(invert)
 		{
@@ -7205,7 +7288,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 				this.cols[i][n].css({
 
-					'opacity' : part,
+					// 'opacity' : part,
 
 					'width' : width * prog_w + 'px',
 					'height' : height * prog_h + 'px',
@@ -7254,6 +7337,16 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 		    floor_pos = Math.floor(position),
 		    floor_prv = Math.floor(previous);
 
+		if (this.animation && this.animation.fader)
+		{
+			if (this.animation.tiles) return;
+			this.animation.tiles = true;
+
+			floor_pos = this.animation.action - 1;
+			floor_prv = this.animation.action - 2;
+
+		}
+
 		if (first || floor_pos != floor_prv)
 		{
 
@@ -7275,6 +7368,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 					this.tiles[i][n].empty().append(panel.clone().css({ 'margin': '0' }));
 				}
 			}
+
+			// jQuery('IMG').fixFirefox795072();
 
 		};
 

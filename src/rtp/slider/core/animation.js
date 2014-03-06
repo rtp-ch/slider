@@ -30,7 +30,7 @@
 			// easing duration per slide
 			easeDuration: 1200,
 			// easing function per step
-			easeFunction: 'easeInOutExpo'
+			easeFunction: 'linear'
 
 		});
 
@@ -112,7 +112,7 @@
 			action: action,
 			easing: easing || this.conf.easeFunction,
 			duration: isNaN(duration) ? this.conf.easeDuration : duration,
-			step: function () { step.call(slider, this); },
+			step: function () { step.call(slider, this, arguments); },
 			complete: function ()
 			{
 				if(cb) cb.call(slider, this);
@@ -183,6 +183,8 @@
 			if (diff > Math.abs(right_pos - position)) pos = right_pos;
 		}
 
+		this.animation = animation;
+
 		// start the jQuery animation that drives our animation
 		this.animating = jQuery(from).animate({ pos : pos }, animation);
 
@@ -223,9 +225,19 @@
 		// shift next animation step to do
 		var animation = this.queue.shift();
 
+		// handle special fader animation
+		if (animation.action.toString().match(/^f(\d+)/i))
+		{
+			animation.action = RegExp.$1;
+			animation.fader = this.conf.tiles && this.conf.fader;
+		}
+
+		// get the absolute position for this action
+		var pos = actionToPosition.call(this, animation.action);
+
 		// register resume function for lockers
-		// the lock method will take care
-		// to attach this function to the right context
+		// the lock method will take care to attach
+		// this function to the right context object
 		this.resume = function ()
 		{
 
@@ -236,14 +248,25 @@
 			// preAnimation hook has completed
 			dequeue.call(this, animation);
 
+			if (animation.fader)
+			{
+
+				this.position = this.slide2panel(animation.action - 1);
+
+				this.trigger('changedPosition', -1);
+
+				jQuery('.rtp-slider-fader', this.el)
+				.css({
+					'opacity' : '1',
+					'display' : 'block'
+				})
+			}
+
 			// reset our resumer
 			this.resume = null;
 
 		}
 		// EO fn resume
-
-		// get the absolute position for this action
-		var pos = actionToPosition.call(this, animation.action);
 
 		// now trigger the preAnimation hook
 		// this might lock the animation which
@@ -266,6 +289,14 @@
 		// move slider to final position
 		this.setPosition(to.pos);
 
+		if (this.animation && this.animation.fader)
+		{
+			this.animation.fader = false;
+			this.trigger('changedPosition');
+		}
+
+		this.animation = {};
+
 		// register resume function for lockers
 		// the lock method will take care
 		// to attach this function to the right context
@@ -285,6 +316,13 @@
 		};
 		// EO fn resume
 
+		// if (animation.fader) {}
+		var fader = jQuery('.rtp-slider-fader', this.el);
+		fader.css('display', 'none').css('opacity', '');
+
+		// just reset the current position
+		this.setOffsetByPosition(this.position);
+
 		if (this.queue.length == 0)
 		{
 			// now trigger the postAnimation hook
@@ -300,11 +338,30 @@
 
 
 	// @@@ private fn: step @@@
-	var step = function (cur)
+	var step = function (cur, animation)
 	{
+
+		var foo = this.animation;
 
 		// move slider to position
 		this.setPosition(cur.pos);
+
+		if (foo.fader)
+		{
+
+			var end = animation[1].end,
+			    start = animation[1].start;
+
+			if (end == start) return;
+
+			var progress = (cur.pos - start) / (end - start);
+
+			var fader = jQuery('.rtp-slider-fader', this.el);
+
+			fader.show().find('.tile').css('opacity', progress);
+
+		}
+
 
 	};
 	// @@@ EO private fn: step @@@

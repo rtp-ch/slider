@@ -89,6 +89,12 @@
 			// draw as soon as requested
 			vsync: false,
 
+			// we often want to have margin between
+			// the slides, but still want to fill the
+			// while viewport. Computation of this is
+			// tricky, so I've added this static option.
+			margin: 0,
+
 			// how many panels should be cloned
 			// if this is set to true, we will use
 			// the panelsVisible option for this
@@ -279,11 +285,11 @@
 			              clonePanels === false ? 0 : parseInt(clonePanels + 0.5);
 
 			// distribute cloned panels after (right/bottom)
-			cloneAfter = cloneAfter === true ? Math.ceil(clonePanels * (0 + conf.alignViewport)) :
+			cloneAfter = cloneAfter === true ? Math.ceil(clonePanels * (1 - conf.alignViewport)) :
 			             cloneAfter === false ? 0 : isNaN(cloneAfter) ? 0 : cloneAfter;
 
 			// distribute cloned panels before (left/top)
-			cloneBefore = cloneBefore === true ? Math.ceil(clonePanels * (1 - conf.alignViewport)) :
+			cloneBefore = cloneBefore === true ? Math.ceil(clonePanels * (0 + conf.alignViewport)) :
 			              cloneBefore === false ? 0 : isNaN(cloneBefore) ? 0 : cloneBefore;
 
 			// accumulate all cloned panels

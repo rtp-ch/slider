@@ -61,9 +61,12 @@
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
+		// correct virtual viewport to get rid of the margin
+		var virtual = this.vp_x + (this.conf.margin || 0);
+
 		// we currently distribute everything evenly to all slides
 		// todo: implement a more complex sizer with distribution factors
-		return parseFloat(this.vp_x / this.conf.panelsVisible, 10)
+		return parseFloat(virtual / this.conf.panelsVisible, 10)
 
 	}
 	// @@@ EO method: getSlideDimFromVp @@@

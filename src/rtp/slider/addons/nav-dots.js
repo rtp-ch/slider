@@ -182,7 +182,7 @@
 						.addClass([self.klass.navDot, i].join('-'))
 
 						// attach click handler to the nav dot
-						.click(function () { self.animate(i); })
+						.click(function () { self.animate('f' + i); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);

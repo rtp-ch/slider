@@ -99,6 +99,9 @@
 		}
 		// EO if not conf.carousel
 
+		// maybe do not update the actual container offset
+		if (this.animation && this.animation.fader) return;
+
 		// get the pixel offset for the given relative index
 		var px = this.getOffsetByPosition(position);
 
