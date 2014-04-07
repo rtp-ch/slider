@@ -66,18 +66,20 @@
 		}
 		// @@@ EO private fn: getOffsetCssStr @@@
 
+		// seems like __proto__ does not always work?
+		// first found in mobile IE and fader example!
+		var oldSetPosition = this.setPosition;
 
 		this.setPosition = function(value)
 		{
 
-			if (!this.conf.tiles) return this.__proto__.setPosition.apply(this, arguments)
-			if (!this.animation || !this.animation.fader) return this.__proto__.setPosition.apply(this, arguments);
+			if (!this.conf.tiles) return oldSetPosition.apply(this, arguments)
+			if (!this.animation || !this.animation.fader) return oldSetPosition.apply(this, arguments);
 
 			if (Math.floor(value) === parseInt(value))
 			{
-				return this.__proto__.setPosition.call(this, parseInt(value));
+				return oldSetPosition.call(this, parseInt(value));
 			}
-
 
 		}
 

@@ -871,17 +871,21 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	{
 		// get all gestures for finger
 		var gestures = surface[evt.id];
-		// process all registered gestures
-		for(var g = 0, l = gestures.length; g < l; g++)
+		// check if we have some gestures
+		if (typeof gestures != 'undefined')
 		{
-			// call move for this finger
-			gestures[g].fingerMove(evt);
-			// exit loop if propagation stopped
-			if (evt.isPropagationStopped()) break;
+			// process all registered gestures
+			for(var g = 0, l = gestures.length; g < l; g++)
+			{
+				// call move for this finger
+				gestures[g].fingerMove(evt);
+				// exit loop if propagation stopped
+				if (evt.isPropagationStopped()) break;
+			}
+			// update shared finger
+			fingers[evt.id].x = evt.x;
+			fingers[evt.id].y = evt.y;
 		}
-		// update shared finger
-		fingers[evt.id].x = evt.x;
-		fingers[evt.id].y = evt.y;
 	};
 
 
@@ -7073,18 +7077,20 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		}
 		// @@@ EO private fn: getOffsetCssStr @@@
 
+		// seems like __proto__ does not always work?
+		// first found in mobile IE and fader example!
+		var oldSetPosition = this.setPosition;
 
 		this.setPosition = function(value)
 		{
 
-			if (!this.conf.tiles) return this.__proto__.setPosition.apply(this, arguments)
-			if (!this.animation || !this.animation.fader) return this.__proto__.setPosition.apply(this, arguments);
+			if (!this.conf.tiles) return oldSetPosition.apply(this, arguments)
+			if (!this.animation || !this.animation.fader) return oldSetPosition.apply(this, arguments);
 
 			if (Math.floor(value) === parseInt(value))
 			{
-				return this.__proto__.setPosition.call(this, parseInt(value));
+				return oldSetPosition.call(this, parseInt(value));
 			}
-
 
 		}
 

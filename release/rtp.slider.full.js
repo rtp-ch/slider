@@ -708,17 +708,21 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	{
 		// get all gestures for finger
 		var gestures = surface[evt.id];
-		// process all registered gestures
-		for(var g = 0, l = gestures.length; g < l; g++)
+		// check if we have some gestures
+		if (typeof gestures != 'undefined')
 		{
-			// call move for this finger
-			gestures[g].fingerMove(evt);
-			// exit loop if propagation stopped
-			if (evt.isPropagationStopped()) break;
+			// process all registered gestures
+			for(var g = 0, l = gestures.length; g < l; g++)
+			{
+				// call move for this finger
+				gestures[g].fingerMove(evt);
+				// exit loop if propagation stopped
+				if (evt.isPropagationStopped()) break;
+			}
+			// update shared finger
+			fingers[evt.id].x = evt.x;
+			fingers[evt.id].y = evt.y;
 		}
-		// update shared finger
-		fingers[evt.id].x = evt.x;
-		fingers[evt.id].y = evt.y;
 	};
 
 
