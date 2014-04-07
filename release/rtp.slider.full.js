@@ -589,6 +589,15 @@ RTP.Multievent = function (cb)
 // but do not reset it if already present
 if (typeof OCBNET == 'undefined') var OCBNET = {};
 
+// detect chrome for special implementation
+var isChromium = window.chrome,
+    vendorName = window.navigator.vendor;
+
+// decide if we are going to scroll or pan on first touch move event
+// this seems to be the correct implementation for google chrome, altough
+// it also seems to work without this and a proper setup for swipeMinDistance
+var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc.";
+
 /* @@@@@@@@@@ STATIC CLASS @@@@@@@@@@ */
 
 // create private scope
@@ -629,7 +638,12 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 			// minimum distance to find
 			// the appropriate swipe sector
-			swipeMinDistance: 20
+			swipeMinDistance: 15,
+
+			// decide on first touch move handler
+			// if we should pan ourself or leave it
+			// to the user agent to do the scrolling
+			decideOnFirst: decideScrollOrPanOnFirst
 
 		}, config, true);
 
@@ -809,6 +823,19 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 			if (!this.hasFinger(finger.id))
 			{
 
+				// increase counter
+				gesture.fingers ++;
+
+				// remember maximum fingers on gesture
+				if (gesture.maximum < gesture.fingers)
+				{ gesture.maximum = gesture.fingers; }
+
+				// add finger to ordered list
+				gesture.ordered.push(finger.id);
+
+				// attach finger to gesture
+				gesture.finger[finger.id] = finger;
+
 				// calculations
 				gesture.start = {
 					center : gesture.getCenter(),
@@ -822,19 +849,6 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				gesture.center = gesture.start.center;
 				// offset rotation and distance
 				gesture.rotation = 0; gesture.distance = 0;
-
-				// increase counter
-				gesture.fingers ++;
-
-				// remember maximum fingers on gesture
-				if (gesture.maximum < gesture.fingers)
-				{ gesture.maximum = gesture.fingers; }
-
-				// add finger to ordered list
-				gesture.ordered.push(finger.id);
-
-				// attach finger to gesture
-				gesture.finger[finger.id] = finger;
 
 				// create surface array
 				if (!surface[finger.id])
@@ -916,8 +930,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				// check if there is a swipe movement
 				if (typeof gesture.swipeSector == 'undefined')
 				{
-					// check if we have the minimum move distance reached for a swipe
-					if (Math.sqrt(deltaX*deltaX + deltaY*deltaY) > this.config.swipeMinDistance)
+					// check if we have the minimum move/slop distance reached for a swipe
+					if (this.config.decideOnFirst || Math.pow(this.config.swipeMinDistance, 2) < deltaX*deltaX + deltaY*deltaY)
 					{
 						// determine in which sector the swipe was
 						// get the rotation of the swipe to match to sector
@@ -1041,7 +1055,7 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 
 				// remove statucs if array is empty
 				if (surface[id].length == 0)
-				{ 
+				{
 					delete fingers[id];
 					delete surface[id];
 				}
@@ -1469,7 +1483,8 @@ if (typeof OCBNET == 'undefined') var OCBNET = {};
 				// only support default configuration option
 				if (evt.gesture.config.swipeSectors == 2)
 				{
-					// tested only on andoid so far (from experience could work on ipad too)
+					// tested only on android so far (from experience this should work on ipad too)
+					// chrome change the bevahior recently (only firing one touch move after it decided)
 					if (evt.gesture.swipeSector === 0 && evt.gesture.config.native.panY) evt.preventDefault();
 					if (evt.gesture.swipeSector === 1 && evt.gesture.config.native.panX) evt.preventDefault();
 				}
