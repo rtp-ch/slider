@@ -88,9 +88,9 @@
 	// @@@ EO private fn: updateClasses @@@
 
 
-	// reset the classes whenever the position changes
-	prototype.plugin('changedPosition', updateClasses)
+	// reset the classes on position changes
 	prototype.plugin('layout', updateClasses)
+	prototype.plugin('changedPosition', updateClasses)
 
 
 // EO extend class prototype

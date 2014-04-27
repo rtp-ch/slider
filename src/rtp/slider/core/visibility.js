@@ -205,6 +205,7 @@
 
 
 	// calculate the exposure array very early
+	prototype.plugin('layout', updatePanelExposure, -99);
 	prototype.plugin('loading', updatePanelExposure, -99);
 	prototype.plugin('changedPosition', updatePanelExposure, -99);
 

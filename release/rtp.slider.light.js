@@ -1045,6 +1045,19 @@ RTP.Multievent = function (cb)
 		// @@@ EO method: panel2slide @@@
 
 
+		// @@@ method: update @@@
+		prototype.update = function (option)
+		{
+			// extend our config with new options
+			jQuery.extend(true, this.conf, option);
+			// trigger position change event
+			this.trigger('layout');
+			// call global layout
+			OCBNET.Layout(true);
+		}
+		// @@@ EO method: update @@@
+
+
 	// EO extend class prototype
 	})(RTP.Slider.prototype, jQuery);
 	/* @@@@@@@@@@ RTP CLASS @@@@@@@@@@ */
@@ -2558,6 +2571,7 @@ RTP.Multievent = function (cb)
 
 
 	// calculate the exposure array very early
+	prototype.plugin('layout', updatePanelExposure, -99);
 	prototype.plugin('loading', updatePanelExposure, -99);
 	prototype.plugin('changedPosition', updatePanelExposure, -99);
 
