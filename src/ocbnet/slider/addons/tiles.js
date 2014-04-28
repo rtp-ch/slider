@@ -83,11 +83,12 @@
 
 		}
 
+		var oldGetContainerOffset = this.getContainerOffset;
 		// @@@ overload method: getContainerOffset @@@
 		this.getContainerOffset = function(invert)
 		{
 
-			if (!this.conf.tiles) return this.__proto__.getContainerOffset.apply(this, arguments)
+			if (!this.conf.tiles) return oldGetContainerOffset.apply(this, arguments)
 
 			if (typeof this.ct_off != "undefined") return this.ct_off;
 
@@ -98,11 +99,12 @@
 		// @@@ EO overload method: getContainerOffset @@@
 
 
+		var oldSetContainerOffset = this.getContainerOffset;
 		// @@@ overload method: setContainerOffset @@@
 		this.setContainerOffset = function(offset, invert)
 		{
 
-			if (!this.conf.tiles) return this.__proto__.setContainerOffset.apply(this, arguments)
+			if (!this.conf.tiles) return oldSetContainerOffset.apply(this, arguments)
 
 			// search position to clamp container to
 			var i = this.offset.length; while(i--)
@@ -118,11 +120,12 @@
 		}
 		// @@@ EO overload method: setContainerOffset @@@
 
+		var oldGetOffsetByPosition = this.getContainerOffset;
 		// @@@ overload method: getOffsetByPosition @@@
 		this.getOffsetByPosition = function (index)
 		{
 
-			if (!this.conf.tiles) return this.__proto__.getOffsetByPosition.apply(this, arguments)
+			if (!this.conf.tiles) return oldGetOffsetByPosition.apply(this, arguments)
 
 			return prototype.getOffsetByPosition.call(this, index)
 
