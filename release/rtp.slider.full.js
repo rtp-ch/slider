@@ -6071,6 +6071,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// get the limiting timestamp for moves
 		var limit = timestamp - 500;
 
+		// get number of panels visible at once
+		var vis = Math.floor(this.conf.panelsVisible);
+
 		// remove all moves that happend before our limit
 		while (moves.length && moves[0][2] < limit) moves.shift();
 
@@ -6080,10 +6083,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// linear fn -> y = m*x + n
 		var m = least[0] * this.vp_x / 2, n = least[1];
 
-		var sign = m < 0 ? -1 : 1;
+		var sign = m < 0 ? - vis : vis;
 
 		// check to which position we will swipe
-		var to = parseInt(this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5))
+		var to = this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5)
+
+		to = parseInt(to / vis) * vis;
 
 		// get absolute speed
 		var speed = Math.abs(m);
