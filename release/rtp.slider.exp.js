@@ -3417,6 +3417,16 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	}
 	// @@@ EO private fn: getViewportSize @@@
 
+	// @@@ method: getViewportDim @@@
+	prototype.getViewportDim = function ()
+	{ return getViewportSize.call(this, 0); }
+	// @@@ EO method: getViewportDim @@@
+
+	// @@@ method: getViewportOpp @@@
+	prototype.getViewportOpp = function ()
+	{ return getViewportSize.call(this, 1); }
+	// @@@ EO method: getViewportOpp @@@
+
 	// @@@ method: readViewportDim @@@
 	prototype.readViewportDim = function ()
 	{
@@ -4679,11 +4689,15 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.plugin('changedPosition', function()
 	{
 
-		// re-layout all widgets on the page
-		// but only when its viewport changes
-		OCBNET.Layout(false, this);
+		// current viewport dimensions
+		var vp_x = this.getViewportDim();
+		var vp_y = this.getViewportOpp();
 
-	});
+		// check against the stored viewport dimensions for changes
+		// if they differ, chances are we need to update all layouts
+		if (vp_x != this.vp_x || vp_y != this.vp_y) OCBNET.Layout(true);
+
+	}, 999999);
 	// @@@ EO plugin: changedPosition @@@
 
 
