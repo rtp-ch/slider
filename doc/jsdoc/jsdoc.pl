@@ -269,7 +269,7 @@ write_file('test.js', $data);
 my $scope = parseBlock($parser, \ $data);
 
 # check everything is parsed correctly
-die "not everything parsed" if $data ne '';
+die "not everything parsed ...", substr($data, 0, 60) if $data ne '';
 
 foreach my $class (%{$parser->{'classes'}})
 {
