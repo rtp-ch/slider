@@ -176,6 +176,16 @@
 	}
 	// @@@ EO private fn: getViewportSize @@@
 
+	// @@@ method: getViewportDim @@@
+	prototype.getViewportDim = function ()
+	{ return getViewportSize.call(this, 0); }
+	// @@@ EO method: getViewportDim @@@
+
+	// @@@ method: getViewportOpp @@@
+	prototype.getViewportOpp = function ()
+	{ return getViewportSize.call(this, 1); }
+	// @@@ EO method: getViewportOpp @@@
+
 	// @@@ method: readViewportDim @@@
 	prototype.readViewportDim = function ()
 	{
