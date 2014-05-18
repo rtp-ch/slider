@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RTP Slider Example</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <script>
+      var proto = document.location.protocol.match(/^file/i) ? 'http:' : '';
+      document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"><\/script>');
+      document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"><\/script>');
+      document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"><\/script>');
+    </script>
+    <script>webmerge = { webroot : '..' }</script>
+    <script src="../src/lib/layout/layout.src.js"></script>
+
+    <script type="text/javascript">
+			// create pseudo fixed aspect ratio widget
+			// attach some methods to set height by width
+			function Widget(el, parent)
+			{
+
+				// just store the node
+				this.el = jQuery(el);
+
+				// options for the layout engine
+				this.layout = { parent: parent };
+
+				this.panels = this.el.find('>DIV,>IMG');
+
+				// create position anchor
+				this.el.css('position', 'relative');
+
+			}
+
+			// define method called by function
+			Widget.prototype.preLayout = function (data)
+			{
+
+				// fetch the viewport width first
+				data.vp_x = this.el.innerWidth()
+
+				console.log('preLayout', this.el[0].id);
+
+			}
+
+			// define method called by function
+			Widget.prototype.postLayout = function (data)
+			{
+
+				// init height
+				data.vp_y = 0;
+
+				// accumulate height of all panels
+				this.panels.each(function (i, panel)
+				{ data.vp_y += jQuery(panel).height(); })
+
+				console.log('updateLayout', this.el[0].id);
+
+				// then adjust the viewport
+				this.el.height(data.vp_y);
+
+			}
+
+			// define method called by function
+			Widget.prototype.updateLayout = function (data)
+			{
+
+				console.log('postLayout', this.el[0].id);
+
+				/*
+				// put some debug text on the screen
+				var txt = data.vp_x + ' x ' + data.vp_y;
+
+				// create new content within the widget
+				this.el.html('<span>' + txt + '</span>');
+
+				// get the new created dom node ...
+				var container = this.el.find('span'),
+				    // ... and get its dimension
+				    width = container.outerWidth(),
+				    height = container.outerHeight();
+
+				// center the container
+				container.css({
+					'position' : 'absolute',
+					'left' : parseInt(data.vp_x / 2 - width / 2),
+					'top' : parseInt(data.vp_y / 2 - height / 2)
+				});
+				*/
+			}
+
+			// wait for dom
+			jQuery(function ()
+			{
+
+				var root;
+
+				// find all widgets to initialize
+				jQuery('DIV.widget').each(function ()
+				{
+					// create new widget instance
+					root = new Widget(this);
+					// add widget to layouter
+					OCBNET.Layout.add(root);
+				})
+
+				// find all widgets to initialize
+				jQuery('DIV.widget-a, DIV.widget-b').each(function ()
+				{
+					// create new widget instance
+					var widget = new Widget(this, root);
+					// add widget to layouter
+					OCBNET.Layout.add(widget);
+				})
+
+				// re-layout
+				OCBNET.Layout();
+
+			});
+    </script>
+    <style>
+
+    	DIV.rtp-slider-viewport-a ~ .rtp-nav-dots,
+    	DIV.rtp-slider-viewport-b ~ .rtp-nav-dots,
+    	DIV.rtp-slider-viewport-a ~ .rtp-nav-dots ~ .rtp-toolbar,
+    	DIV.rtp-slider-viewport-b ~ .rtp-nav-dots ~ .rtp-toolbar
+    	{
+    		top: 10px;
+    		bottom: auto;
+    	}
+
+    	IMG
+    	{
+    		width: 100%;
+    		height: auto;
+    	}
+    	.widget
+    	{
+    		width: 80%;
+    		margin: 0 auto;
+    		overflow: hidden;
+    		outline: solid 2px red;
+    	}
+    	.widget-a
+    	{
+    		float: left;
+    		outline: solid 2px green;
+    	}
+    	.widget-b
+    	{
+    		float: left;
+    		outline: solid 2px blue;
+    	}
+
+    </style>
+</head>
+<body>
+
+    <div id="widget" class="widget">
+        <div id="widget-a" class="widget-a">
+            <img src="pics/pic-01-big.jpg" alt="Pic 01"/>
+        </div>
+        <div id="widget-b" class="widget-b">
+            <img src="pics/pic-02-big.jpg" alt="Pic 02"/>
+        </div>
+    </div>
+
+</body>
+</html>

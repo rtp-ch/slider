@@ -124,5 +124,7 @@
 	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
 	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
 
+	prototype.plugin('foobarVisibility', viewportOppByPanels, 9999);
+
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

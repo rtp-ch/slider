@@ -182,7 +182,8 @@
 						.addClass([self.klass.navDot, i].join('-'))
 
 						// attach click handler to the nav dot
-						.click(function () { self.animate('f' + i); })
+						// use experimental fade mode if configured
+						.click(function () { self.animate(self.conf.fader ? 'f' + i : i); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);
@@ -228,6 +229,7 @@
 
 	// execute when slide visibility is changed (actual visibility)
 	prototype.plugin('changedVisibility', updateVisibility);
+	prototype.plugin('foobarVisibility', updateVisibility);
 
 
 // EO extend class prototype

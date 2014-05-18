@@ -6,6 +6,10 @@
 
   EXPERIMENTAL: if you include this file it may break other slide modes !!!
 
+	there is a very specific firefox bug hauting tiles
+	this is only visible when images are downscaled
+	https://bugzilla.mozilla.org/show_bug.cgi?id=795072
+
 */
 
 // extend class prototype
@@ -78,6 +82,11 @@
 
 			if (Math.floor(value) === parseInt(value))
 			{
+				if (this.animation.fader)
+				{
+					this.animation.restore();
+				}
+
 				return oldSetPosition.call(this, parseInt(value));
 			}
 
@@ -112,6 +121,17 @@
 
 			// set the offset position of the container to the viewport
 			this.container.css(getOffsetCssStr.call(this, invert), - this.offset[i]);
+
+			var visibility = [], value = this.position;
+			// fake the visibility for nav dots etc
+			if (Math.floor(value) === parseInt(value) && !this.swiping)
+			{
+				for (var i = 0; i < this.slides.length; i++)
+				{ visibility[i] = i == value ? 1 : 0; }
+				this.sv = visibility;
+				this.trigger('foobarVisibility', visibility);
+			}
+
 
 			// update internal variable
 			// needed to calc visibilities
@@ -196,28 +216,35 @@
 		if (!this.conf.tiles) return;
 
 		var off_y = 0,
+		    conf = this.conf,
 		    rows = this.rows,
 		    cols = this.cols,
 		    tiles = this.tiles,
-		    y = this.vp_y / this.conf.tileRows,
-		    x = this.vp_x / this.conf.tileCols;
+		    y = this.vp_y / conf.tileRows,
+		    x = this.vp_x / conf.tileCols;
 
-		for (var i = 0; i < this.conf.tileRows; i ++)
+		for (var i = 0; i < conf.tileRows; i ++)
 		{
 
 			var off_x = 0;
+
+			var width = x + 'px';
+			var height = y + 'px';
+
+			if (conf.tileCols == 1) width = '100%';
+			if (conf.tileRows == 1) height = '100%';
 
 			rows[i].css({
 				'left' : '0px',
 				'right' : '0px',
 				'width' : 'auto',
-				'height' : y + 'px',
+				'height' : height,
 				'top' : off_y + 'px',
 				'overflow' : 'hidden',
 				'position' : 'absolute'
 			});
 
-			for (var n = 0; n < this.conf.tileCols; n ++)
+			for (var n = 0; n < conf.tileCols; n ++)
 			{
 
 				cols[i][n].css({
@@ -386,6 +413,20 @@
 
 		};
 
+		this.animation.restore = function() {};
+
+/*
+		if (this.animation.fader)
+		{
+			var img = jQuery('IMG', this.slides[this.animation.action]);
+			var placeholder = jQuery('<SPAN>');
+			this.animation.restore = function() {};
+			this.animation.restore = function()
+			{ placeholder.replaceWith(img) }
+			img.replaceWith(placeholder);
+			console.warn(img)
+		}
+*/
 		if (Math.floor(position) != position)
 		this.fader.show(); else this.fader.hide();
 
@@ -477,6 +518,9 @@
 
 	prototype.plugin('updatedPanelsDim', changedPanelsSize, 99999);
 	prototype.plugin('updatedPanelsOpp', changedPanelsSize, 99999);
+
+	// prototype.plugin('foobarVisibility', alignOppInViewport, 99999);
+	prototype.plugin('foobarVisibility', changedPanelsSize, 9999);
 
 
 

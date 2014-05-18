@@ -251,9 +251,7 @@
 			if (animation.fader)
 			{
 
-				this.position = this.slide2panel(animation.action - 1);
-
-				this.trigger('changedPosition', -1);
+				this.trigger('changedPosition', this.position);
 
 				jQuery('.rtp-slider-fader', this.el)
 				.css({
@@ -344,7 +342,12 @@
 		var foo = this.animation;
 
 		// move slider to position
-		this.setPosition(cur.pos);
+		// this.setPosition(cur.pos);
+
+		if (!foo.fader)
+		{
+			this.setPosition(cur.pos);
+		}
 
 		if (foo.fader)
 		{
@@ -359,6 +362,22 @@
 			var fader = jQuery('.rtp-slider-fader', this.el);
 
 			fader.show().find('.tile').css('opacity', progress);
+
+			var visibility = [];
+
+			for (var i = 0; i < this.slides.length; i++)
+			{
+				visibility[i] =
+					i == this.slide2slide(end) ? progress :
+					i == this.slide2slide(start) ? 1 - progress :
+					0;
+			}
+
+			this.sv = visibility;
+			this.se = visibility;
+
+//			this.trigger('changedVisibility', visibility);
+			this.trigger('foobarVisibility', visibility);
 
 		}
 
