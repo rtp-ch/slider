@@ -2390,12 +2390,12 @@ RTP.Multievent = function (cb)
 	'use strict';
 
 
-	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure()
+	// @@@ private fn: updateSlideExposure @@@
+	function updateSlideExposure()
 	{
 
 		// get values from the current internal status
-		var position = this.slide2panel(this.position),
+		var position = this.slide2slide(this.position),
 		    visible = this.conf.panelsVisible || 1;
 
 		// declare local variables
@@ -2486,7 +2486,7 @@ RTP.Multievent = function (cb)
 
 
 	}
-	// @@@ EO private fn: updatePanelExposure @@@
+	// @@@ EO private fn: updateSlideExposure @@@
 
 
 	// @@@ fn: updateSlideVisibility @@@
@@ -2581,9 +2581,9 @@ RTP.Multievent = function (cb)
 
 
 	// calculate the exposure array very early
-	prototype.plugin('layout', updatePanelExposure, -99);
-	prototype.plugin('loading', updatePanelExposure, -99);
-	prototype.plugin('changedPosition', updatePanelExposure, -99);
+	prototype.plugin('layout', updateSlideExposure, -99);
+	prototype.plugin('loading', updateSlideExposure, -99);
+	prototype.plugin('changedPosition', updateSlideExposure, -99);
 
 	// calculate the visibility array very late
 	prototype.plugin('layout', updateSlideVisibility, 99);
@@ -3085,9 +3085,7 @@ RTP.Multievent = function (cb)
 			if (animation.fader)
 			{
 
-				this.position = this.slide2panel(animation.action - 1);
-
-				this.trigger('changedPosition', -1);
+				this.trigger('changedPosition', this.position);
 
 				jQuery('.rtp-slider-fader', this.el)
 				.css({
@@ -3178,7 +3176,12 @@ RTP.Multievent = function (cb)
 		var foo = this.animation;
 
 		// move slider to position
-		this.setPosition(cur.pos);
+		// this.setPosition(cur.pos);
+
+		if (!foo.fader)
+		{
+			this.setPosition(cur.pos);
+		}
 
 		if (foo.fader)
 		{
@@ -3193,6 +3196,22 @@ RTP.Multievent = function (cb)
 			var fader = jQuery('.rtp-slider-fader', this.el);
 
 			fader.show().find('.tile').css('opacity', progress);
+
+			var visibility = [];
+
+			for (var i = 0; i < this.slides.length; i++)
+			{
+				visibility[i] =
+					i == this.slide2slide(end) ? progress :
+					i == this.slide2slide(start) ? 1 - progress :
+					0;
+			}
+
+			this.sv = visibility;
+			this.se = visibility;
+
+//			this.trigger('changedVisibility', visibility);
+			this.trigger('foobarVisibility', visibility);
 
 		}
 
@@ -3755,13 +3774,18 @@ RTP.Multievent = function (cb)
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+			// panel access index
+			var n = this.smin + i;
 			// check if current panel is visible and smaller than min
-			if (exposure[i] > 0 && this.pd[1][i] < min) min = this.pd[1][i];
+			if (exposure[i] > 0 && this.pd[1][n] < min) min = this.pd[1][n];
 		}
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+
+			// panel access index
+			var n = this.smin + i;
 
 			// skip if panel is not visible
 			if (exposure[i] === 0) continue;
@@ -3771,7 +3795,7 @@ RTP.Multievent = function (cb)
 			{
 
 				// use full panel size difference
-				opps.push((this.pd[1][i] - min));
+				opps.push((this.pd[1][n] - min));
 
 			}
 
@@ -3780,7 +3804,7 @@ RTP.Multievent = function (cb)
 			{
 
 				// use a partial panel size diff (distribute from 0 to 1 between dead_zone and life_zone)
-				opps.push((this.pd[1][i] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
+				opps.push((this.pd[1][n] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
 
 			}
 
@@ -3802,6 +3826,7 @@ RTP.Multievent = function (cb)
 	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
 	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
 
+	prototype.plugin('foobarVisibility', viewportOppByPanels, 9999);
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);

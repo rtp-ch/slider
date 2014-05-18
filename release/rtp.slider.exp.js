@@ -3695,12 +3695,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	'use strict';
 
 
-	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure()
+	// @@@ private fn: updateSlideExposure @@@
+	function updateSlideExposure()
 	{
 
 		// get values from the current internal status
-		var position = this.slide2panel(this.position),
+		var position = this.slide2slide(this.position),
 		    visible = this.conf.panelsVisible || 1;
 
 		// declare local variables
@@ -3791,7 +3791,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	}
-	// @@@ EO private fn: updatePanelExposure @@@
+	// @@@ EO private fn: updateSlideExposure @@@
 
 
 	// @@@ fn: updateSlideVisibility @@@
@@ -3886,9 +3886,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	// calculate the exposure array very early
-	prototype.plugin('layout', updatePanelExposure, -99);
-	prototype.plugin('loading', updatePanelExposure, -99);
-	prototype.plugin('changedPosition', updatePanelExposure, -99);
+	prototype.plugin('layout', updateSlideExposure, -99);
+	prototype.plugin('loading', updateSlideExposure, -99);
+	prototype.plugin('changedPosition', updateSlideExposure, -99);
 
 	// calculate the visibility array very late
 	prototype.plugin('layout', updateSlideVisibility, 99);
@@ -4390,9 +4390,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			if (animation.fader)
 			{
 
-				this.position = this.slide2panel(animation.action - 1);
-
-				this.trigger('changedPosition', -1);
+				this.trigger('changedPosition', this.position);
 
 				jQuery('.rtp-slider-fader', this.el)
 				.css({
@@ -4483,7 +4481,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		var foo = this.animation;
 
 		// move slider to position
-		this.setPosition(cur.pos);
+		// this.setPosition(cur.pos);
+
+		if (!foo.fader)
+		{
+			this.setPosition(cur.pos);
+		}
 
 		if (foo.fader)
 		{
@@ -4498,6 +4501,22 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			var fader = jQuery('.rtp-slider-fader', this.el);
 
 			fader.show().find('.tile').css('opacity', progress);
+
+			var visibility = [];
+
+			for (var i = 0; i < this.slides.length; i++)
+			{
+				visibility[i] =
+					i == this.slide2slide(end) ? progress :
+					i == this.slide2slide(start) ? 1 - progress :
+					0;
+			}
+
+			this.sv = visibility;
+			this.se = visibility;
+
+//			this.trigger('changedVisibility', visibility);
+			this.trigger('foobarVisibility', visibility);
 
 		}
 
@@ -5060,13 +5079,18 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+			// panel access index
+			var n = this.smin + i;
 			// check if current panel is visible and smaller than min
-			if (exposure[i] > 0 && this.pd[1][i] < min) min = this.pd[1][i];
+			if (exposure[i] > 0 && this.pd[1][n] < min) min = this.pd[1][n];
 		}
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+
+			// panel access index
+			var n = this.smin + i;
 
 			// skip if panel is not visible
 			if (exposure[i] === 0) continue;
@@ -5076,7 +5100,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			{
 
 				// use full panel size difference
-				opps.push((this.pd[1][i] - min));
+				opps.push((this.pd[1][n] - min));
 
 			}
 
@@ -5085,7 +5109,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			{
 
 				// use a partial panel size diff (distribute from 0 to 1 between dead_zone and life_zone)
-				opps.push((this.pd[1][i] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
+				opps.push((this.pd[1][n] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
 
 			}
 
@@ -5107,6 +5131,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
 	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
 
+	prototype.plugin('foobarVisibility', viewportOppByPanels, 9999);
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);;
@@ -5294,7 +5319,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 						.addClass([self.klass.navDot, i].join('-'))
 
 						// attach click handler to the nav dot
-						.click(function () { self.animate('f' + i); })
+						// use experimental fade mode if configured
+						.click(function () { self.animate(self.conf.fader ? 'f' + i : i); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);
@@ -5340,6 +5366,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 	// execute when slide visibility is changed (actual visibility)
 	prototype.plugin('changedVisibility', updateVisibility);
+	prototype.plugin('foobarVisibility', updateVisibility);
 
 
 // EO extend class prototype
@@ -7078,6 +7105,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
   EXPERIMENTAL: if you include this file it may break other slide modes !!!
 
+	there is a very specific firefox bug hauting tiles
+	this is only visible when images are downscaled
+	https://bugzilla.mozilla.org/show_bug.cgi?id=795072
+
 */
 
 // extend class prototype
@@ -7150,6 +7181,11 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 			if (Math.floor(value) === parseInt(value))
 			{
+				if (this.animation.fader)
+				{
+					this.animation.restore();
+				}
+
 				return oldSetPosition.call(this, parseInt(value));
 			}
 
@@ -7184,6 +7220,17 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 			// set the offset position of the container to the viewport
 			this.container.css(getOffsetCssStr.call(this, invert), - this.offset[i]);
+
+			var visibility = [], value = this.position;
+			// fake the visibility for nav dots etc
+			if (Math.floor(value) === parseInt(value) && !this.swiping)
+			{
+				for (var i = 0; i < this.slides.length; i++)
+				{ visibility[i] = i == value ? 1 : 0; }
+				this.sv = visibility;
+				this.trigger('foobarVisibility', visibility);
+			}
+
 
 			// update internal variable
 			// needed to calc visibilities
@@ -7268,28 +7315,35 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		if (!this.conf.tiles) return;
 
 		var off_y = 0,
+		    conf = this.conf,
 		    rows = this.rows,
 		    cols = this.cols,
 		    tiles = this.tiles,
-		    y = this.vp_y / this.conf.tileRows,
-		    x = this.vp_x / this.conf.tileCols;
+		    y = this.vp_y / conf.tileRows,
+		    x = this.vp_x / conf.tileCols;
 
-		for (var i = 0; i < this.conf.tileRows; i ++)
+		for (var i = 0; i < conf.tileRows; i ++)
 		{
 
 			var off_x = 0;
+
+			var width = x + 'px';
+			var height = y + 'px';
+
+			if (conf.tileCols == 1) width = '100%';
+			if (conf.tileRows == 1) height = '100%';
 
 			rows[i].css({
 				'left' : '0px',
 				'right' : '0px',
 				'width' : 'auto',
-				'height' : y + 'px',
+				'height' : height,
 				'top' : off_y + 'px',
 				'overflow' : 'hidden',
 				'position' : 'absolute'
 			});
 
-			for (var n = 0; n < this.conf.tileCols; n ++)
+			for (var n = 0; n < conf.tileCols; n ++)
 			{
 
 				cols[i][n].css({
@@ -7458,6 +7512,20 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		};
 
+		this.animation.restore = function() {};
+
+/*
+		if (this.animation.fader)
+		{
+			var img = jQuery('IMG', this.slides[this.animation.action]);
+			var placeholder = jQuery('<SPAN>');
+			this.animation.restore = function() {};
+			this.animation.restore = function()
+			{ placeholder.replaceWith(img) }
+			img.replaceWith(placeholder);
+			console.warn(img)
+		}
+*/
 		if (Math.floor(position) != position)
 		this.fader.show(); else this.fader.hide();
 
@@ -7549,6 +7617,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 	prototype.plugin('updatedPanelsDim', changedPanelsSize, 99999);
 	prototype.plugin('updatedPanelsOpp', changedPanelsSize, 99999);
+
+	// prototype.plugin('foobarVisibility', alignOppInViewport, 99999);
+	prototype.plugin('foobarVisibility', changedPanelsSize, 9999);
 
 
 
