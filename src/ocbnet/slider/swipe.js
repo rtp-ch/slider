@@ -247,13 +247,16 @@
 		if (offset > 0.5)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 9000), 1200);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 9000), 1200);
 		}
 		else if (offset > 0)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 2000), 600);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 2000), 600);
 		}
+
+		// account for the distance left to go (shorten duration if not much to do)
+		if (speed > 0.375) duration *= Math.abs(this.position - this.slide2slide(to));
 
 		var swipeDrag = data.swipeDrag;
 
