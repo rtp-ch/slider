@@ -14,12 +14,12 @@
 	'use strict';
 
 
-	// @@@ private fn: updatePanelExposure @@@
-	function updatePanelExposure()
+	// @@@ private fn: updateSlideExposure @@@
+	function updateSlideExposure()
 	{
 
 		// get values from the current internal status
-		var position = this.slide2panel(this.position),
+		var position = this.slide2slide(this.position),
 		    visible = this.conf.panelsVisible || 1;
 
 		// declare local variables
@@ -110,7 +110,7 @@
 
 
 	}
-	// @@@ EO private fn: updatePanelExposure @@@
+	// @@@ EO private fn: updateSlideExposure @@@
 
 
 	// @@@ fn: updateSlideVisibility @@@
@@ -205,9 +205,9 @@
 
 
 	// calculate the exposure array very early
-	prototype.plugin('layout', updatePanelExposure, -99);
-	prototype.plugin('loading', updatePanelExposure, -99);
-	prototype.plugin('changedPosition', updatePanelExposure, -99);
+	prototype.plugin('layout', updateSlideExposure, -99);
+	prototype.plugin('loading', updateSlideExposure, -99);
+	prototype.plugin('changedPosition', updateSlideExposure, -99);
 
 	// calculate the visibility array very late
 	prototype.plugin('layout', updateSlideVisibility, 99);

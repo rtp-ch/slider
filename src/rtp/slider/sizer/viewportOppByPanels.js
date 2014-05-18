@@ -72,13 +72,18 @@
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+			// panel access index
+			var n = this.smin + i;
 			// check if current panel is visible and smaller than min
-			if (exposure[i] > 0 && this.pd[1][i] < min) min = this.pd[1][i];
+			if (exposure[i] > 0 && this.pd[1][n] < min) min = this.pd[1][n];
 		}
 
 		// process all panel visibilites
 		var i = exposure.length; while (i --)
 		{
+
+			// panel access index
+			var n = this.smin + i;
 
 			// skip if panel is not visible
 			if (exposure[i] === 0) continue;
@@ -88,7 +93,7 @@
 			{
 
 				// use full panel size difference
-				opps.push((this.pd[1][i] - min));
+				opps.push((this.pd[1][n] - min));
 
 			}
 
@@ -97,7 +102,7 @@
 			{
 
 				// use a partial panel size diff (distribute from 0 to 1 between dead_zone and life_zone)
-				opps.push((this.pd[1][i] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
+				opps.push((this.pd[1][n] - min) * (exposure[i] - dead_zone) / (life_zone - dead_zone));
 
 			}
 
@@ -118,7 +123,6 @@
 	// hook into various change events to adjust viewport
 	prototype.plugin('adjustViewport', viewportOppByPanels, 9999);
 	prototype.plugin('changedPosition', viewportOppByPanels, 9999);
-
 
 // EO extend class prototype
 })(RTP.Slider.prototype, jQuery);
