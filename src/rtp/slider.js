@@ -476,6 +476,10 @@
 		// @@@ method: update @@@
 		prototype.update = function (option)
 		{
+			// trigger updating event
+			// use to adjust stuff if needed
+			// ie. used by nav dots to adjust
+			this.trigger('updating', option);
 			// extend our config with new options
 			jQuery.extend(true, this.conf, option);
 			// trigger position change event

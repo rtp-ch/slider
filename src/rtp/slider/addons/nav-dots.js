@@ -81,15 +81,74 @@
 		if (this.conf.navDots)
 		{
 
-			// call update for each slide nav dot
-			for(var i = 0; i < visibility.length; i++)
-			{ updateNavDotUI.call(this, i, visibility[i]) }
+			if (this.conf.groupPanels)
+			{
+				// should always to be an integer
+				var vis = this.conf.panelsVisible;
+				// group visibilities together is distribute
+				for(var i = 0, l = visibility.length; i < l; i += vis)
+				{
+					// declare variables
+					var sum = 0, count = 0;
+					// process all dots in this panels group
+					for(var n = 0; n < vis && i + n < l; n ++)
+					{ sum += visibility[i + n]; count ++; }
+					// calculate the (adjusted) average
+					var average = Math.pow(sum / count, vis);
+					// update all dots in group with average
+					for(var n = 0; n < vis && i + n < l; n ++)
+					{ updateNavDotUI.call(this, i, average) }
+				}
+			}
+			else
+			{
+				// call update for each slide nav dot
+				for(var i = 0; i < visibility.length; i++)
+				{ updateNavDotUI.call(this, i, visibility[i]) }
+			}
 
 		}
 		// EO if is enabled
 
 	}
 	// @@@ EO private fn: updateVisibility @@@
+
+
+	// @@@ private fn: updateUI @@@
+	function updateUI (config)
+	{
+
+		// fall back to instance config
+		if (!config) config = this.conf;
+
+		// get the new configuration
+		var vis = config.panelsVisible;
+
+		// process all nav dots to show/hide them
+		for(var i = 0; i < this.slides.length; i++)
+		{
+			// check if the current nav dot is shown or not
+			var display = i % vis == 0 ? 'block' : 'none';
+			// update inline styles of the dom node
+			this.navDot.eq(i).css('display', display);
+		}
+
+	}
+	// @@@ EO private fn: updateUI @@@
+
+
+	// @@@ plugin: updating @@@
+	prototype.plugin('updating', function (config)
+	{
+
+		// check if we should group the panels (otherwise just return)
+		if (!(('groupPanels' in config && config.groupPanels) || this.conf.groupPanels )) return;
+
+		// only proceed if the visible panels have changed (pass new config to function)
+		if (config.panelsVisible != this.conf.panelsVisible) updateUI.call(this, config);
+
+	});
+	// @@@ EO plugin: updating @@@
 
 
 	// @@@ plugin: config @@@
@@ -222,6 +281,9 @@
 
 		}
 		// EO if conf.autoslide
+
+		// call updateUI
+		updateUI.call(this);
 
 	});
 	// @@@ plugin: init @@@
