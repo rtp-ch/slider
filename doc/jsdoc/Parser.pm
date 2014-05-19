@@ -383,9 +383,10 @@ sub parseStatement
 		$parser->{'offset'} += length($1);
 		$string .= parseRegex($parser, $data);
 	}
-	elsif (${$data} =~ s/\A(,)//)
+	elsif (${$data} =~ s/\A,//)
 	{
-		$string .= $1;
+		$string .= ',';
+		$parser->{'offset'} ++;
 		goto PARSESTATEMENT;
 	}
 
