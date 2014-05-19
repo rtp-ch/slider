@@ -50,7 +50,7 @@ You may also use a CDN (Content Delivery Network) to load the libraries directly
 You may use the demo example to play around with various config options. It's not yet 100% finished,
 but should give you a good overview of what this slider is capable of:
 
-- http://rawgithub.com/mgreter/slider/fader/examples/demo/demo.html
+- http://rawgithub.com/mgreter/slider/master/examples/demo/demo.html
 
 
 ### Configuration
@@ -303,12 +303,12 @@ either version 3 of the License, or (at your option) any later version.
 
 ### Examples
 
- - http://rawgithub.com/mgreter/slider/fader/examples/swipe.html
- - http://rawgithub.com/mgreter/slider/fader/examples/addons.html
- - http://rawgithub.com/mgreter/slider/fader/examples/nested.html
- - http://rawgithub.com/mgreter/slider/fader/examples/tiles.html (alpha)
- - http://rawgithub.com/mgreter/slider/fader/examples/carousel3d.html (alpha)
- - http://rawgithub.com/mgreter/slider/fader/examples/demo/demo.html (experimental)
+ - http://rawgithub.com/mgreter/slider/master/examples/swipe.html
+ - http://rawgithub.com/mgreter/slider/master/examples/addons.html
+ - http://rawgithub.com/mgreter/slider/master/examples/nested.html
+ - http://rawgithub.com/mgreter/slider/master/examples/tiles.html (alpha)
+ - http://rawgithub.com/mgreter/slider/master/examples/carousel3d.html (alpha)
+ - http://rawgithub.com/mgreter/slider/master/examples/demo/demo.html (experimental)
 
 Use the mouse or touch device to swipe through the panels!
 
