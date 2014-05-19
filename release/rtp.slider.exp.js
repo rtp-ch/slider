@@ -4,7 +4,7 @@
 */;
 /*
 
-  Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider 0.10.0
+  Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider 0.12.0
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
@@ -1631,8 +1631,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 					var event = new jQuery.Event('fingerdown',
 					{
 						type : 'touch',
-						x : touch.clientX || touch.screenX,
-						y : touch.clientY || touch.screenY,
+						x : touch.screenX,
+						y : touch.screenY,
 						id : touch.identifier,
 						originalEvent : evt
 					});
@@ -1680,8 +1680,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			var event = jQuery.Event('fingerup',
 			{
 				type : 'touch',
-				x : touch.clientX || touch.screenX,
-				y : touch.clientY || touch.screenY,
+				x : touch.screenX,
+				y : touch.screenY,
 				id : touch.identifier,
 				originalEvent: evt
 			});
@@ -1712,8 +1712,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			var event = jQuery.Event('fingermove',
 			{
 				type : 'touch',
-				x : touch.clientX || touch.screenX,
-				y : touch.clientY || touch.screenY,
+				x : touch.screenX,
+				y : touch.screenY,
 				id : touch.identifier,
 				originalEvent: evt
 			});
@@ -1744,32 +1744,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 {
 
 	// proper detection for ie10 on desktop (https://github.com/CreateJS/EaselJS/issues/273)
-	// this will also be true for ie11 and hopefully for all future IE generations (I dare you MS)
 	if ( ! (window.navigator['msPointerEnabled'] && window.navigator["msMaxTouchPoints"] > 0) ) return;
-
-	// event names may vary
-	// ie 10 uses vendor prefix
-	// keep the legacy code here
-	var evt_name = {
-		'up' : 'MSPointerUp',
-		'move' : 'MSPointerMove',
-		'down' : 'MSPointerDown'
-	};
-
-	// https://coderwall.com/p/mfreca
-	// so feature detection is the way to go, the internet says
-	// thank you IE for once again keeping things "interesting"
-	if (
-		window.navigator['pointerEnabled'] &&
-		window.navigator["maxTouchPoints"] > 0
-	) {
-		// use new names
-		evt_name = {
-			'up' : 'pointerup',
-			'move' : 'pointermove',
-			'down' : 'pointerdown'
-		};
-	}
 
 	// extend class
 	(function(prototype)
@@ -1783,7 +1758,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			var closure = this;
 
 			// trap mousedown locally on each element
-			jQuery(el).bind(evt_name['down'], function (evt)
+			jQuery(el).bind('MSPointerDown', function (evt)
 			{
 
 				// get variables from event
@@ -1824,7 +1799,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	// trap mouseup globally, "trap" for all cases
-	jQuery(document).bind(evt_name['up'], function (evt)
+	jQuery(document).bind('MSPointerUp', function (evt)
 	{
 
 		// get variables from the event object
@@ -1849,7 +1824,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 	// trap mousemove globally, "trap" for all cases
 	// this will be called for every pointer that moved
-	jQuery(document).bind(evt_name['move'], function (evt)
+	jQuery(document).bind('MSPointerMove', function (evt)
 	{
 
 		// get variables from the event object

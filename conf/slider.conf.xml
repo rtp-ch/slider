@@ -78,10 +78,10 @@
 	<js id="slider-light" step="light" >
 
 		<!-- include specific header file -->
-		<prepend path="conf/header.min.js" />
+		<prefix path="conf/header.min.js" />
 
 		<!-- include common header file -->
-		<prepend path="src/header.js" />
+		<prefix path="src/header.js" />
 
 		<!-- include library javascript files -->
 		<input path="src/rtp/common/multievent.js" />
@@ -119,10 +119,10 @@
 	<js id="slider-full" step="full" >
 
 		<!-- include specific header file -->
-		<prepend path="conf/header.full.js" />
+		<prefix path="conf/header.full.js" />
 
 		<!-- include common header file -->
-		<prepend path="src/header.js" />
+		<prefix path="src/header.js" />
 
 		<!-- include library javascript files -->
 		<input path="src/rtp/common/multievent.js" />
@@ -183,10 +183,10 @@
 	<js id="slider-experimental" step="experimental" >
 
 		<!-- include specific header file -->
-		<prepend path="conf/header.exp.js" />
+		<prefix path="conf/header.exp.js" />
 
 		<!-- include common header file -->
-		<prepend path="src/header.js" />
+		<prefix path="src/header.js" />
 
 		<!-- include library javascript files -->
 		<input path="src/rtp/common/multievent.js" />
