@@ -19,7 +19,11 @@
             jQuery('DIV.rtp-slider-viewport')
               .rtpSlider({
                 align: 0,
+                navDots: true,
+                carousel: true,
                 panelsVisible: 2,
+                groupPanels: true,
+                navToolbar: true,
                 gestureSwipe:   true
               })
             .data('rtp-slider');
@@ -29,6 +33,7 @@
               { slider.update({ panelsVisible : 1 }) }
               else { slider.update({ panelsVisible : 2 }) }
             });
+            jQuery(window).trigger('resize');
         });
     </script>
 </head>

@@ -90,6 +90,8 @@
 
 		// store last moves
 		data.swipeMoves = [];
+		// store swiped position
+		data.swipePosOff = 0;
 		// init direction status variables
 		data.swipeDrag = data.swipeScroll = false;
 		// store the start positions for this swipe
@@ -126,10 +128,20 @@
 	prototype.plugin('swipeDraw', function (data)
 	{
 
-		var offset = this.getOffsetByPosition(this.position) + data.dragOff;
+		// get the real offset for the given position (might be "out of bound")
+		var offset = this.getOffsetByPosition(this.position, true) + data.dragOff;
 
-		this.setPosition(this.getPositionByOffset(offset));
+		// calculate real position by real offset
+		var position = this.getPositionByOffset(offset, true);
 
+		// keep track of real position dragging
+		data.swipePosOff += position - this.position;
+
+		// now set to new position
+		// position will be normalized
+		this.setPosition(position);
+
+		// reset pixel offset
 		data.dragOff = 0;
 
 	})
@@ -222,12 +234,26 @@
 		// linear fn -> y = m*x + n
 		var m = least[0] * this.vp_x / 2, n = least[1];
 
-		var sign = m < 0 ? - vis : vis;
+		// direction of the movement
+		var direction = m < 0 ? - 1 : 1;
 
-		// check to which position we will swipe
-		var to = this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5)
+		// how far do we go with the current speed
+		// var inertia = Math.pow(Math.abs(m) * 0.5, 0.5)
 
-		to = parseInt(to / vis) * vis;
+		// get the swipe start position
+		var start = data.swipeStartPosition;
+
+		// absolute position offset
+		var off = data.swipePosOff;
+
+		// snap panel on the correct side (may not work for rtl)
+		var start = direction < 0 ? Math.ceil(start) : Math.floor(start);
+
+		// get base for further calculations (to snap to start)
+		var base = start - data.swipeStartPosition - data.swipePosOff;
+
+		// snap the offset to be a multiple of visibile panels
+		var offset =  Math.round((base - m)/ vis) * vis + base
 
 		// get absolute speed
 		var speed = Math.abs(m);
@@ -242,21 +268,21 @@
 		this.trigger('swipeFinish', x, y, data);
 
 		var duration = 0, easing = 'linear',
-		    offset = Math.abs(to - this.position);
+		    delta = Math.abs(offset);
 
-		if (offset > 0.5)
+		if (delta > 0.5)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 9000), 1200);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 9000), 1200);
 		}
-		else if (offset > 0)
+		else if (delta > 0)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 2000), 600);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 2000), 600);
 		}
 
 		// account for the distance left to go (shorten duration if not much to do)
-		if (speed > 0.375) duration *= Math.abs(this.position - this.slide2slide(to));
+		// if (speed > 0.375) duration *= Math.abs(this.position - this.slide2slide(to));
 
 		var swipeDrag = data.swipeDrag;
 
@@ -266,7 +292,10 @@
 		delete data.swipeScroll;
 		data.swipeMoves = [];
 
-		this.animate(to, duration, easing, function ()
+		// make offset value explicitly relative
+		offset = offset < 0 ? offset : '+' + offset
+
+		this.animate(offset, duration, easing, function ()
 		{
 
 			this.foobar = false;

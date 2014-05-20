@@ -116,17 +116,22 @@
 
 
 	// @@@ method: getOffsetByPosition @@@
-	prototype.getOffsetByPosition = function (index)
+	prototype.getOffsetByPosition = function (index, real)
 	{
 
 		// index is meant as slide, get into panels
 		index += this.smin + this.conf.alignPanelDim;
 
+		// count full revolvings
+		// to adjust virtual offset
+		var turns = 0;
+
+		// normalize/sanitize the input
 		if (this.conf.carousel)
 		{
 			// adjust index into the valid panel range
-			while (index > this.smax) index -= this.slides.length;
-			while (index < this.smin) index += this.slides.length;
+			while (index > this.smax) { turns++; index -= this.slides.length; }
+			while (index < this.smin) { turns--; index += this.slides.length; }
 		}
 		else
 		{
@@ -147,6 +152,10 @@
 		// add the offset of the panels
 		px += this.offset[panel];
 
+		// adjust end result for real result
+		// can return "out of bound" position
+		if (real) px += this.offset[this.smax + 1] * turns;
+
 		// return px
 		return px;
 
@@ -155,7 +164,7 @@
 
 
 	// @@@ method: getPositionByOffset @@@
-	prototype.getPositionByOffset = function (px)
+	prototype.getPositionByOffset = function (px, real)
 	{
 
 		// ensure pixel as integer
@@ -167,12 +176,16 @@
 		    right = this.offset[this.smax + 1],
 		    align = this.conf.alignPanelDim + this.smin;
 
+		// count full revolvings
+		// to adjust real position
+		var turns = 0, adjust = 0;
 
+		// normalize/sanitize the input
 		if (this.conf.carousel && right > left)
 		{
 			// shift into prefered and best visible area
-			while (px < left) { px += right - left; }
-			while (right <= px) { px -= right - left; }
+			while (px < left) { turns--; px += right - left; }
+			while (right <= px) { turns++; px -= right - left; }
 		}
 		else
 		{
@@ -180,7 +193,7 @@
 			if (px >= right) { return this.smax + 1; }
 		}
 
-		// process all panels from left until we find
+		// process all panels from right until we find
 		// a panel that is currently moving out of view
 		var i = this.panels.length; while (i--)
 		{
@@ -197,9 +210,11 @@
 			// test if pixel offset lies in this panel
 			if (panel_right > px && px > panel_left)
 			{
-
+				// adjust end result for real result
+				// can return "out of bound" position
+				if (real) var adjust = turns * (this.smax + 1);
 				// return the calculated position (intoPanel / panelSize + i - offset)
-				return (px - panel_left) / (panel_right - panel_left) + i - align;
+				return (px - panel_left) / (panel_right - panel_left) + i - align + adjust;
 
 			}
 			// EO if position in panel

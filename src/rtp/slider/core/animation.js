@@ -139,10 +139,18 @@
 			pos = this.position + parseFloat(action);
 		}
 		// absolute position
-		else
+		else if (typeof action != 'undefined')
 		{
+			// remove equal sign if there is one
+			// this is the recommended way to tell
+			// us that you want to animate absolute
+			action = action.toString().replace(/^=/, '');
 			// return parsed number
 			pos = parseFloat(action);
+		}
+		else
+		{
+			debugger
 		}
 
 		// return normalized value if not in carousel mode

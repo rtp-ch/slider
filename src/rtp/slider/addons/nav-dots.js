@@ -118,6 +118,8 @@
 	function updateUI (config)
 	{
 
+		if (!this.navDot) return;
+
 		// fall back to instance config
 		if (!config) config = this.conf;
 
@@ -242,7 +244,8 @@
 
 						// attach click handler to the nav dot
 						// use experimental fade mode if configured
-						.click(function () { self.animate(self.conf.fader ? 'f' + i : i); })
+						// TODO: refactor animate to avoid these nonsense arguments
+						.click(function () { self.animate(self.conf.fader ? 'f' + i : '=' + i, null, null, null, true); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);
