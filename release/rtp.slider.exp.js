@@ -726,16 +726,45 @@ RTP.Multievent = function (cb)
 	// special event callback
 	var special = { add : trap };
 
-	// now register common event types to trap
-	jQuery.event.special['mouseup'] = special;
-	jQuery.event.special['mouseout'] = special;
-	jQuery.event.special['mouseover'] = special;
-	jQuery.event.special['mousemove'] = special;
-	jQuery.event.special['mousedown'] = special;
-	jQuery.event.special['touchend'] = special;
-	jQuery.event.special['touchmove'] = special;
-	jQuery.event.special['touchstart'] = special;
-	jQuery.event.special['touchcancel'] = special;
+	// check for mouse interface
+	if ( 'onmousedown' in window )
+	{
+		// register common event types to trap
+		jQuery.event.special['mouseup'] = special;
+		jQuery.event.special['mouseout'] = special;
+		jQuery.event.special['mouseover'] = special;
+		jQuery.event.special['mousemove'] = special;
+		jQuery.event.special['mousedown'] = special;
+	}
+
+	// check for touch interface
+	if ( 'ontouchstart' in window )
+	{
+		// register common event types to trap
+		jQuery.event.special['touchend'] = special;
+		jQuery.event.special['touchmove'] = special;
+		jQuery.event.special['touchstart'] = special;
+		jQuery.event.special['touchcancel'] = special;
+	}
+
+	// check if we have a pointer interface (ie11)
+	if ( window.navigator['pointerEnabled'] && window.navigator["maxTouchPoints"] > 0 )
+	{
+		// register common event types to trap
+		jQuery.event.special['pointerup'] = special;
+		jQuery.event.special['pointermove'] = special;
+		jQuery.event.special['pointerdown'] = special;
+		jQuery.event.special['pointercancel'] = special;
+	}
+	// check if we have a pointer interface (ie10)
+	else if ( window.navigator['msPointerEnabled'] && window.navigator["msMaxTouchPoints"] > 0 )
+	{
+		// register common event types to trap
+		jQuery.event.special['MSPointerUp'] = special;
+		jQuery.event.special['MSPointerMove'] = special;
+		jQuery.event.special['MSPointerDown'] = special;
+		jQuery.event.special['MSPointerCancel'] = special;
+	}
 
 
 })()
@@ -1753,7 +1782,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	var evt_name = {
 		'up' : 'MSPointerUp',
 		'move' : 'MSPointerMove',
-		'down' : 'MSPointerDown'
+		'down' : 'MSPointerDown',
+		'cancel' : 'MSPointerCancel',
+		// name for css attributes
+		'action' : 'ms-touch-action'
 	};
 
 	// https://coderwall.com/p/mfreca
@@ -1767,7 +1799,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		evt_name = {
 			'up' : 'pointerup',
 			'move' : 'pointermove',
-			'down' : 'pointerdown'
+			'down' : 'pointerdown',
+			'cancel' : 'pointercancel',
+			// name for css attributes
+			'action' : 'touch-action'
 		};
 	}
 
@@ -1782,7 +1817,20 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			// create a closure
 			var closure = this;
 
-			// trap mousedown locally on each element
+			// native actions
+			var actions = [];
+
+			// get object with info about which
+			// actions should be handled by UA
+			var action = this.config.native || {};
+
+			// push native features to array
+			if (action.panY) actions.push('pan-y');
+			if (action.panX) actions.push('pan-x');
+			// add default value if we have no option yet
+			if (actions.length == 0) actions.push('none');
+
+			// trap pointerdown locally on each element
 			jQuery(el).bind(evt_name['down'], function (evt)
 			{
 
@@ -1813,8 +1861,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 				gesture.fingerDown(finger)
 
 			})
-			// taken from inet sources
-			.css('msTouchAction', 'none')
+			// this can ie. cancel pointers on scroll
+			// mostly we will only see pan-x/pan-y here
+			.css(evt_name['action'], actions.join(' '))
 
 		});
 		// EO bind additional events for gestures
@@ -1823,8 +1872,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	// EO extend class
 
 
-	// trap mouseup globally, "trap" for all cases
-	jQuery(document).bind(evt_name['up'], function (evt)
+	// use same handler for pointerup and pointercancel
+	var evt_up = [evt_name['up'], evt_name['cancel']].join(' ');
+
+	// trap pointerup globally, "trap" for all cases
+	// canceled ie. if user decided to scroll not swipe
+	jQuery(document).bind(evt_up, function (evt)
 	{
 
 		// get variables from the event object
@@ -1838,7 +1891,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			y : org.pageY,
 			id : org.pointerId,
 			originalEvent: evt
-		})
+		});
 
 		// only release the specific button
 		OCBNET.Gestures.fingerup(event);
@@ -1846,8 +1899,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	})
 	// EO MSPointerUp
 
-
-	// trap mousemove globally, "trap" for all cases
+	// trap pointermove globally, "trap" for all cases
 	// this will be called for every pointer that moved
 	jQuery(document).bind(evt_name['move'], function (evt)
 	{
@@ -2353,6 +2405,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// @@@ method: update @@@
 		prototype.update = function (option)
 		{
+			// trigger updating event
+			// use to adjust stuff if needed
+			// ie. used by nav dots to adjust
+			this.trigger('updating', option);
 			// extend our config with new options
 			jQuery.extend(true, this.conf, option);
 			// trigger position change event
@@ -4015,17 +4071,22 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	// @@@ method: getOffsetByPosition @@@
-	prototype.getOffsetByPosition = function (index)
+	prototype.getOffsetByPosition = function (index, real)
 	{
 
 		// index is meant as slide, get into panels
 		index += this.smin + this.conf.alignPanelDim;
 
+		// count full revolvings
+		// to adjust virtual offset
+		var turns = 0;
+
+		// normalize/sanitize the input
 		if (this.conf.carousel)
 		{
 			// adjust index into the valid panel range
-			while (index > this.smax) index -= this.slides.length;
-			while (index < this.smin) index += this.slides.length;
+			while (index > this.smax) { turns++; index -= this.slides.length; }
+			while (index < this.smin) { turns--; index += this.slides.length; }
 		}
 		else
 		{
@@ -4046,6 +4107,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// add the offset of the panels
 		px += this.offset[panel];
 
+		// adjust end result for real result
+		// can return "out of bound" position
+		if (real) px += this.offset[this.smax + 1] * turns;
+
 		// return px
 		return px;
 
@@ -4054,7 +4119,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	// @@@ method: getPositionByOffset @@@
-	prototype.getPositionByOffset = function (px)
+	prototype.getPositionByOffset = function (px, real)
 	{
 
 		// ensure pixel as integer
@@ -4066,12 +4131,16 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		    right = this.offset[this.smax + 1],
 		    align = this.conf.alignPanelDim + this.smin;
 
+		// count full revolvings
+		// to adjust real position
+		var turns = 0, adjust = 0;
 
+		// normalize/sanitize the input
 		if (this.conf.carousel && right > left)
 		{
 			// shift into prefered and best visible area
-			while (px < left) { px += right - left; }
-			while (right <= px) { px -= right - left; }
+			while (px < left) { turns--; px += right - left; }
+			while (right <= px) { turns++; px -= right - left; }
 		}
 		else
 		{
@@ -4079,7 +4148,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			if (px >= right) { return this.smax + 1; }
 		}
 
-		// process all panels from left until we find
+		// process all panels from right until we find
 		// a panel that is currently moving out of view
 		var i = this.panels.length; while (i--)
 		{
@@ -4096,9 +4165,11 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			// test if pixel offset lies in this panel
 			if (panel_right > px && px > panel_left)
 			{
-
+				// adjust end result for real result
+				// can return "out of bound" position
+				if (real) var adjust = turns * (this.smax + 1);
 				// return the calculated position (intoPanel / panelSize + i - offset)
-				return (px - panel_left) / (panel_right - panel_left) + i - align;
+				return (px - panel_left) / (panel_right - panel_left) + i - align + adjust;
 
 			}
 			// EO if position in panel
@@ -4278,10 +4349,18 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			pos = this.position + parseFloat(action);
 		}
 		// absolute position
-		else
+		else if (typeof action != 'undefined')
 		{
+			// remove equal sign if there is one
+			// this is the recommended way to tell
+			// us that you want to animate absolute
+			action = action.toString().replace(/^=/, '');
 			// return parsed number
 			pos = parseFloat(action);
+		}
+		else
+		{
+			debugger
 		}
 
 		// return normalized value if not in carousel mode
@@ -5218,15 +5297,76 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		if (this.conf.navDots)
 		{
 
-			// call update for each slide nav dot
-			for(var i = 0; i < visibility.length; i++)
-			{ updateNavDotUI.call(this, i, visibility[i]) }
+			if (this.conf.groupPanels)
+			{
+				// should always to be an integer
+				var vis = this.conf.panelsVisible;
+				// group visibilities together is distribute
+				for(var i = 0, l = visibility.length; i < l; i += vis)
+				{
+					// declare variables
+					var sum = 0, count = 0;
+					// process all dots in this panels group
+					for(var n = 0; n < vis && i + n < l; n ++)
+					{ sum += visibility[i + n]; count ++; }
+					// calculate the (adjusted) average
+					var average = Math.pow(sum / count, vis);
+					// update all dots in group with average
+					for(var n = 0; n < vis && i + n < l; n ++)
+					{ updateNavDotUI.call(this, i, average) }
+				}
+			}
+			else
+			{
+				// call update for each slide nav dot
+				for(var i = 0; i < visibility.length; i++)
+				{ updateNavDotUI.call(this, i, visibility[i]) }
+			}
 
 		}
 		// EO if is enabled
 
 	}
 	// @@@ EO private fn: updateVisibility @@@
+
+
+	// @@@ private fn: updateUI @@@
+	function updateUI (config)
+	{
+
+		if (!this.navDot) return;
+
+		// fall back to instance config
+		if (!config) config = this.conf;
+
+		// get the new configuration
+		var vis = config.panelsVisible;
+
+		// process all nav dots to show/hide them
+		for(var i = 0; i < this.slides.length; i++)
+		{
+			// check if the current nav dot is shown or not
+			var display = i % vis == 0 ? 'block' : 'none';
+			// update inline styles of the dom node
+			this.navDot.eq(i).css('display', display);
+		}
+
+	}
+	// @@@ EO private fn: updateUI @@@
+
+
+	// @@@ plugin: updating @@@
+	prototype.plugin('updating', function (config)
+	{
+
+		// check if we should group the panels (otherwise just return)
+		if (!(('groupPanels' in config && config.groupPanels) || this.conf.groupPanels )) return;
+
+		// only proceed if the visible panels have changed (pass new config to function)
+		if (config.panelsVisible != this.conf.panelsVisible) updateUI.call(this, config);
+
+	});
+	// @@@ EO plugin: updating @@@
 
 
 	// @@@ plugin: config @@@
@@ -5320,7 +5460,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 						// attach click handler to the nav dot
 						// use experimental fade mode if configured
-						.click(function () { self.animate(self.conf.fader ? 'f' + i : i); })
+						// TODO: refactor animate to avoid these nonsense arguments
+						.click(function () { self.animate(self.conf.fader ? 'f' + i : '=' + i, null, null, null, true); })
 
 						// append object to wrapper
 						.appendTo(self.navDotWrapper);
@@ -5359,6 +5500,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		}
 		// EO if conf.autoslide
+
+		// call updateUI
+		updateUI.call(this);
 
 	});
 	// @@@ plugin: init @@@
@@ -6180,6 +6324,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// store last moves
 		data.swipeMoves = [];
+		// store swiped position
+		data.swipePosOff = 0;
 		// init direction status variables
 		data.swipeDrag = data.swipeScroll = false;
 		// store the start positions for this swipe
@@ -6216,10 +6362,20 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.plugin('swipeDraw', function (data)
 	{
 
-		var offset = this.getOffsetByPosition(this.position) + data.dragOff;
+		// get the real offset for the given position (might be "out of bound")
+		var offset = this.getOffsetByPosition(this.position, true) + data.dragOff;
 
-		this.setPosition(this.getPositionByOffset(offset));
+		// calculate real position by real offset
+		var position = this.getPositionByOffset(offset, true);
 
+		// keep track of real position dragging
+		data.swipePosOff += position - this.position;
+
+		// now set to new position
+		// position will be normalized
+		this.setPosition(position);
+
+		// reset pixel offset
 		data.dragOff = 0;
 
 	})
@@ -6312,12 +6468,26 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// linear fn -> y = m*x + n
 		var m = least[0] * this.vp_x / 2, n = least[1];
 
-		var sign = m < 0 ? - vis : vis;
+		// direction of the movement
+		var direction = m < 0 ? - 1 : 1;
 
-		// check to which position we will swipe
-		var to = this.position + 0.5 - sign * Math.pow(Math.abs(m) * 0.5, 0.5)
+		// how far do we go with the current speed
+		// var inertia = Math.pow(Math.abs(m) * 0.5, 0.5)
 
-		to = parseInt(to / vis) * vis;
+		// get the swipe start position
+		var start = data.swipeStartPosition;
+
+		// absolute position offset
+		var off = data.swipePosOff;
+
+		// snap panel on the correct side (may not work for rtl)
+		var start = direction < 0 ? Math.ceil(start) : Math.floor(start);
+
+		// get base for further calculations (to snap to start)
+		var base = start - data.swipeStartPosition - data.swipePosOff;
+
+		// snap the offset to be a multiple of visibile panels
+		var offset =  Math.round((base - m)/ vis) * vis + base
 
 		// get absolute speed
 		var speed = Math.abs(m);
@@ -6332,21 +6502,21 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		this.trigger('swipeFinish', x, y, data);
 
 		var duration = 0, easing = 'linear',
-		    offset = Math.abs(to - this.position);
+		    delta = Math.abs(offset);
 
-		if (offset > 0.5)
+		if (delta > 0.5)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 9000), 1200);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 9000), 1200);
 		}
-		else if (offset > 0)
+		else if (delta > 0)
 		{
 			easing = speed < 0.375 ? 'easeOutBounce' : 'easeOutExpo';
-			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.75), 2000), 600);
+			duration = Math.max(Math.min(100 / Math.pow(1/speed, 1.5), 2000), 600);
 		}
 
 		// account for the distance left to go (shorten duration if not much to do)
-		if (speed > 0.375) duration *= Math.abs(this.position - this.slide2slide(to));
+		// if (speed > 0.375) duration *= Math.abs(this.position - this.slide2slide(to));
 
 		var swipeDrag = data.swipeDrag;
 
@@ -6356,7 +6526,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		delete data.swipeScroll;
 		data.swipeMoves = [];
 
-		this.animate(to, duration, easing, function ()
+		// make offset value explicitly relative
+		offset = offset < 0 ? offset : '+' + offset
+
+		this.animate(offset, duration, easing, function ()
 		{
 
 			this.foobar = false;
