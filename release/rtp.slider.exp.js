@@ -5346,7 +5346,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		for(var i = 0; i < this.slides.length; i++)
 		{
 			// check if the current nav dot is shown or not
-			var display = i % vis == 0 ? 'block' : 'none';
+			var display = i % vis == 0 ? '' : 'none';
 			// update inline styles of the dom node
 			this.navDot.eq(i).css('display', display);
 		}
