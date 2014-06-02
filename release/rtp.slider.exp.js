@@ -4,7 +4,7 @@
 */;
 /*
 
-  Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider 0.12.1
+  Copyright (c) Marcel Greter 2010/2012 - rtp.ch - RTP jQuery Slider 0.12.3
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
@@ -5342,11 +5342,14 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// get the new configuration
 		var vis = config.panelsVisible;
 
+		// calculate how many nav dots are visible
+		var count = Math.ceil(this.navDot.length/vis);
+
 		// check for old count class
 		if (this.navDotCountClass)
 		{
 			// remove the indicator class from the wrapper
-			this.navDotWrapper.remoteClass(this.navDotCountClass);
+			this.navDotWrapper.removeClass(this.navDotCountClass);
 			// reset the storage variable
 			this.navDotCountClass = null;
 		}
@@ -5355,7 +5358,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		if (this.conf.navDotCountClass)
 		{
 			// create class indicating how many nav dots are ...
-			this.navDotCountClass = this.klass.navDotCount + vis;
+			this.navDotCountClass = this.klass.navDotCount + count;
 			// ... currently shown (use to hide single nav dots)
 			this.navDotWrapper.addClass(this.navDotCountClass);
 		}
