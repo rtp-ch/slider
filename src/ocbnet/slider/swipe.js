@@ -199,6 +199,51 @@
 	// @@@ EO plugin: swipeMove @@@
 
 
+	// @@@ private fn: snap @@@
+	function snap(val, grid, base)
+	{
+		// assertion for optional values
+		grid = grid || 1; base = base || 0;
+		// snap the value to the grid, regarding to its base
+		return grid * Math.round((val - base) / grid) + base;
+	}
+	// @@@ EO private fn: snap @@@
+
+	// @@@ private fn: getFinalOffset @@@
+	function getFinalOffset (start, off, inertia)
+	{
+
+		// get number of panels visible at once
+		var vis = Math.floor(this.conf.panelsVisible);
+
+		// config value if we are grouping panels
+		// this means we treat them as one panel
+		if (!this.conf.groupPanels) vis = 1;
+
+		// create the main position anchor
+		// all motions are aligned to this
+		var anchor = snap(start, 1);
+
+		// get the end position without any snapping
+		// this is where the swipe plus inertia would go
+		var real_position = start + off + inertia;
+
+		// snap the final position to the anchor by a grid
+		// defined by the number of visible panels. This may
+		// should only be done if we are grouping panels!
+		var final_position = snap(real_position, vis, anchor);
+
+		// calculate offset from current position
+		// start and off are already in that value
+		var offset = final_position - off - start;
+
+		// return result
+		return offset;
+
+	}
+	// @@@ EO private fn: getFinalOffset @@@
+
+
 	// @@@ plugin: swipeStop @@@
 	prototype.plugin('swipeStop', function (x, y, data)
 	{
@@ -234,29 +279,17 @@
 		// linear fn -> y = m*x + n
 		var m = least[0] * this.vp_x / 2, n = least[1];
 
+		// get absolute speed
+		var speed = Math.abs(m);
+
 		// direction of the movement
 		var direction = m < 0 ? - 1 : 1;
 
-		// how far do we go with the current speed
-		// var inertia = Math.pow(Math.abs(m) * 0.5, 0.5)
+		// get the inertia of the swipe movement (maybe improve this more)
+		var inertia = Math.pow(speed * 0.5 * vis, 0.5) * - direction;
 
-		// get the swipe start position
-		var start = data.swipeStartPosition;
-
-		// absolute position offset
-		var off = data.swipePosOff;
-
-		// snap panel on the correct side (may not work for rtl)
-		var start = direction < 0 ? Math.ceil(start) : Math.floor(start);
-
-		// get base for further calculations (to snap to start)
-		var base = start - data.swipeStartPosition - data.swipePosOff;
-
-		// snap the offset to be a multiple of visibile panels
-		var offset =  Math.round((base - m)/ vis) * vis + base
-
-		// get absolute speed
-		var speed = Math.abs(m);
+		// call private function to calculate the actual real offset for final animation
+		var offset = getFinalOffset.call(this, data.swipeStartPosition, data.swipePosOff, inertia)
 
 		// unlock slider
 		this.locked = false;
