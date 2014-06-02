@@ -126,11 +126,14 @@
 		// get the new configuration
 		var vis = config.panelsVisible;
 
+		// calculate how many nav dots are visible
+		var count = Math.ceil(this.navDot.length/vis);
+
 		// check for old count class
 		if (this.navDotCountClass)
 		{
 			// remove the indicator class from the wrapper
-			this.navDotWrapper.remoteClass(this.navDotCountClass);
+			this.navDotWrapper.removeClass(this.navDotCountClass);
 			// reset the storage variable
 			this.navDotCountClass = null;
 		}
@@ -139,7 +142,7 @@
 		if (this.conf.navDotCountClass)
 		{
 			// create class indicating how many nav dots are ...
-			this.navDotCountClass = this.klass.navDotCount + vis;
+			this.navDotCountClass = this.klass.navDotCount + count;
 			// ... currently shown (use to hide single nav dots)
 			this.navDotWrapper.addClass(this.navDotCountClass);
 		}
