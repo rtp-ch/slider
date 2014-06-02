@@ -306,6 +306,7 @@ either version 3 of the License, or (at your option) any later version.
  - http://rawgithub.com/mgreter/slider/master/examples/swipe.html
  - http://rawgithub.com/mgreter/slider/master/examples/addons.html
  - http://rawgithub.com/mgreter/slider/master/examples/nested.html
+ - http://rawgithub.com/mgreter/slider/master/examples/adaptive.html
  - http://rawgithub.com/mgreter/slider/master/examples/tiles.html (alpha)
  - http://rawgithub.com/mgreter/slider/master/examples/carousel3d.html (alpha)
  - http://rawgithub.com/mgreter/slider/master/examples/demo/demo.html (experimental)
