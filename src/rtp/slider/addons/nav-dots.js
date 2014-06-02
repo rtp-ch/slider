@@ -126,6 +126,24 @@
 		// get the new configuration
 		var vis = config.panelsVisible;
 
+		// check for old count class
+		if (this.navDotCountClass)
+		{
+			// remove the indicator class from the wrapper
+			this.navDotWrapper.remoteClass(this.navDotCountClass);
+			// reset the storage variable
+			this.navDotCountClass = null;
+		}
+
+		// check of config option
+		if (this.conf.navDotCountClass)
+		{
+			// create class indicating how many nav dots are ...
+			this.navDotCountClass = this.klass.navDotCount + vis;
+			// ... currently shown (use to hide single nav dots)
+			this.navDotWrapper.addClass(this.navDotCountClass);
+		}
+
 		// process all nav dots to show/hide them
 		for(var i = 0; i < this.slides.length; i++)
 		{
@@ -144,6 +162,7 @@
 	{
 
 		// check if we should group the panels (otherwise just return)
+		// option may be overruled by new config (therefore we use a proper check)
 		if (!(('groupPanels' in config && config.groupPanels) || this.conf.groupPanels )) return;
 
 		// only proceed if the visible panels have changed (pass new config to function)
@@ -167,6 +186,10 @@
 			// function name to add dom node
 			// ex: prepend, append, after or before
 			navDotPosition: 'append',
+			// add class indicating how many
+			// now dots are currently shown
+			// use this to hide single dots
+			navDotCountClass: true,
 			// format for alt and title tag
 			navDotAltFormat: formatTitle,
 			navDotTitleFormat: formatTitle,
@@ -181,6 +204,7 @@
 			klass : {
 
 				navDot: prefix,
+				navDotCount: prefix + '-count-',
 				panelHidden: prefix + '-hidden',
 				panelPartial: prefix + '-partial',
 				panelVisible: prefix + '-visible'
