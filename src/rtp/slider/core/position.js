@@ -212,7 +212,7 @@
 			{
 				// adjust end result for real result
 				// can return "out of bound" position
-				if (real) var adjust = turns * (this.smax - this.cloned.length + 1);
+				if (real) var adjust = turns * (this.slides.length);
 				// return the calculated position (intoPanel / panelSize + i - offset)
 				return (px - panel_left) / (panel_right - panel_left) + i - align + adjust;
 
