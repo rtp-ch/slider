@@ -79,12 +79,13 @@ Enable vertical sliding. Default is horizontal.
 
 <pre>shrinkViewport: bool (default: false)</pre>
 
-Shrink the viewport on the current layout. Option is seldomly usefull and only
-available if there is no sizer set.
+[Shrink](http://rawgit.com/mgreter/slider/master/examples/demo/demo.html?align=0&alignPanelDim=false&alignPanelOpp=false&alignViewport=false&panelsVisible=2&slideFirst=0&fps=25&sizerDim=viewportByPanels&sizerOpp=viewportByPanels&autoVpOppDeadZone=0.2&autoVpOppLifeZone=0.8&panelInfoBox=1&swipe=1&gestureSwipe=1&autoslideAction=1&autoslideDelay=3500&autoslideFirstDelay=1000&autoslideResumeDelay=false&autoslidePauseOnHover=1&shrinkViewport=1&tileCols=1&tileRows=1&tileColsAtOnce=1&tileRowsAtOnce=1&tileDimOrigin=0.5&tileOppOrigin=0.5&inline=1&vsync=0&vertical=0&carousel=0&navDots=0&navArrows=0&navToolbar=0&progressBar=0&navKeyboard=0&touchSwipe=0&mouseSwipe=0&autoslide=0&autoslideStopOnHover=0&autoslideStopOnAction=0&fillViewport=0&tiles=0&carousel3d=0&clone=0) the viewport on the current layout. Option is seldomly
+usefull and only available if there is no sizer set.
 
 <pre>fillViewport: bool (default: false)</pre>
 
-Try to avoid any empty spots in the viewport if possible. Option is seldomly
+[Fill](http://rawgit.com/mgreter/slider/master/examples/demo/demo.html?align=0&alignPanelDim=false&alignPanelOpp=false&alignViewport=false&panelsVisible=2&slideFirst=0&fps=25&sizerDim=viewportByPanels&sizerOpp=viewportByPanels&autoVpOppDeadZone=0.2&autoVpOppLifeZone=0.8&panelInfoBox=1&swipe=1&gestureSwipe=1&autoslideAction=1&autoslideDelay=3500&autoslideFirstDelay=1000&autoslideResumeDelay=false&autoslidePauseOnHover=1&fillViewport=1&shrinkViewport=1&tileCols=1&tileRows=1&tileColsAtOnce=1&tileRowsAtOnce=1&tileDimOrigin=0.5&tileOppOrigin=0.5&inline=1&vsync=0&vertical=0&carousel=0&navDots=0&navArrows=0&navToolbar=0&progressBar=0&navKeyboard=0&touchSwipe=0&mouseSwipe=0&autoslide=0&autoslideStopOnHover=0&autoslideStopOnAction=0&tiles=0&carousel3d=0&clone=0)
+viewport to avoid  empty slots if possible. Option is seldomly
 usefull and only available if there is no sizer set.
 
 <pre>carousel: bool (default: false)</pre>
