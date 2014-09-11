@@ -3900,7 +3900,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		{
 			// adjust index into the valid panel range
 			if (index <= this.smin + 0) return this.offset[this.smin];
-			if (index >= this.smax + 1) return this.offset[this.smax + 1];
+			if (index >= this.smax + 1) return this.offset[this.smax];
 		}
 
 		// get the panel on the left side
@@ -3917,7 +3917,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// adjust end result for real result
 		// can return "out of bound" position
-		if (real) px += this.offset[this.smax + 1] * turns;
+		if (real) px += (this.offset[this.smax + 1] - this.offset[this.smin]) * turns;
 
 		// return px
 		return px;

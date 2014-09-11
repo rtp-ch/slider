@@ -154,7 +154,7 @@
 
 		// adjust end result for real result
 		// can return "out of bound" position
-		if (real) px += this.offset[this.smax + 1] * turns;
+		if (real) px += (this.offset[this.smax + 1] - this.offset[this.smin]) * turns;
 
 		// return px
 		return px;
