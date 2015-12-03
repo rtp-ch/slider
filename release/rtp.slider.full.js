@@ -572,16 +572,19 @@ RTP.Multievent = function (cb)
 // EO private scope;
 /*
 
-  Copyright (c) Marcel Greter 2011/2013 - OCBNET Gestures 0.0.0
+  Copyright (c) Marcel Greter 2011-2016 - OCBNET Gestures 0.1.2
   This is free software; you can redistribute it and/or modify it under the terms
   of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.txt),
   either version 3 of the License, or (at your option) any later version.
+  This plugin is available for use in all personal or
+  commercial projects under both MIT and GPL licenses.
 
 */;
 /*
 
-  Copyright (c) Marcel Greter 2012 - OCBNET gesture 0.0.0
-  This plugin available for use in all personal or commercial projects under both MIT and GPL licenses.
+  Copyright (c) Marcel Greter 2015 - OCBNET Gestures
+  This plugin is available for use in all personal or
+  commercial projects under both MIT and GPL licenses.
 
 */
 
@@ -1032,26 +1035,34 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 				// this means the event will not bubble
 				jQuery(gesture.el).triggerHandler(event);
 
-				// abort this hand gesture right now
-				// if (finger.isDefaultPrevented()) return;
-
 				// decrease fingers
 				gesture.fingers --;
 
-				// stop swipe movement
+				// reset some states for now
+				// recalulated on next move
 				delete gesture.offset;
 				delete gesture.rotation;
 				delete gesture.distance;
 				delete gesture.swipeSector;
 
-				// get index of finger in current gesture
-				var idx = jQuery.inArray(finger.id, gesture.ordered)
-
-				// remove finger from order array
-				gesture.ordered.splice(idx, 1);
-
-				// remove the finger from the gesture
-				delete gesture.finger[id];
+				// by default we abort the full hand
+				// you may remove finger by finger
+				if (event.isDefaultPrevented())
+				{
+					// get index of finger in current gesture object
+					var idx = jQuery.inArray(finger.id, gesture.ordered)
+					// remove finger from order array
+					gesture.ordered.splice(idx, 1);
+					// remove finger from gesture
+					delete gesture.finger[id];
+				}
+				else
+				{
+					// unset all fingers
+					gesture.finger = {};
+					gesture.fingers = 0;
+					gesture.ordered.length = 0;
+				}
 
 				// remove from surface (find index and remove via splice)
 				var idx = jQuery.inArray(gesture, surface[id]);
@@ -1279,8 +1290,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 // EO private scope;
 /*
 
-  Copyright (c) Marcel Greter 2012 - OCBNET Gestures 0.0.0
-  This plugin available for use in all personal or commercial projects under both MIT and GPL licenses.
+  Copyright (c) Marcel Greter 2015 - OCBNET Gestures
+  This plugin is available for use in all personal or
+  commercial projects under both MIT and GPL licenses.
 
 */
 
@@ -1415,8 +1427,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 // EO private scope;
 /*
 
-  Copyright (c) Marcel Greter 2012 - OCBNET Gestures 0.0.0
-  This plugin available for use in all personal or commercial projects under both MIT and GPL licenses.
+  Copyright (c) Marcel Greter 2015 - OCBNET Gestures
+  This plugin is available for use in all personal or
+  commercial projects under both MIT and GPL licenses.
 
 */
 
@@ -1580,9 +1593,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 (function (jQuery)
 {
 
-	// proper detection for ie10 on desktop (https://github.com/CreateJS/EaselJS/issues/273)
-	// this will also be true for ie11 and hopefully for all future IE generations (I dare you MS)
-	if ( ! (window.navigator['msPointerEnabled'] && window.navigator["msMaxTouchPoints"] > 0) ) return;
+	if (
+		// proper detection for ie10+ on desktop (https://github.com/CreateJS/EaselJS/issues/273)
+		// this will also be true for ie11 and hopefully for all future IE generations (I dare you MS)
+		(!window.navigator['msPointerEnabled'] || !window.navigator["msMaxTouchPoints"]) //ie10
+		&& (!window.navigator['pointerEnabled'] || !window.navigator["maxTouchPoints"]) //ie11
+	) return;
 
 	// event names may vary
 	// ie 10 uses vendor prefix
@@ -1614,102 +1630,52 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		};
 	}
 
-	// extend class
-	(function(prototype)
+	// @@@ private fn: handlePointerDown @@@
+	// this is invoked on the most inner node
+	// the `this` context points to the gesture
+	function handlePointerDown (evt)
 	{
 
-		// bind additional events for gestures
-		prototype.init.push(function (el)
-		{
+		// get variables from event
+		var el = evt.currentTarget,
+		    org = evt.originalEvent;
 
-			// create a closure
-			var closure = this;
+		// get the gesture for current element
+		// it should be here, otherwise I don't know
+		// why I would be registered on this element
+		var gesture = jQuery(el).data('gesture');
 
-			// native actions
-			var actions = [];
+		// assertion for same object (play safe - dev)
+		if (gesture !== this) eval("alert('assertion')");
 
-			// get object with info about which
-			// actions should be handled by UA
-			var action = this.config.native || {};
-
-			// push native features to array
-			if (action.panY) actions.push('pan-y');
-			if (action.panX) actions.push('pan-x');
-			// add default value if we have no option yet
-			if (actions.length == 0) actions.push('none');
-
-			// trap pointerdown locally on each element
-			jQuery(el).bind(evt_name['down'], function (evt)
-			{
-
-				// get variables from event
-				var el = evt.currentTarget,
-				    org = evt.originalEvent;
-
-				// get the gesture for current element
-				// it should be here, otherwise I don't know
-				// why I would be registered on this element
-				var gesture = jQuery(el).data('gesture');
-
-				// assertion for same object (play safe - dev)
-				if (gesture !== closure) eval("alert('assertion')");
-
-				// create new finger down event object
-				// you may use it to cancel event bubbeling
-				var finger = new jQuery.Event('fingerdown',
-				{
-					type : 'pointer',
-					x : org.pageX,
-					y : org.pageY,
-					id : org.pointerId,
-					originalEvent : evt
-				});
-
-				// pass on to gesture handler
-				gesture.fingerDown(finger)
-
-			})
-			// this can ie. cancel pointers on scroll
-			// mostly we will only see pan-x/pan-y here
-			.css(evt_name['action'], actions.join(' '))
-
-		});
-		// EO bind additional events for gestures
-
-	})(OCBNET.Gestures.prototype);
-	// EO extend class
-
-
-	// use same handler for pointerup and pointercancel
-	var evt_up = [evt_name['up'], evt_name['cancel']].join(' ');
-
-	// trap pointerup globally, "trap" for all cases
-	// canceled ie. if user decided to scroll not swipe
-	jQuery(document).bind(evt_up, function (evt)
-	{
-
-		// get variables from the event object
-		var org = evt.originalEvent;
-
-		// create new finger object
-		var event = new jQuery.Event('fingerup',
+		// create new finger down event object
+		// you may use it to cancel event bubbeling
+		var finger = new jQuery.Event('fingerdown',
 		{
 			type : 'pointer',
 			x : org.pageX,
 			y : org.pageY,
 			id : org.pointerId,
-			originalEvent: evt
+			originalEvent : evt
 		});
 
-		// only release the specific button
-		OCBNET.Gestures.fingerup(event);
+		// pass on to gesture handler
+		gesture.fingerDown(finger)
 
-	})
-	// EO MSPointerUp
+		// prevent some mouse events
+		// hopefully doesnt bite back
+		var config = gesture.config;
+		if (!config.hatchPointerDown)
+		{ evt.preventDefault(); }
 
-	// trap pointermove globally, "trap" for all cases
-	// this will be called for every pointer that moved
-	jQuery(document).bind(evt_name['move'], function (evt)
+	}
+	// @@@ EO private fn: handlePointerDown @@@
+
+
+	// @@@ private fn: handlePointerMove @@@
+	// this is invoked on the document node
+	// the `this` context points to document
+	function handlePointerMove (evt)
 	{
 
 		// get variables from the event object
@@ -1728,7 +1694,98 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// move just one finger at once
 		OCBNET.Gestures.fingermove(event);
 
-	})
+	}
+	// @@@ EO private fn: handlePointerMove @@@
+
+
+	// @@@ private fn: handlePointerUp @@@
+	// this is invoked on the document node
+	// the `this` context points to document
+	function handlePointerUp (evt)
+	{
+
+		// get variables from the event object
+		var org = evt.originalEvent;
+
+		// create new finger object
+		var event = new jQuery.Event('fingerup',
+		{
+			type : 'pointer',
+			x : org.pageX,
+			y : org.pageY,
+			id : org.pointerId,
+			originalEvent: evt
+		});
+
+		// only release the specific button
+		OCBNET.Gestures.fingerup(event);
+
+	}
+	// @@@ EO private fn: handlePointerUp @@@
+
+
+	// extend class
+	(function(prototype)
+	{
+
+		// bind additional events for gestures
+		prototype.init.push(function (el)
+		{
+
+			// by default we call preventDefault on
+			// pointerDown event. This should prevent
+			// unwanted emulated mouse down/click event
+			// disable this via hatchPointerDown option
+			/*
+			this.config = jQuery.extend({
+				// disabled (false) by default
+				// you may enable "pass-through"
+				hatchPointerDown: false
+			}, this.config);
+			*/
+
+			// create a closure
+			var closure = this;
+
+			// native actions
+			var actions = [];
+
+			// get object with info about which
+			// actions should be handled by UA
+			var action = this.config.native || {};
+
+			// push native features to array
+			if (action.panY) actions.push('pan-y');
+			if (action.panX) actions.push('pan-x');
+			// add default value if we have no option yet
+			if (actions.length == 0) actions.push('none');
+
+			// create proxy function to keep this context
+			var proxy = jQuery.proxy(handlePointerDown, this);
+			// trap pointerdown locally on each element
+			jQuery(el).bind(evt_name['down'], proxy)
+			// this can ie. cancel pointers on scroll
+			// mostly we will only see pan-x/pan-y here
+			.css(evt_name['action'], actions.join(' '))
+
+		});
+		// EO bind additional events for gestures
+
+	})(OCBNET.Gestures.prototype);
+	// EO extend class
+
+
+	// use same handler for pointerup and pointercancel
+	var evt_up = [evt_name['up'], evt_name['cancel']].join(' ');
+
+	// trap pointerup globally, "trap" for all cases
+	// canceled ie. if user decided to scroll not swipe
+	jQuery(document).bind(evt_up, handlePointerUp)
+	// EO MSPointerUp
+
+	// trap pointermove globally, "trap" for all cases
+	// this will be called for every pointer that moved
+	jQuery(document).bind(evt_name['move'], handlePointerMove)
 	// EO MSPointerMove
 
 
@@ -3900,7 +3957,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		{
 			// adjust index into the valid panel range
 			if (index <= this.smin + 0) return this.offset[this.smin];
-			if (index >= this.smax + 1) return this.offset[this.smax];
+			if (index >= this.smax + 1) return this.offset[this.smax + 1];
 		}
 
 		// get the panel on the left side

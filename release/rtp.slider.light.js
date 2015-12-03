@@ -2735,7 +2735,7 @@ RTP.Multievent = function (cb)
 		{
 			// adjust index into the valid panel range
 			if (index <= this.smin + 0) return this.offset[this.smin];
-			if (index >= this.smax + 1) return this.offset[this.smax];
+			if (index >= this.smax + 1) return this.offset[this.smax + 1];
 		}
 
 		// get the panel on the left side
