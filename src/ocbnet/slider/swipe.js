@@ -182,7 +182,7 @@
 		}
 
 		// do not record to many steps (memory usage)
-		if (moves.length > 50) moves.shift();
+		if (moves.length > 20) moves.shift();
 
 		// push the coordinates with timestamp to our data array
 		moves.push([x, y, (new Date()).getTime()]);
@@ -290,6 +290,9 @@
 
 		// call private function to calculate the actual real offset for final animation
 		var offset = getFinalOffset.call(this, data.swipeStartPosition, data.swipePosOff, inertia)
+
+		// do corrections when snapping is off (see nested example)
+		offset = Math.round(this.position + offset) - this.position;
 
 		// unlock slider
 		this.locked = false;
