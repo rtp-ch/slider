@@ -139,7 +139,7 @@
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	prototype.plugin('start', function ()
 	{
 
 		// shared data
