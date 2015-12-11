@@ -14,7 +14,21 @@
     <script src="../release/rtp.slider.exp.js"></script>
 
     <script type="text/javascript">
-        jQuery(function () {
+
+        // allow to change mode via query string
+        var vertical = document.location.search
+                       .match(/(?:^|&|\?)vertical/);
+
+        jQuery(function ()
+        {
+            // in vertical mode it is important that any parent
+            // element has a usefull height set. In horizontal
+            // mode a div will automatically span the available
+            // width, in vertical mode it will not do this on its
+            // own. You need to set height styles accordingly!
+            if (vertical) jQuery('BODY').css('height', '100%');
+
+            // instantiate slider
             window.slider =
             jQuery('DIV.rtp-slider-viewport')
               .rtpSlider({
@@ -24,9 +38,11 @@
                 navToolbar:    true,
                 progressBar:   true,
                 gestureSwipe:  true,
-                curClass:      'current'
+                curClass:      'current',
+                vertical:      !!vertical
               })
             .data('rtp-slider');
+
         });
     </script>
 

@@ -14,26 +14,43 @@
     <script src="../release/rtp.slider.exp.js"></script>
 
     <script type="text/javascript">
+
+        // OCBNET.Layout.config('fps', 25);
+        // OCBNET.Layout.config('vsync', true);
+        // OCBNET.Layout.config('timeout');
+        // OCBNET.Layout.config('default');
+
+        // allow to change mode via query string
+        var vertical = document.location.search
+                       .match(/(?:^|&|\?)vertical/);
+
         jQuery(function () {
             window.slider =
             jQuery('DIV.rtp-slider-viewport')
               .rtpSlider({
+
                 easeDuration:   1500,
                 carousel3d:     true,
-                autoslide:      true,
+                autoslide:      false,
                 carousel:       true,
                 navDots:        true,
                 navArrows:      true,
                 navToolbar:     true,
                 progressBar:    true,
                 gestureSwipe:   true,
-                curClass:       'current'
+                curClass:       'current',
+                sizerDim: 'panelsByViewport',
+                sizerOpp: 'viewportByPanels',
+                navArrowPrevText: '<img src="img/left.png" alt="left">',
+                navArrowNextText: '<img src="img/right.png" alt="left">',
+                vertical: !!vertical
+
               })
             .data('rtp-slider');
         });
     </script>
 </head>
-<body>
+<body style="height: 100%">
 
     <div class="rtp-slider-viewport">
         <div class="rtp-slider-panel">

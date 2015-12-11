@@ -65,10 +65,9 @@ jQuery(function()
 		setFloat: true,
 		curClass: false,
 
-		// text/html for the previous link
-		navArrowPrevText: '<img src="img/left.gif" alt="left">',
-		// text/html for the next link
-		navArrowNextText: '<img src="img/right.gif" alt="left">',
+		// text/html for the previous/next link
+		navArrowPrevText: '<img src="../img/left.png" alt="left">',
+		navArrowNextText: '<img src="../img/right.png" alt="left">',
 
 		hooks: { 'ready': function() { } }
 
@@ -98,6 +97,11 @@ jQuery(function()
 	{
 		clone = node.clone()
 		node.after(clone);
+	}
+
+	if (config.sizerOpp == 'panelsByViewport') {
+		var dir = config.vertical ? 'width' : 'height';
+		jQuery('.rtp-slider-panel IMG').css(dir, '100%');
 	}
 
 	// initialize the slider

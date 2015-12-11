@@ -17,50 +17,50 @@
 
 		// configure layout manager
 		OCBNET.Layout.config('fps', 25);
-		OCBNET.Layout.config('vsync', false);
+		OCBNET.Layout.config('vsync', true);
 		OCBNET.Layout.config('timeout');
 		OCBNET.Layout.config('default');
 
 		jQuery(function () {
 			var root =
 			jQuery('DIV.rtp-slider-outer')
-			  .rtpSlider({
-			  	klass: { panel: 'rtp-slider-pnl' },
-			  	carousel:	  false,
-				navDots:	   true,
-				navToolbar:	true,
-				mouseSwipe:	false,
+			.rtpSlider({
+				klass: { panel: 'rtp-slider-pnl' },
+				carousel:      false,
+				navDots:       true,
+				navToolbar:    true,
+				mouseSwipe:    false,
 				gestureSwipe:  true
-			  })
-			  .data('rtp-slider');
-				var b =
+			})
+			.data('rtp-slider');
+			var b =
 			jQuery('DIV.rtp-slider-viewport-b')
-			  .rtpSlider({
-			  	parent: root,
-			  	klass: { panel: 'rtp-slider-panel-b' },
-			  	panelsVisible: 1.0,
-			  	fillViewport: true,
-			  	carousel:	  false,
-				navDots:	   true,
-				navToolbar:	true,
-				mouseSwipe:	false,
+			.rtpSlider({
+				parent: root,
+				klass: { panel: 'rtp-slider-panel-b' },
+				panelsVisible: 1.0,
+				fillViewport:  true,
+				carousel:      false,
+				navDots:	     true,
+				navToolbar:    true,
+				mouseSwipe:    false,
 				gestureSwipe:  true
-			  })
-			  .data('rtp-slider');
-				var a =
+			})
+			.data('rtp-slider');
+			var a =
 			jQuery('DIV.rtp-slider-viewport-a')
-			  .rtpSlider({
-			  	parent: root,
-			  	klass: { panel: 'rtp-slider-panel-a' },
-			  	panelsVisible: 1.0,
-			  	fillViewport: true,
-			  	carousel:	  false,
-				navDots:	   true,
-				navToolbar:	true,
-				mouseSwipe:	false,
+			.rtpSlider({
+				parent: root,
+				klass: { panel: 'rtp-slider-panel-a' },
+				panelsVisible: 1.0,
+				fillViewport:  true,
+				carousel:      false,
+				navDots:       true,
+				navToolbar:    true,
+				mouseSwipe:    false,
 				gestureSwipe:  true
-			  })
-			  .data('rtp-slider');
+			})
+			.data('rtp-slider');
 		});
 	</script>
 	<style>

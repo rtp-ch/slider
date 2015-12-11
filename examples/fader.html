@@ -8,15 +8,27 @@
       var proto = document.location.protocol.match(/^file/i) ? 'http:' : '';
       document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"><\/script>');
       document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"><\/script>');
-      document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.0.6/jquery.browser.min.js"><\/script>');
       document.write('<script src="' + proto + '//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"><\/script>');
-
     </script>
     <script>webmerge = { webroot : '..' }</script>
     <script src="../release/rtp.slider.exp.js"></script>
 
     <script type="text/javascript">
-        jQuery(function () {
+
+        // allow to change mode via query string
+        var vertical = document.location.search
+                       .match(/(?:^|&|\?)vertical/);
+
+        jQuery(function ()
+        {
+            // in vertical mode it is important that any parent
+            // element has a usefull height set. In horizontal
+            // mode a div will automatically span the available
+            // width, in vertical mode it will not do this on its
+            // own. You need to set height styles accordingly!
+            if (vertical) jQuery('BODY').css('height', '100%');
+
+            // instantiate slider
             window.slider =
             jQuery('DIV.rtp-slider-viewport')
               .rtpSlider({
@@ -29,9 +41,11 @@
                 tileRowsAtOnce: 0,
                 // tileOppOrigin: 1,
                 // tileDimOrigin: 1,
-                sizerDim : 'panelsByViewport'
+                sizerDim :      'panelsByViewport',
+                vertical:       !!vertical
               })
             .data('rtp-slider');
+
         });
     </script>
 </head>

@@ -8,6 +8,18 @@ BODY
 	margin: 0 100px;
 }
 
+HTML { height: 100%; }
+BODY { margin: 0px; }
+
+.rtp-slider-vertical,
+.rtp-slider-vertical .rtp-slider-panel,
+.rtp-slider-vertical .rtp-slider-viewport,
+.rtp-slider-vertical .rtp-slider-container
+{
+	height: 100%;
+	box-sizing: border-box;
+}
+
 .rtp-slider-viewport
 {
 	-webkit-border-radius: 8px;
@@ -44,21 +56,72 @@ BODY
 .rtp-nav-next A IMG,
 .rtp-nav-prev A IMG
 {
+	margin: auto;
 	border: none;
 	display: block;
 }
 
-
-.rtp-nav-dots
+.rtp-toolbar A
 {
+	opacity: 0.65;
+	transition: opacity 300ms;
 }
 
+.rtp-nav-next A,
+.rtp-nav-prev A
+{
+	opacity: 0.25;
+	transition: opacity 300ms;
+}
+
+.rtp-slider-wrapper:hover .rtp-nav-prev A,
+.rtp-slider-wrapper:hover .rtp-nav-next A
+{
+	opacity: 0.65;
+}
+
+.rtp-slider-wrapper:hover .rtp-nav-prev A:hover,
+.rtp-slider-wrapper:hover .rtp-nav-next A:hover
+{
+	opacity: 0.975;
+}
+
+.rtp-nav-dot A:hover IMG
+{
+	opacity: 0.75 !important;
+}
+
+
+.rtp-nav-prev A {
+	width: 32px; height: 32px;
+	background-image: url(img/left.png)
+}
+
+.rtp-nav-next A {
+	width: 32px; height: 32px;
+	background-image: url(img/right.png)
+}
+
+.rtp-nav-prev A SPAN,
+.rtp-nav-next A SPAN
+{
+	display: none;
+}
+
+
+.rtp-toolbar A:hover,
+.rtp-nav-dots A:hover,
+.rtp-nav-next A:hover,
+.rtp-nav-prev A:hover
+{
+	opacity: 1.0;
+}
 
 .rtp-toolbar,
 .rtp-nav-dots
 {
 	bottom: 10px;
-	opacity: 0.9;
+	opacity: 0.15;
 	padding: 6px 8px;
 	overflow: hidden;
 	position: absolute;
@@ -68,6 +131,13 @@ BODY
 	-khtml-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	background-color: #F3F3F3;
+	transition: opacity 300ms;
+}
+
+.rtp-slider-wrapper:hover .rtp-toolbar,
+.rtp-slider-wrapper:hover .rtp-nav-dots
+{
+	opacity: 0.9;
 }
 
 .rtp-toolbar
@@ -174,6 +244,14 @@ BODY
 	width: 100%;
 	height: auto;
 	display: block;
+}
+
+
+/* use full height, scale width */
+.rtp-slider-vertical .rtp-slider-panel IMG
+{
+	width: auto;
+	height: 100%;
 }
 
 .rtp-slider-panel .info
