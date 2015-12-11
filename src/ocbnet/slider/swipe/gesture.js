@@ -130,7 +130,7 @@
 	// @@@ EO private fn: start_handler @@@
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	prototype.plugin('start', function ()
 	{
 
 		// shared data

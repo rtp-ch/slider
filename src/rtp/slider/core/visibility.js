@@ -144,7 +144,7 @@
 		while (i--) { visibility[i] = 0; }
 
 		// test how much viewable each panel is right now
-		for(i = 0; panel_left < view_right; i ++)
+		if (this.vp_x) for(i = 0; panel_left < view_right; i ++)
 		{
 
 			// normalize from panel to slide

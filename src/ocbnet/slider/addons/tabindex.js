@@ -61,7 +61,8 @@
 		if (!this.conf.adjustTabIndex) return;
 
 		// reset the tabindex for all links in this slide
-		jQuery(slide).data('links').attr('tabindex', visible ? '' : '-1');
+		var links = jQuery(slide).data('links');
+		if (links) links.attr('tabindex', visible ? '' : '-1');
 
 	});
 	// @@@ EO plugin: changedSlideVisibility @@@

@@ -31,7 +31,7 @@
 
 		// development assertions
 		if (exposure.length == 0) eval('debugger');
-		if (this.pd[0].length == 0) eval('debugger');
+		// if (this.pd[0].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)
@@ -40,8 +40,8 @@
 			// skip if panel is not visible
 			if (exposure[i] == 0) continue;
 
-			// sum up dimensions of all panels
-			dim += this.pd[0][i] * exposure[i];
+			// sum up dimensions of all panels with exposure
+			dim += this.pd[0][i + this.smin] * exposure[i];
 
 		}
 

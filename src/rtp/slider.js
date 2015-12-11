@@ -256,9 +256,9 @@
 			// fix the size of the panel
 			// TODO: make axis configurable
 			if (conf.panelFixedAxis == 'dim')
-			{ slide.width(slide.width()); }
+			{ slide.outerWidth(slide.width()); }
 			else if (conf.panelFixedAxis == 'opp')
-			{ slide.height(slide.height()); }
+			{ slide.outerHeight(slide.height()); }
 
 		}
 		// EO each slide
@@ -409,10 +409,18 @@
 			.done(function()
 			{
 
+				// mark resource loaded
+				slider.resReady = true;
 				// trigger ready hook
 				slider.trigger('ready');
 
 			});
+
+			// this fixes at least a bug in firefox 42: when we have a panel with
+			// an image, we sometime read the same height as the width, even if
+			// aspect ration is not 1:1. When I log `clientHeight` is see 791, but
+			// when I also log and inspect the dom object, I see something different.
+			jQuery(window).bind('load', function() { slider.trigger('ready'); })
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
@@ -483,6 +491,7 @@
 			// extend our config with new options
 			jQuery.extend(true, this.conf, option);
 			// trigger position change event
+			console.log('new config');
 			this.trigger('layout');
 			// call global layout
 			OCBNET.Layout(true);

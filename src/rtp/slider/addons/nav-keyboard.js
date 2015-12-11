@@ -35,7 +35,7 @@
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function()
+	prototype.plugin('start', function()
 	{
 
 		// initialize keyboard navigation

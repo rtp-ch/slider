@@ -205,6 +205,10 @@
 	prototype.plugin('ready', function()
 	{
 
+		// only call start once
+		if (this.started) return;
+		this.started = true;
+
 		// call start hook defered
 		this.trigger('start');
 

@@ -61,6 +61,8 @@
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
+		// if (isNaN(this.vp_x) || this.vp_x == 0) eval('debugger');
+
 		// correct virtual viewport to get rid of the margin
 		var virtual = this.vp_x + (this.conf.margin || 0);
 

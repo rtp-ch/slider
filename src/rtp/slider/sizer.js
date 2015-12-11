@@ -135,13 +135,17 @@
 	prototype.plugin('changedPosition', function()
 	{
 
-		// current viewport dimensions
-		var vp_x = this.getViewportDim();
-		var vp_y = this.getViewportOpp();
+		// remember initial values
+		this.old_vp_x = this.vp_x;
+		this.old_vp_y = this.vp_y;
+
+	}, - 999999);
+	prototype.plugin('changedPosition', function()
+	{
 
 		// check against the stored viewport dimensions for changes
 		// if they differ, chances are we need to update all layouts
-		if (vp_x != this.vp_x || vp_y != this.vp_y) OCBNET.Layout(true);
+		if (this.vp_x != this.old_vp_x || this.vp_y != this.old_vp_y) OCBNET.Layout();
 
 	}, 999999);
 	// @@@ EO plugin: changedPosition @@@

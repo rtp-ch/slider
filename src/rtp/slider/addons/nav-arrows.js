@@ -58,8 +58,8 @@
 			navArrows: false, // should we generate navigation arrows
 			navArrowAttach: 'wrapper', // wrapper or panels
 			navArrowPosition: 'default', // prepend, reverse, append
-			navArrowPrevText: '&#171; left', // text/html for the previous link
-			navArrowNextText: 'right &#187;', // text/html for the next link
+			navArrowPrevText: '<span>&#171; left</span>', // text/html for the previous link
+			navArrowNextText: '<span>right &#187;</span>', // text/html for the next link
 
 			tmpl : {
 

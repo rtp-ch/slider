@@ -114,7 +114,7 @@
 
 		// update opposite viewport size
 		// take minimum size and add offset
-		this.updateViewportOpp(min + offset);
+		this.updateViewportOpp(parseInt(min + offset - 0.51));
 
 	}
 	// @@@ EO private fn: viewportOppByPanels @@@

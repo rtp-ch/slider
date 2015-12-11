@@ -159,6 +159,25 @@
 		// reset size and dim array
 		inner.length = outer.length = 0;
 
+		// note: this fixes a bug in google chrome!
+		// situation: image inside panel in vetical mode
+		// image height is 100% and dynamic to viewport
+		// width is set to auto to keep the aspect ratio
+		// we change panel height and expect updated width
+		// in chrome the panel width doesn't seem to update
+		if (OCBNET.Layout.ua.browser == 'chrome')
+		{
+			// apply specific hack
+			if (this.conf.vertical)
+			{
+				var element = this.container[0];
+				var disp = element.style.display;
+				element.style.display = 'none';
+				element.offsetHeight; // trash
+				element.style.display = disp;
+			}
+		}
+
 		// collect size and margin for all panels
 		var i = this.panels.length; while (i--)
 		{

@@ -195,6 +195,10 @@
 
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
+		// throw an error if we cannot get a valid size
+		// this is mostly due missing or confusing css styles
+		// in vertical mode you must give it some height value
+		// if (this.vp_x == 0) throw('viewport size is empty');
 
 	}
 	// @@@ EO method: readViewportDim @@@
