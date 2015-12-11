@@ -22,7 +22,10 @@
 		extend({
 
 			// enable feature
-			carousel3d: false
+			carousel3d: false,
+
+			// class to mark wrapper with our class
+			klass: { carousel3d: 'rtp-slider-carousel3d' }
 
 		});
 
@@ -38,6 +41,9 @@
 	prototype.plugin('init', function ()
 	{
 
+		// check if feature is enabled
+		if (!this.conf.carousel3d) return;
+
 		// create closures for functions
 		// only calculate on layout update
 		var angle, paneldim, distance;
@@ -45,37 +51,56 @@
 		// save and store to old method (to be restored later)
 		var oldSetOffsetByPosition = this.setOffsetByPosition;
 
+		// mark the wrapper with current run mode
+		this.viewport.addClass(this.klass.carousel3d);
+
 		// @@@ private fn: setOffsetByPosition @@@
 		function setOffsetByPosition (position)
 		{
 
-			// check if feature is enabled
-			if (!this.conf.carousel3d)
-			{
-
-				// call original method if feature is disabled
-				return oldSetOffsetByPosition.apply(this, arguments);
-
-			}
-			// EO if feature not enabled
+			// call original method to update `ct_off`
+			oldSetOffsetByPosition.apply(this, arguments);
 
 			// now calulate the rotation for this position
+			var direction = this.conf.vertical ? 'X' : 'Y';
 			var rotate = 360 / this.slides.length * position;
+			rotate *= this.conf.vertical ? 1 : -1;
 
-			var dir = this.conf.vertical ? 'X' : 'Y';
-
-			// set 3d container styles
-			this.container.css({
-
-				// rotate the 3d panel and move it aways from the 3d center
-				// transform: 'translateZ(-' + distance + 'px) rotate' + dir + '(-' + rotate + 'deg)'
-				transform: 'translateZ(-' + distance + 'px) rotate' + dir + '(-' + rotate + 'deg)'
-
-			});
+			// transformations
+			var transforms = [];
+			// move the 3d center away from the viewport plane
+			transforms.push('translateZ(-' + (distance) + 'px)');
+			if (this.conf.vertical) transforms.push('translateY(' + (this.vp_x / 2) + 'px)');
+			// apply the current rotation angle on direction axis
+			transforms.push('rotate' + direction + '(' + rotate + 'deg)');
+			// set 3d container styles to create rotation effect
+			this.container.css('transform', transforms.join(' '));
 
 		}
 		// @@@ EO private fn: setOffsetByPosition @@@
 
+		function setup ()
+		{
+
+			var css = {
+				// use absolute position
+				// seems faster than static
+				position : 'absolute',
+				// force anti aliasing in firefox
+				outline: '1px solid transparent'
+			};
+			// fix in one axis
+			if (this.conf.vertical) {
+				css.top = '0px';
+				css.bottom = '0px';
+			} else {
+				css.left = '0px';
+				css.right = '0px';
+			}
+			// setup 3d panels
+			this.panels.css(css);
+
+		}
 
 		// @@@ private fn: layout @@@
 		function layout ()
@@ -83,6 +108,11 @@
 
 			// check if feature is enabled
 			if (!this.conf.carousel3d) return;
+
+			var vertical = this.conf.vertical;
+			// ensure we always rotate around the same axis
+			// this will be the center of the container node
+			if (vertical) this.container.css('height', 0);
 
 			// declare local variables
 			var conf = this.conf,
@@ -107,32 +137,40 @@
 
 				// use absolute position
 				position : 'absolute',
-				left : '0px', right : '0px',
+				// left : '0px', right : '0px',
 
 				// force anti aliasing in firefox
 				outline: '1px solid transparent'
 
 			});
 
+			// dont bleed inside border et al
+			// unfortunately breaks 3d in chrome
+			// if (OCBNET.Layout.ua.browser != 'chrome')
+			// { this.viewport.css('overflow', 'hidden'); }
+
 			// hide cloned panels
 			this.cloned.hide();
 
-			var dir = this.conf.vertical ? 'X' : 'Y';
+			var clock = vertical ? -360 : 360;
+			var direction = vertical ? 'X' : 'Y';
 
 			// loop all slides to setup their 3d transformation
 			var l = this.slides.length, i = l; while (i--)
 			{
 
 				// get rotation for this panel
-				var rotate = 360 / l * i + align;
+				var rotate = clock / l * i + align;
 
-				// set all 3d panel styles
-				jQuery(this.slides[i]).css({
-
-					// rotate the 3d panel and move it aways from the 3d center
-					transform: 'rotate' + dir + '(' + rotate + 'deg) translateZ( ' + distance + 'px )'
-
-				});
+				// transformations
+				var transforms = [];
+				// apply the current rotation angle on direction axis
+				if (vertical) transforms.push('translateY(-' + (this.vp_x / 2) + 'px)');
+				transforms.push('rotate' + direction + '(' + rotate + 'deg)');
+				// move the 3d center away from the viewport plane
+				transforms.push('translateZ(' + (distance) + 'px)');
+				// set 3d container styles to create rotation effect
+				jQuery(this.slides[i]).css('transform', transforms.join(' '));
 
 			}
 			// EO all slides
@@ -157,6 +195,13 @@
 		// overwrite setOffsetByPosition method
 		// do this on each instance not on prototype
 		this.setOffsetByPosition = setOffsetByPosition;
+		// also overwrite setContainerOffset to accept any value
+		// this allows other plugins (ie. visibility) to kick in
+		this.setContainerOffset = function(off) { this.ct_off = off; };
+
+
+		// setup the 3d carousel on layout event
+		// prototype.plugin('adjustViewport', setup, - 9999);
 
 		// setup the 3d carousel on layout event
 		prototype.plugin('adjustViewport', layout, - 99);
