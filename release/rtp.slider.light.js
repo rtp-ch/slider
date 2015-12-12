@@ -169,9 +169,9 @@ RTP.Multievent = function (cb)
 	var ua = navigator.userAgent.toLowerCase();
 
 	// only match for ie and mozilla so far
-	var match = // /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-	            // /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-	            // /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+	var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
 	            /(msie) ([\w.]+)/.exec( ua ) ||
 	            ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
 	            [];
@@ -268,6 +268,8 @@ RTP.Multievent = function (cb)
 	function finalize(data, widgets)
 	{
 
+		Manager.initialized = true;
+
 		// first call post on all widgets
 		exec('updateLayout', data, widgets);
 
@@ -315,6 +317,7 @@ RTP.Multievent = function (cb)
 		var body_2nd_x = win.innerWidth();
 		var body_2nd_y = win.innerHeight();
 
+		// check if layout triggered any scrollbar changes
 		if (body_1st_x != body_2nd_x || body_1st_y != body_2nd_y)
 		// if (body_1st_x > body_2nd_x || body_1st_y > body_2nd_y)
 		{
@@ -330,28 +333,38 @@ RTP.Multievent = function (cb)
 			// if (body_2nd_x < body_3rd_x || body_2nd_y < body_3rd_y)
 			{
 
-				// check if we should force the horizontal scrollbar
-				if (firefox_overflow || body_2nd_y != body_3rd_y)
+				// helper function (dry)
+				function resetBodyScrollbars()
 				{
-					// store previous scollbar setting
-					overflow_x = body.css('overflow-x');
-					// reset to scroll if not hidden
-					if (overflow_x != 'hidden')
-					{ body.css('overflow-x', 'scroll'); }
+					// check if we should force the horizontal scrollbar
+					if (firefox_overflow || body_2nd_y != body_3rd_y)
+					{
+						// store previous scollbar setting
+						overflow_x = body.css('overflow-x');
+						// reset to scroll if not hidden
+						if (overflow_x != 'hidden')
+						{ body.css('overflow-x', 'scroll'); }
+					}
+
+					// check if we should force the vertical scrollbar
+					if (firefox_overflow || body_2nd_x != body_3rd_x)
+					{
+						// store previous scollbar setting
+						overflow_y = body.css('overflow-y');
+						// reset to scroll if not hidden
+						if (overflow_y != 'hidden')
+						{ body.css('overflow-y', 'scroll'); }
+					}
 				}
 
-				// check if we should force the vertical scrollbar
-				if (firefox_overflow || body_2nd_x != body_3rd_x)
-				{
-					// store previous scollbar setting
-					overflow_y = body.css('overflow-y');
-					// reset to scroll if not hidden
-					if (overflow_y != 'hidden')
-					{ body.css('overflow-y', 'scroll'); }
-				}
+				// reset to scrollbars if not hidden
+				if (Manager.initialized) resetBodyScrollbars();
 
 				// reflow layout
 				layout(data, nodes);
+
+				// reset to scrollbars if not hidden
+				if (!Manager.initialized) resetBodyScrollbars();
 
 			}
 			// EO if 2nd changed
@@ -365,6 +378,11 @@ RTP.Multievent = function (cb)
 	};
 	// EO Manager
 
+	// expose ua info
+	Manager.ua = {
+		'browser': browser,
+		'version': version
+	};
 
 	// static global function
 	Manager.config = function (key, value)
@@ -562,7 +580,7 @@ RTP.Multievent = function (cb)
 
 	// make sure our global namespace exists
 	// but do not reset it if already present
-	if (typeof OCBNET == 'undefined') OCBNET = {};
+	if (typeof OCBNET == 'undefined') window.OCBNET = {};
 
 	// assign class to global namespace
 	OCBNET.Layout = Manager;
@@ -828,9 +846,9 @@ RTP.Multievent = function (cb)
 			// fix the size of the panel
 			// TODO: make axis configurable
 			if (conf.panelFixedAxis == 'dim')
-			{ slide.width(slide.width()); }
+			{ slide.outerWidth(slide.width()); }
 			else if (conf.panelFixedAxis == 'opp')
-			{ slide.height(slide.height()); }
+			{ slide.outerHeight(slide.height()); }
 
 		}
 		// EO each slide
@@ -981,10 +999,18 @@ RTP.Multievent = function (cb)
 			.done(function()
 			{
 
+				// mark resource loaded
+				slider.resReady = true;
 				// trigger ready hook
 				slider.trigger('ready');
 
 			});
+
+			// this fixes at least a bug in firefox 42: when we have a panel with
+			// an image, we sometime read the same height as the width, even if
+			// aspect ration is not 1:1. When I log `clientHeight` is see 791, but
+			// when I also log and inspect the dom object, I see something different.
+			jQuery(window).bind('load', function() { slider.trigger('ready'); })
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
@@ -1055,6 +1081,7 @@ RTP.Multievent = function (cb)
 			// extend our config with new options
 			jQuery.extend(true, this.conf, option);
 			// trigger position change event
+			console.log('new config');
 			this.trigger('layout');
 			// call global layout
 			OCBNET.Layout(true);
@@ -1288,6 +1315,10 @@ RTP.Multievent = function (cb)
 	// @@@ plugin: ready @@@
 	prototype.plugin('ready', function()
 	{
+
+		// only call start once
+		if (this.started) return;
+		this.started = true;
 
 		// call start hook defered
 		this.trigger('start');
@@ -1676,6 +1707,25 @@ RTP.Multievent = function (cb)
 
 		// reset size and dim array
 		inner.length = outer.length = 0;
+
+		// note: this fixes a bug in google chrome!
+		// situation: image inside panel in vetical mode
+		// image height is 100% and dynamic to viewport
+		// width is set to auto to keep the aspect ratio
+		// we change panel height and expect updated width
+		// in chrome the panel width doesn't seem to update
+		if (OCBNET.Layout.ua.browser == 'chrome')
+		{
+			// apply specific hack
+			if (this.conf.vertical)
+			{
+				var element = this.container[0];
+				var disp = element.style.display;
+				element.style.display = 'none';
+				element.offsetHeight; // trash
+				element.style.display = disp;
+			}
+		}
 
 		// collect size and margin for all panels
 		var i = this.panels.length; while (i--)
@@ -2135,6 +2185,10 @@ RTP.Multievent = function (cb)
 
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
+		// throw an error if we cannot get a valid size
+		// this is mostly due missing or confusing css styles
+		// in vertical mode you must give it some height value
+		// if (this.vp_x == 0) throw('viewport size is empty');
 
 	}
 	// @@@ EO method: readViewportDim @@@
@@ -2524,7 +2578,7 @@ RTP.Multievent = function (cb)
 		while (i--) { visibility[i] = 0; }
 
 		// test how much viewable each panel is right now
-		for(i = 0; panel_left < view_right; i ++)
+		if (this.vp_x) for(i = 0; panel_left < view_right; i ++)
 		{
 
 			// normalize from panel to slide
@@ -3430,13 +3484,17 @@ RTP.Multievent = function (cb)
 	prototype.plugin('changedPosition', function()
 	{
 
-		// current viewport dimensions
-		var vp_x = this.getViewportDim();
-		var vp_y = this.getViewportOpp();
+		// remember initial values
+		this.old_vp_x = this.vp_x;
+		this.old_vp_y = this.vp_y;
+
+	}, - 999999);
+	prototype.plugin('changedPosition', function()
+	{
 
 		// check against the stored viewport dimensions for changes
 		// if they differ, chances are we need to update all layouts
-		if (vp_x != this.vp_x || vp_y != this.vp_y) OCBNET.Layout(true);
+		if (this.vp_x != this.old_vp_x || this.vp_y != this.old_vp_y) OCBNET.Layout();
 
 	}, 999999);
 	// @@@ EO plugin: changedPosition @@@
@@ -3579,6 +3637,8 @@ RTP.Multievent = function (cb)
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
+		// if (isNaN(this.vp_x) || this.vp_x == 0) eval('debugger');
+
 		// correct virtual viewport to get rid of the margin
 		var virtual = this.vp_x + (this.conf.margin || 0);
 
@@ -3699,7 +3759,7 @@ RTP.Multievent = function (cb)
 
 		// development assertions
 		if (exposure.length == 0) eval('debugger');
-		if (this.pd[0].length == 0) eval('debugger');
+		// if (this.pd[0].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)
@@ -3708,8 +3768,8 @@ RTP.Multievent = function (cb)
 			// skip if panel is not visible
 			if (exposure[i] == 0) continue;
 
-			// sum up dimensions of all panels
-			dim += this.pd[0][i] * exposure[i];
+			// sum up dimensions of all panels with exposure
+			dim += this.pd[0][i + this.smin] * exposure[i];
 
 		}
 
@@ -3843,7 +3903,7 @@ RTP.Multievent = function (cb)
 
 		// update opposite viewport size
 		// take minimum size and add offset
-		this.updateViewportOpp(min + offset);
+		this.updateViewportOpp(parseInt(min + offset - 0.51));
 
 	}
 	// @@@ EO private fn: viewportOppByPanels @@@

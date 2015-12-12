@@ -169,9 +169,9 @@ RTP.Multievent = function (cb)
 	var ua = navigator.userAgent.toLowerCase();
 
 	// only match for ie and mozilla so far
-	var match = // /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-	            // /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-	            // /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+	var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+	            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
 	            /(msie) ([\w.]+)/.exec( ua ) ||
 	            ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
 	            [];
@@ -268,6 +268,8 @@ RTP.Multievent = function (cb)
 	function finalize(data, widgets)
 	{
 
+		Manager.initialized = true;
+
 		// first call post on all widgets
 		exec('updateLayout', data, widgets);
 
@@ -315,6 +317,7 @@ RTP.Multievent = function (cb)
 		var body_2nd_x = win.innerWidth();
 		var body_2nd_y = win.innerHeight();
 
+		// check if layout triggered any scrollbar changes
 		if (body_1st_x != body_2nd_x || body_1st_y != body_2nd_y)
 		// if (body_1st_x > body_2nd_x || body_1st_y > body_2nd_y)
 		{
@@ -330,28 +333,38 @@ RTP.Multievent = function (cb)
 			// if (body_2nd_x < body_3rd_x || body_2nd_y < body_3rd_y)
 			{
 
-				// check if we should force the horizontal scrollbar
-				if (firefox_overflow || body_2nd_y != body_3rd_y)
+				// helper function (dry)
+				function resetBodyScrollbars()
 				{
-					// store previous scollbar setting
-					overflow_x = body.css('overflow-x');
-					// reset to scroll if not hidden
-					if (overflow_x != 'hidden')
-					{ body.css('overflow-x', 'scroll'); }
+					// check if we should force the horizontal scrollbar
+					if (firefox_overflow || body_2nd_y != body_3rd_y)
+					{
+						// store previous scollbar setting
+						overflow_x = body.css('overflow-x');
+						// reset to scroll if not hidden
+						if (overflow_x != 'hidden')
+						{ body.css('overflow-x', 'scroll'); }
+					}
+
+					// check if we should force the vertical scrollbar
+					if (firefox_overflow || body_2nd_x != body_3rd_x)
+					{
+						// store previous scollbar setting
+						overflow_y = body.css('overflow-y');
+						// reset to scroll if not hidden
+						if (overflow_y != 'hidden')
+						{ body.css('overflow-y', 'scroll'); }
+					}
 				}
 
-				// check if we should force the vertical scrollbar
-				if (firefox_overflow || body_2nd_x != body_3rd_x)
-				{
-					// store previous scollbar setting
-					overflow_y = body.css('overflow-y');
-					// reset to scroll if not hidden
-					if (overflow_y != 'hidden')
-					{ body.css('overflow-y', 'scroll'); }
-				}
+				// reset to scrollbars if not hidden
+				if (Manager.initialized) resetBodyScrollbars();
 
 				// reflow layout
 				layout(data, nodes);
+
+				// reset to scrollbars if not hidden
+				if (!Manager.initialized) resetBodyScrollbars();
 
 			}
 			// EO if 2nd changed
@@ -365,6 +378,11 @@ RTP.Multievent = function (cb)
 	};
 	// EO Manager
 
+	// expose ua info
+	Manager.ua = {
+		'browser': browser,
+		'version': version
+	};
 
 	// static global function
 	Manager.config = function (key, value)
@@ -562,7 +580,7 @@ RTP.Multievent = function (cb)
 
 	// make sure our global namespace exists
 	// but do not reset it if already present
-	if (typeof OCBNET == 'undefined') OCBNET = {};
+	if (typeof OCBNET == 'undefined') window.OCBNET = {};
 
 	// assign class to global namespace
 	OCBNET.Layout = Manager;
@@ -1691,6 +1709,12 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 				});
 
+				// this is needed for chrome
+				// setInterval would be stalled
+				var config = gesture.config;
+				if (!config.hatchTouchDown)
+				{ evt.preventDefault(); }
+
 			})
 
 			// trap mousedown locally on each element
@@ -1792,10 +1816,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 (function (jQuery)
 {
 
-	if (
+	if ( (!window['PointerEvent'])
 		// proper detection for ie10+ on desktop (https://github.com/CreateJS/EaselJS/issues/273)
 		// this will also be true for ie11 and hopefully for all future IE generations (I dare you MS)
-		(!window.navigator['msPointerEnabled'] || !window.navigator["msMaxTouchPoints"]) //ie10
+		&& (!window.navigator['msPointerEnabled'] || !window.navigator["msMaxTouchPoints"]) //ie10
 		&& (!window.navigator['pointerEnabled'] || !window.navigator["maxTouchPoints"]) //ie11
 	) return;
 
@@ -1814,9 +1838,11 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	// https://coderwall.com/p/mfreca
 	// so feature detection is the way to go, the internet says
 	// thank you IE for once again keeping things "interesting"
-	if (
-		window.navigator['pointerEnabled'] &&
-		window.navigator["maxTouchPoints"] > 0
+	// firefox has `PointerEvent` instead of `pointerEnabled`
+	// needs `dom.w3c_pointer_events.enabled` in `about:config`
+	if ((window['PointerEvent'] ||
+	     window.navigator['pointerEnabled'])
+		&& window.navigator["maxTouchPoints"]
 	) {
 		// use new names
 		evt_name = {
@@ -2249,9 +2275,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			// fix the size of the panel
 			// TODO: make axis configurable
 			if (conf.panelFixedAxis == 'dim')
-			{ slide.width(slide.width()); }
+			{ slide.outerWidth(slide.width()); }
 			else if (conf.panelFixedAxis == 'opp')
-			{ slide.height(slide.height()); }
+			{ slide.outerHeight(slide.height()); }
 
 		}
 		// EO each slide
@@ -2402,10 +2428,18 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			.done(function()
 			{
 
+				// mark resource loaded
+				slider.resReady = true;
 				// trigger ready hook
 				slider.trigger('ready');
 
 			});
+
+			// this fixes at least a bug in firefox 42: when we have a panel with
+			// an image, we sometime read the same height as the width, even if
+			// aspect ration is not 1:1. When I log `clientHeight` is see 791, but
+			// when I also log and inspect the dom object, I see something different.
+			jQuery(window).bind('load', function() { slider.trigger('ready'); })
 
 	};
 	/* @@@@@@@@@@ CONSTRUCTOR @@@@@@@@@@ */
@@ -2476,6 +2510,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			// extend our config with new options
 			jQuery.extend(true, this.conf, option);
 			// trigger position change event
+			console.log('new config');
 			this.trigger('layout');
 			// call global layout
 			OCBNET.Layout(true);
@@ -2709,6 +2744,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	// @@@ plugin: ready @@@
 	prototype.plugin('ready', function()
 	{
+
+		// only call start once
+		if (this.started) return;
+		this.started = true;
 
 		// call start hook defered
 		this.trigger('start');
@@ -3097,6 +3136,25 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// reset size and dim array
 		inner.length = outer.length = 0;
+
+		// note: this fixes a bug in google chrome!
+		// situation: image inside panel in vetical mode
+		// image height is 100% and dynamic to viewport
+		// width is set to auto to keep the aspect ratio
+		// we change panel height and expect updated width
+		// in chrome the panel width doesn't seem to update
+		if (OCBNET.Layout.ua.browser == 'chrome')
+		{
+			// apply specific hack
+			if (this.conf.vertical)
+			{
+				var element = this.container[0];
+				var disp = element.style.display;
+				element.style.display = 'none';
+				element.offsetHeight; // trash
+				element.style.display = disp;
+			}
+		}
 
 		// collect size and margin for all panels
 		var i = this.panels.length; while (i--)
@@ -3556,6 +3614,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// store the current viewport dimension
 		this.vp_x = getViewportSize.call(this, 0);
+		// throw an error if we cannot get a valid size
+		// this is mostly due missing or confusing css styles
+		// in vertical mode you must give it some height value
+		// if (this.vp_x == 0) throw('viewport size is empty');
 
 	}
 	// @@@ EO method: readViewportDim @@@
@@ -3945,7 +4007,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		while (i--) { visibility[i] = 0; }
 
 		// test how much viewable each panel is right now
-		for(i = 0; panel_left < view_right; i ++)
+		if (this.vp_x) for(i = 0; panel_left < view_right; i ++)
 		{
 
 			// normalize from panel to slide
@@ -4851,13 +4913,17 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.plugin('changedPosition', function()
 	{
 
-		// current viewport dimensions
-		var vp_x = this.getViewportDim();
-		var vp_y = this.getViewportOpp();
+		// remember initial values
+		this.old_vp_x = this.vp_x;
+		this.old_vp_y = this.vp_y;
+
+	}, - 999999);
+	prototype.plugin('changedPosition', function()
+	{
 
 		// check against the stored viewport dimensions for changes
 		// if they differ, chances are we need to update all layouts
-		if (vp_x != this.vp_x || vp_y != this.vp_y) OCBNET.Layout(true);
+		if (this.vp_x != this.old_vp_x || this.vp_y != this.old_vp_y) OCBNET.Layout();
 
 	}, 999999);
 	// @@@ EO plugin: changedPosition @@@
@@ -5000,6 +5066,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.getSlideDimFromVp = function (slide)
 	{
 
+		// if (isNaN(this.vp_x) || this.vp_x == 0) eval('debugger');
+
 		// correct virtual viewport to get rid of the margin
 		var virtual = this.vp_x + (this.conf.margin || 0);
 
@@ -5120,7 +5188,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// development assertions
 		if (exposure.length == 0) eval('debugger');
-		if (this.pd[0].length == 0) eval('debugger');
+		// if (this.pd[0].length == 0) eval('debugger');
 
 		// process all panel visibilites
 		for(var i = 0; i < exposure.length; i++)
@@ -5129,8 +5197,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			// skip if panel is not visible
 			if (exposure[i] == 0) continue;
 
-			// sum up dimensions of all panels
-			dim += this.pd[0][i] * exposure[i];
+			// sum up dimensions of all panels with exposure
+			dim += this.pd[0][i + this.smin] * exposure[i];
 
 		}
 
@@ -5264,7 +5332,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// update opposite viewport size
 		// take minimum size and add offset
-		this.updateViewportOpp(min + offset);
+		this.updateViewportOpp(parseInt(min + offset - 0.51));
 
 	}
 	// @@@ EO private fn: viewportOppByPanels @@@
@@ -5666,8 +5734,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 			navArrows: false, // should we generate navigation arrows
 			navArrowAttach: 'wrapper', // wrapper or panels
 			navArrowPosition: 'default', // prepend, reverse, append
-			navArrowPrevText: '&#171; left', // text/html for the previous link
-			navArrowNextText: 'right &#187;', // text/html for the next link
+			navArrowPrevText: '<span>&#171; left</span>', // text/html for the previous link
+			navArrowNextText: '<span>right &#187;</span>', // text/html for the next link
 
 			tmpl : {
 
@@ -5781,7 +5849,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function()
+	prototype.plugin('start', function()
 	{
 
 		// initialize keyboard navigation
@@ -6507,7 +6575,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		}
 
 		// do not record to many steps (memory usage)
-		if (moves.length > 50) moves.shift();
+		if (moves.length > 20) moves.shift();
 
 		// push the coordinates with timestamp to our data array
 		moves.push([x, y, (new Date()).getTime()]);
@@ -6615,6 +6683,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 		// call private function to calculate the actual real offset for final animation
 		var offset = getFinalOffset.call(this, data.swipeStartPosition, data.swipePosOff, inertia)
+
+		// do corrections when snapping is off (see nested example)
+		offset = Math.round(this.position + offset) - this.position;
 
 		// unlock slider
 		this.locked = false;
@@ -6802,7 +6873,7 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	// @@@ EO private fn: start_handler @@@
 
 	// @@@ plugin: ready @@@
-	prototype.plugin('ready', function ()
+	prototype.plugin('start', function ()
 	{
 
 		// shared data
@@ -7125,7 +7196,8 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		if (!this.conf.adjustTabIndex) return;
 
 		// reset the tabindex for all links in this slide
-		jQuery(slide).data('links').attr('tabindex', visible ? '' : '-1');
+		var links = jQuery(slide).data('links');
+		if (links) links.attr('tabindex', visible ? '' : '-1');
 
 	});
 	// @@@ EO plugin: changedSlideVisibility @@@
@@ -7946,7 +8018,10 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		extend({
 
 			// enable feature
-			carousel3d: false
+			carousel3d: false,
+
+			// class to mark wrapper with our class
+			klass: { carousel3d: 'rtp-slider-carousel3d' }
 
 		});
 
@@ -7962,6 +8037,9 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 	prototype.plugin('init', function ()
 	{
 
+		// check if feature is enabled
+		if (!this.conf.carousel3d) return;
+
 		// create closures for functions
 		// only calculate on layout update
 		var angle, paneldim, distance;
@@ -7969,37 +8047,56 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// save and store to old method (to be restored later)
 		var oldSetOffsetByPosition = this.setOffsetByPosition;
 
+		// mark the wrapper with current run mode
+		this.viewport.addClass(this.klass.carousel3d);
+
 		// @@@ private fn: setOffsetByPosition @@@
 		function setOffsetByPosition (position)
 		{
 
-			// check if feature is enabled
-			if (!this.conf.carousel3d)
-			{
-
-				// call original method if feature is disabled
-				return oldSetOffsetByPosition.apply(this, arguments);
-
-			}
-			// EO if feature not enabled
+			// call original method to update `ct_off`
+			oldSetOffsetByPosition.apply(this, arguments);
 
 			// now calulate the rotation for this position
+			var direction = this.conf.vertical ? 'X' : 'Y';
 			var rotate = 360 / this.slides.length * position;
+			rotate *= this.conf.vertical ? 1 : -1;
 
-			var dir = this.conf.vertical ? 'X' : 'Y';
-
-			// set 3d container styles
-			this.container.css({
-
-				// rotate the 3d panel and move it aways from the 3d center
-				// transform: 'translateZ(-' + distance + 'px) rotate' + dir + '(-' + rotate + 'deg)'
-				transform: 'translateZ(-' + distance + 'px) rotate' + dir + '(-' + rotate + 'deg)'
-
-			});
+			// transformations
+			var transforms = [];
+			// move the 3d center away from the viewport plane
+			transforms.push('translateZ(-' + (distance) + 'px)');
+			if (this.conf.vertical) transforms.push('translateY(' + (this.vp_x / 2) + 'px)');
+			// apply the current rotation angle on direction axis
+			transforms.push('rotate' + direction + '(' + rotate + 'deg)');
+			// set 3d container styles to create rotation effect
+			this.container.css('transform', transforms.join(' '));
 
 		}
 		// @@@ EO private fn: setOffsetByPosition @@@
 
+		function setup ()
+		{
+
+			var css = {
+				// use absolute position
+				// seems faster than static
+				position : 'absolute',
+				// force anti aliasing in firefox
+				outline: '1px solid transparent'
+			};
+			// fix in one axis
+			if (this.conf.vertical) {
+				css.top = '0px';
+				css.bottom = '0px';
+			} else {
+				css.left = '0px';
+				css.right = '0px';
+			}
+			// setup 3d panels
+			this.panels.css(css);
+
+		}
 
 		// @@@ private fn: layout @@@
 		function layout ()
@@ -8007,6 +8104,11 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 			// check if feature is enabled
 			if (!this.conf.carousel3d) return;
+
+			var vertical = this.conf.vertical;
+			// ensure we always rotate around the same axis
+			// this will be the center of the container node
+			if (vertical) this.container.css('height', 0);
 
 			// declare local variables
 			var conf = this.conf,
@@ -8031,32 +8133,40 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 
 				// use absolute position
 				position : 'absolute',
-				left : '0px', right : '0px',
+				// left : '0px', right : '0px',
 
 				// force anti aliasing in firefox
 				outline: '1px solid transparent'
 
 			});
 
+			// dont bleed inside border et al
+			// unfortunately breaks 3d in chrome
+			// if (OCBNET.Layout.ua.browser != 'chrome')
+			// { this.viewport.css('overflow', 'hidden'); }
+
 			// hide cloned panels
 			this.cloned.hide();
 
-			var dir = this.conf.vertical ? 'X' : 'Y';
+			var clock = vertical ? -360 : 360;
+			var direction = vertical ? 'X' : 'Y';
 
 			// loop all slides to setup their 3d transformation
 			var l = this.slides.length, i = l; while (i--)
 			{
 
 				// get rotation for this panel
-				var rotate = 360 / l * i + align;
+				var rotate = clock / l * i + align;
 
-				// set all 3d panel styles
-				jQuery(this.slides[i]).css({
-
-					// rotate the 3d panel and move it aways from the 3d center
-					transform: 'rotate' + dir + '(' + rotate + 'deg) translateZ( ' + distance + 'px )'
-
-				});
+				// transformations
+				var transforms = [];
+				// apply the current rotation angle on direction axis
+				if (vertical) transforms.push('translateY(-' + (this.vp_x / 2) + 'px)');
+				transforms.push('rotate' + direction + '(' + rotate + 'deg)');
+				// move the 3d center away from the viewport plane
+				transforms.push('translateZ(' + (distance) + 'px)');
+				// set 3d container styles to create rotation effect
+				jQuery(this.slides[i]).css('transform', transforms.join(' '));
 
 			}
 			// EO all slides
@@ -8081,6 +8191,13 @@ var decideScrollOrPanOnFirst = isChromium !== null && vendorName === "Google Inc
 		// overwrite setOffsetByPosition method
 		// do this on each instance not on prototype
 		this.setOffsetByPosition = setOffsetByPosition;
+		// also overwrite setContainerOffset to accept any value
+		// this allows other plugins (ie. visibility) to kick in
+		this.setContainerOffset = function(off) { this.ct_off = off; };
+
+
+		// setup the 3d carousel on layout event
+		// prototype.plugin('adjustViewport', setup, - 9999);
 
 		// setup the 3d carousel on layout event
 		prototype.plugin('adjustViewport', layout, - 99);
